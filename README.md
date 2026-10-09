@@ -2,6 +2,8 @@
 
 Drag an X-Road messagelog container (`.asice`) into the page and the browser verifies it against the X-Road instance's **global configuration**, not the EU Trusted List. It is a TypeScript port of X-Road's `asicverifier` CLI, at parity with **version 7.8.3** (same verdict, same fault code, same extracted details). Verification runs entirely in the browser, so containers never leave the user's machine.
 
+![The verifier showing a loaded global configuration and a valid container: signer, OCSP responder, timestamp authority and the X-Road message](docs/screenshot.png)
+
 ## Quick start
 
 Requires Node ≥ 24 and pnpm (via corepack). Docker is needed for the container image.

@@ -4,3 +4,5 @@ dist/
 *.tsbuildinfo
 coverage/
 .env*.local
+# Local configuration anchor for dev/docker runs (instance-specific, not for the repo)
+/anchor.xml
