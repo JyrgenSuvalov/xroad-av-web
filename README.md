@@ -16,10 +16,10 @@ pnpm typecheck         # all workspaces
 For dev, point the app at your X-Road instance:
 
 ```sh
-ANCHOR_PATH=./anchor.xml GLOBALCONF_UPSTREAM=https://cs.example.org/internalconf pnpm dev
+ANCHOR_PATH="$PWD/anchor.xml" GLOBALCONF_UPSTREAM=https://cs.example.org/internalconf pnpm dev
 ```
 
-`ANCHOR_PATH` is the instance's internal configuration anchor (on a security server: `/etc/xroad/configuration-anchor.xml`). `GLOBALCONF_UPSTREAM` is its central server's `downloadURL` (only the origin is used). The defaults are the placeholder `docker/anchor.example.xml` and `https://cs.example.org`, which let the app start but load no configuration.
+`ANCHOR_PATH` is the instance's internal configuration anchor (on a security server: `/etc/xroad/configuration-anchor.xml`); use an absolute path, since Vite runs in `apps/web/`. `GLOBALCONF_UPSTREAM` is its central server's `downloadURL` (only the origin is used). The defaults are the placeholder `docker/anchor.example.xml` and `https://cs.example.org`, which let the app start but load no configuration.
 
 Container image (static build behind unprivileged nginx with a same-origin globalconf proxy):
 
