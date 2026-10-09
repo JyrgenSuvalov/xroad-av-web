@@ -1,0 +1,8 @@
+{
+  // Tests may use Node APIs (node:fs etc.); src may not.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  "include": ["src", "test", "vitest.config.ts"]
+}

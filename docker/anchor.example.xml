@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Example configuration anchor. It points at a placeholder host (cs.example.org)
+  and carries a placeholder verification certificate, so the app starts but no
+  global configuration will load. Replace it with your X-Road instance's internal
+  configuration anchor (on a security server: /etc/xroad/configuration-anchor.xml).
+-->
+<ns3:configurationAnchor xmlns:ns2="http://x-road.eu/xsd/identifiers" xmlns:ns3="http://x-road.eu/xsd/xroad.xsd">
+    <generatedAt>2026-01-01T00:00:00.000Z</generatedAt>
+    <instanceIdentifier>EXAMPLE</instanceIdentifier>
+    <source>
+        <downloadURL>http://cs.example.org/internalconf</downloadURL>
+        <verificationCert>MIIDGTCCAgGgAwIBAgIUY/mOZsTXoEG+ejhaPlOg17cRLwYwDQYJKoZIhvcNAQENBQAwHDEaMBgGA1UEAwwRZXhhbXBsZVNpZ25pbmdLZXkwHhcNMjYxMDA4MTEwNzAxWhcNMzYxMDA1MTEwNzAxWjAcMRowGAYDVQQDDBFleGFtcGxlU2lnbmluZ0tleTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALKjST7mZr/pUTA1BOcCIfBiJ8GhwkrL8TknnZjV2eMD1QZmqAxuMuRijrjC1UjBLTTDqtXkg0bOjwnuf/RrhXcXQU1HKPISS1sIBAQZIv+nCqUcCk/Yv8pc4zIhCsIfajo16Yq+iWYqILfrNC/Er+FtSMpR5vrhIJBfZPAFSqXR2Nbqn0yYdbhzi+VWaRqR/F2HONpJ+OBtPblN0VtCIsVmU8sBuOIRRV0KbHLA54/olcBdDy+M+zt/r09UNW/FtaWBHkYuNQuc9kX6d+smcg6FStJmGlXEYU1ToLjr3AL3JvVTXAK3zkzk59D4TWEzq9Y6rv1+aEuqSaulBqYNpisCAwEAAaNTMFEwHQYDVR0OBBYEFOJfTx87frBsVF6OM3OwiQH9T1GXMB8GA1UdIwQYMBaAFOJfTx87frBsVF6OM3OwiQH9T1GXMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQENBQADggEBAAhw+v/aAlaL3URsoTEciR/SRkpzkFtqLA1D5hcrMzjE7HsXIwwG283eaP/ukKr6ANVBo+jTy23jQPAfq68leO5lhrAui5Nx29PWq3nfdrv457lopzZ0yMKfwKaqjyR1VVdOSepPDhxer0f6zTaiQ52ywInJbsVoPz1jQ1lm5x0XGdTxX2xfJUS1aaJhpKhB4c5ZEtH+F8vbrm3S5vGlTCy82JlYhibhLrRKRCZtro5Fm8c663S/X1EjhbF68KvEz7gmT1Nnxz4XDG5TvAVMtLIKHoBnxndIWrqQzrrwpojUExvdVwVbdhU90JZ4UAlTbTRZTzSNlqn4MOcGn3bur9Q=</verificationCert>
+    </source>
+    <source>
+        <downloadURL>https://cs.example.org/internalconf</downloadURL>
+        <verificationCert>MIIDGTCCAgGgAwIBAgIUY/mOZsTXoEG+ejhaPlOg17cRLwYwDQYJKoZIhvcNAQENBQAwHDEaMBgGA1UEAwwRZXhhbXBsZVNpZ25pbmdLZXkwHhcNMjYxMDA4MTEwNzAxWhcNMzYxMDA1MTEwNzAxWjAcMRowGAYDVQQDDBFleGFtcGxlU2lnbmluZ0tleTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALKjST7mZr/pUTA1BOcCIfBiJ8GhwkrL8TknnZjV2eMD1QZmqAxuMuRijrjC1UjBLTTDqtXkg0bOjwnuf/RrhXcXQU1HKPISS1sIBAQZIv+nCqUcCk/Yv8pc4zIhCsIfajo16Yq+iWYqILfrNC/Er+FtSMpR5vrhIJBfZPAFSqXR2Nbqn0yYdbhzi+VWaRqR/F2HONpJ+OBtPblN0VtCIsVmU8sBuOIRRV0KbHLA54/olcBdDy+M+zt/r09UNW/FtaWBHkYuNQuc9kX6d+smcg6FStJmGlXEYU1ToLjr3AL3JvVTXAK3zkzk59D4TWEzq9Y6rv1+aEuqSaulBqYNpisCAwEAAaNTMFEwHQYDVR0OBBYEFOJfTx87frBsVF6OM3OwiQH9T1GXMB8GA1UdIwQYMBaAFOJfTx87frBsVF6OM3OwiQH9T1GXMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQENBQADggEBAAhw+v/aAlaL3URsoTEciR/SRkpzkFtqLA1D5hcrMzjE7HsXIwwG283eaP/ukKr6ANVBo+jTy23jQPAfq68leO5lhrAui5Nx29PWq3nfdrv457lopzZ0yMKfwKaqjyR1VVdOSepPDhxer0f6zTaiQ52ywInJbsVoPz1jQ1lm5x0XGdTxX2xfJUS1aaJhpKhB4c5ZEtH+F8vbrm3S5vGlTCy82JlYhibhLrRKRCZtro5Fm8c663S/X1EjhbF68KvEz7gmT1Nnxz4XDG5TvAVMtLIKHoBnxndIWrqQzrrwpojUExvdVwVbdhU90JZ4UAlTbTRZTzSNlqn4MOcGn3bur9Q=</verificationCert>
+    </source>
+</ns3:configurationAnchor>

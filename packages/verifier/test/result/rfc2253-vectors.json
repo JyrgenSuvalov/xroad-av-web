@@ -1,0 +1,5802 @@
+[
+ {
+  "label": "empty name",
+  "hex": "3000",
+  "expected": ""
+ },
+ {
+  "label": "member signing cert",
+  "hex": "304c310b3009060355040613025858310d300b060355040a0c0441434d45310d300b06035504030c0441434d453111300f060355040513083130303030303030310c300a060355040f0c03676f76",
+  "expected": "2.5.4.15=#0c03676f76,2.5.4.5=#13083130303030303030,CN=ACME,O=ACME,C=XX"
+ },
+ {
+  "label": "empty value",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "escapee , middle",
+  "hex": "300e310c300a06035504030c03612c62",
+  "expected": "CN=a\\,b"
+ },
+ {
+  "label": "escapee = middle",
+  "hex": "300e310c300a06035504030c03613d62",
+  "expected": "CN=a\\=b"
+ },
+ {
+  "label": "escapee + middle",
+  "hex": "300e310c300a06035504030c03612b62",
+  "expected": "CN=a\\+b"
+ },
+ {
+  "label": "escapee < middle",
+  "hex": "300e310c300a06035504030c03613c62",
+  "expected": "CN=a\\<b"
+ },
+ {
+  "label": "escapee > middle",
+  "hex": "300e310c300a06035504030c03613e62",
+  "expected": "CN=a\\>b"
+ },
+ {
+  "label": "escapee # middle",
+  "hex": "300e310c300a06035504030c03612362",
+  "expected": "CN=a\\#b"
+ },
+ {
+  "label": "escapee ; middle",
+  "hex": "300e310c300a06035504030c03613b62",
+  "expected": "CN=a\\;b"
+ },
+ {
+  "label": "escapee \" middle",
+  "hex": "300e310c300a06035504030c03612262",
+  "expected": "CN=a\\\"b"
+ },
+ {
+  "label": "escapee \\ middle",
+  "hex": "300e310c300a06035504030c03615c62",
+  "expected": "CN=a\\\\b"
+ },
+ {
+  "label": "escapee # leading",
+  "hex": "300e310c300a06035504030c03236162",
+  "expected": "CN=\\#ab"
+ },
+ {
+  "label": "all escapees",
+  "hex": "30143112301006035504030c092c3d2b3c3e233b225c",
+  "expected": "CN=\\,\\=\\+\\<\\>\\#\\;\\\"\\\\"
+ },
+ {
+  "label": "leading/trailing space",
+  "hex": "30123110300e06035504030c0720206120622020",
+  "expected": "CN=\\ \\ a b\\ \\ "
+ },
+ {
+  "label": "single space",
+  "hex": "300c310a300806035504030c0120",
+  "expected": "CN=\\ "
+ },
+ {
+  "label": "only spaces",
+  "hex": "300e310c300a06035504030c03202020",
+  "expected": "CN=\\ \\ \\ "
+ },
+ {
+  "label": "leading/trailing CR",
+  "hex": "3010310e300c06035504030c050d2061200d",
+  "expected": "CN=\\\r\\ a\\ \\\r"
+ },
+ {
+  "label": "tab and LF",
+  "hex": "3010310e300c06035504030c0509610a6209",
+  "expected": "CN=\ta\nb\t"
+ },
+ {
+  "label": "trailing escapee then space",
+  "hex": "300e310c300a06035504030c03612c20",
+  "expected": "CN=a\\,\\ "
+ },
+ {
+  "label": "NUL",
+  "hex": "300e310c300a06035504030c03610062",
+  "expected": "CN=a\\00b"
+ },
+ {
+  "label": "control 0x01 0x7f",
+  "hex": "300f310d300b06035504030c046101627f",
+  "expected": "CN=a\u0001b"
+ },
+ {
+  "label": "printable punctuation",
+  "hex": "30173115301306035504030c0c2728292b2c2d2e2f3a3d3f20",
+  "expected": "CN='()\\+\\,-./:\\=?\\ "
+ },
+ {
+  "label": "non-printable ascii",
+  "hex": "301a3118301606035504030c0f212425262a405b5d5e5f607b7c7d7e",
+  "expected": "CN=!$%&*@[]^_`{|}~"
+ },
+ {
+  "label": "utf8 latin",
+  "hex": "30183116301406035504030c0dc395c3a4c3b6c3bc20c5bec5a0",
+  "expected": "CN=Õäöü žŠ"
+ },
+ {
+  "label": "utf8 cjk + emoji",
+  "hex": "30163114301206035504030c0be697a5e69cac20f09f9880",
+  "expected": "CN=日本 😀"
+ },
+ {
+  "label": "utf8 NBSP edges",
+  "hex": "3010310e300c06035504030c05c2a078c2a0",
+  "expected": "CN= x "
+ },
+ {
+  "label": "PrintableString",
+  "hex": "3016311430120603550403130b48656c6c6f20576f726c64",
+  "expected": "CN=Hello World"
+ },
+ {
+  "label": "PrintableString w/ invalid chars",
+  "hex": "3010310e300c060355040313056140625f63",
+  "expected": "CN=a@b_c"
+ },
+ {
+  "label": "IA5String",
+  "hex": "30123110300e060355040316077840792e6f7267",
+  "expected": "CN=x@y.org"
+ },
+ {
+  "label": "TeletexString latin1",
+  "hex": "300f310d300b06035504031404636166e9",
+  "expected": "CN=café"
+ },
+ {
+  "label": "TeletexString ascii",
+  "hex": "3010310e300c06035504031405706c61696e",
+  "expected": "CN=plain"
+ },
+ {
+  "label": "BMPString ascii",
+  "hex": "300f310d300b06035504031e0400410042",
+  "expected": "CN=AB"
+ },
+ {
+  "label": "BMPString non-ascii",
+  "hex": "300f310d300b06035504031e04017d20ac",
+  "expected": "CN=Ž€"
+ },
+ {
+  "label": "UniversalString",
+  "hex": "300f310d300b06035504031c0400000041",
+  "expected": "CN=#1c0400000041"
+ },
+ {
+  "label": "VisibleString",
+  "hex": "300e310c300a06035504031a03766973",
+  "expected": "CN=#1a03766973"
+ },
+ {
+  "label": "GeneralString",
+  "hex": "300e310c300a06035504031b0367656e",
+  "expected": "CN=gen"
+ },
+ {
+  "label": "NumericString",
+  "hex": "300e310c300a06035504031203313233",
+  "expected": "CN=#1203313233"
+ },
+ {
+  "label": "OCTET STRING value",
+  "hex": "300e310c300a06035504030403010203",
+  "expected": "CN=#0403010203"
+ },
+ {
+  "label": "INTEGER value",
+  "hex": "300c310a30080603550403020105",
+  "expected": "CN=#020105"
+ },
+ {
+  "label": "invalid utf8: lone continuation",
+  "hex": "300e310c300a06035504030c03618062",
+  "expected": "CN=a�b"
+ },
+ {
+  "label": "invalid utf8: overlong",
+  "hex": "300d310b300906035504030c02c080",
+  "expected": "CN=��"
+ },
+ {
+  "label": "invalid utf8: truncated 3-byte",
+  "hex": "300e310c300a06035504030c03e28261",
+  "expected": "CN=�a"
+ },
+ {
+  "label": "invalid utf8: surrogate",
+  "hex": "300e310c300a06035504030c03eda080",
+  "expected": "CN=�"
+ },
+ {
+  "label": "invalid utf8: > U+10FFFF",
+  "hex": "300f310d300b06035504030c04f4908080",
+  "expected": "CN=����"
+ },
+ {
+  "label": "invalid utf8: trailing lead",
+  "hex": "300e310c300a06035504030c0361f09f",
+  "expected": "CN=a�"
+ },
+ {
+  "label": "long value (long-form length)",
+  "hex": "3081d63181d33081d006035504030c81c87878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878",
+  "expected": "CN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+ },
+ {
+  "label": "attr L (2.5.4.7)",
+  "hex": "300e310c300a06035504070c03762c31",
+  "expected": "L=v\\,1"
+ },
+ {
+  "label": "attr ST (2.5.4.8)",
+  "hex": "300e310c300a06035504080c03762c31",
+  "expected": "ST=v\\,1"
+ },
+ {
+  "label": "attr STREET (2.5.4.9)",
+  "hex": "300e310c300a06035504090c03762c31",
+  "expected": "STREET=v\\,1"
+ },
+ {
+  "label": "attr OU (2.5.4.11)",
+  "hex": "300e310c300a060355040b0c03762c31",
+  "expected": "OU=v\\,1"
+ },
+ {
+  "label": "attr DC (0.9.2342.19200300.100.1.25)",
+  "hex": "301531133011060a0992268993f22c6401190c03762c31",
+  "expected": "DC=v\\,1"
+ },
+ {
+  "label": "attr UID (0.9.2342.19200300.100.1.1)",
+  "hex": "301531133011060a0992268993f22c6401010c03762c31",
+  "expected": "UID=v\\,1"
+ },
+ {
+  "label": "attr T (2.5.4.12)",
+  "hex": "300e310c300a060355040c0c03762c31",
+  "expected": "2.5.4.12=#0c03762c31"
+ },
+ {
+  "label": "attr SURNAME (2.5.4.4)",
+  "hex": "300e310c300a06035504040c03762c31",
+  "expected": "2.5.4.4=#0c03762c31"
+ },
+ {
+  "label": "attr GIVENNAME (2.5.4.42)",
+  "hex": "300e310c300a060355042a0c03762c31",
+  "expected": "2.5.4.42=#0c03762c31"
+ },
+ {
+  "label": "attr INITIALS (2.5.4.43)",
+  "hex": "300e310c300a060355042b0c03762c31",
+  "expected": "2.5.4.43=#0c03762c31"
+ },
+ {
+  "label": "attr GENERATION (2.5.4.44)",
+  "hex": "300e310c300a060355042c0c03762c31",
+  "expected": "2.5.4.44=#0c03762c31"
+ },
+ {
+  "label": "attr DNQ (2.5.4.46)",
+  "hex": "300e310c300a060355042e0c03762c31",
+  "expected": "2.5.4.46=#0c03762c31"
+ },
+ {
+  "label": "attr EMAIL (1.2.840.113549.1.9.1)",
+  "hex": "30143112301006092a864886f70d0109010c03762c31",
+  "expected": "1.2.840.113549.1.9.1=#0c03762c31"
+ },
+ {
+  "label": "attr IP (1.2.840.113549.1.9.8)",
+  "hex": "30143112301006092a864886f70d0109080c03762c31",
+  "expected": "1.2.840.113549.1.9.8=#0c03762c31"
+ },
+ {
+  "label": "attr SERIALNUMBER (2.5.4.5)",
+  "hex": "300e310c300a06035504050c03762c31",
+  "expected": "2.5.4.5=#0c03762c31"
+ },
+ {
+  "label": "attr businessCategory (2.5.4.15)",
+  "hex": "300e310c300a060355040f0c03762c31",
+  "expected": "2.5.4.15=#0c03762c31"
+ },
+ {
+  "label": "attr organizationIdentifier (2.5.4.97)",
+  "hex": "300e310c300a06035504610c03762c31",
+  "expected": "2.5.4.97=#0c03762c31"
+ },
+ {
+  "label": "attr big arc (2.999.1234567)",
+  "hex": "3010310e300c06058837cbad070c03762c31",
+  "expected": "2.999.1234567=#0c03762c31"
+ },
+ {
+  "label": "attr unstructuredName (1.2.840.113549.1.9.2)",
+  "hex": "30143112301006092a864886f70d0109020c03762c31",
+  "expected": "1.2.840.113549.1.9.2=#0c03762c31"
+ },
+ {
+  "label": "DC IA5",
+  "hex": "302931133011060a0992268993f22c6401191603636f6d31123010060a0992268993f22c64011916026578",
+  "expected": "DC=ex,DC=com"
+ },
+ {
+  "label": "multi-valued CN+O",
+  "hex": "3023310b30090603550406130245453114300806035504030c016e3008060355040a0c016f",
+  "expected": "CN=n+O=o,C=EE"
+ },
+ {
+  "label": "multi-valued O+CN (non-sorted DER)",
+  "hex": "301631143008060355040a0c016f300806035504030c016e",
+  "expected": "O=o+CN=n"
+ },
+ {
+  "label": "multi-valued with hex attr",
+  "hex": "301a3118300a06035504051303313233300a06035504030c03612b62",
+  "expected": "2.5.4.5=#1303313233+CN=a\\+b"
+ },
+ {
+  "label": "multi-valued same type",
+  "hex": "30163114300806035504030c0162300806035504030c0161",
+  "expected": "CN=b+CN=a"
+ },
+ {
+  "label": "three-valued",
+  "hex": "3020311e3008060355040b0c0175300806035504030c01633008060355040a0c016f",
+  "expected": "OU=u+CN=c+O=o"
+ },
+ {
+  "label": "long-form name length",
+  "hex": "3081ce310f300d060355040b0c06756e69742d30310f300d060355040b0c06756e69742d31310f300d060355040b0c06756e69742d32310f300d060355040b0c06756e69742d33310f300d060355040b0c06756e69742d34310f300d060355040b0c06756e69742d35310f300d060355040b0c06756e69742d36310f300d060355040b0c06756e69742d37310f300d060355040b0c06756e69742d38310f300d060355040b0c06756e69742d393110300e060355040b0c07756e69742d31303110300e060355040b0c07756e69742d3131",
+  "expected": "OU=unit-11,OU=unit-10,OU=unit-9,OU=unit-8,OU=unit-7,OU=unit-6,OU=unit-5,OU=unit-4,OU=unit-3,OU=unit-2,OU=unit-1,OU=unit-0"
+ },
+ {
+  "label": "non-minimal length OCTET STRING (hex re-encodes)",
+  "hex": "300f310d300b0603550403048103010203",
+  "expected": "CN=#0403010203"
+ },
+ {
+  "label": "BMPString odd length",
+  "hex": "300e310c300a06035504031e03004100",
+  "expected": "CN=A�"
+ },
+ {
+  "label": "BMPString lone high surrogate",
+  "hex": "300f310d300b06035504031e04d83d0041",
+  "expected": "CN=�"
+ },
+ {
+  "label": "BMPString lone low surrogate",
+  "hex": "300d310b300906035504031e02de00",
+  "expected": "CN=�"
+ },
+ {
+  "label": "BMPString surrogate pair",
+  "hex": "300f310d300b06035504031e04d83dde00",
+  "error": "java.lang.IllegalArgumentException"
+ },
+ {
+  "label": "IA5String high bytes",
+  "hex": "300e310c300a0603550403160361e9ff",
+  "expected": "CN=aéÿ"
+ },
+ {
+  "label": "PrintableString high bytes",
+  "hex": "300d310b3009060355040313028041",
+  "expected": "CN=A"
+ },
+ {
+  "label": "fuzz tag c #0",
+  "hex": "30143112301006035504030c09803d4141df80f43cc1",
+  "expected": "CN=�\\=AA߀�\\<�"
+ },
+ {
+  "label": "fuzz tag c #1",
+  "hex": "3011310f300d06035504030c0680f8903b23e1",
+  "expected": "CN=���\\;\\#�"
+ },
+ {
+  "label": "fuzz tag c #2",
+  "hex": "30133111300f06035504030c08c209c0f8efefa0a0",
+  "expected": "CN=�\t���"
+ },
+ {
+  "label": "fuzz tag c #3",
+  "hex": "300d310b300906035504030c02a0f4",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #4",
+  "hex": "3011310f300d06035504030c06c1c2df5c5c0d",
+  "expected": "CN=���\\\\\\\\\\\r"
+ },
+ {
+  "label": "fuzz tag c #5",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #6",
+  "hex": "3011310f300d06035504030c0680df9f7ac2ff",
+  "expected": "CN=�ߟz��"
+ },
+ {
+  "label": "fuzz tag c #7",
+  "hex": "300d310b300906035504030c02dff5",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #8",
+  "hex": "3011310f300d06035504030c06a0c0220da090",
+  "expected": "CN=��\\\"\r��"
+ },
+ {
+  "label": "fuzz tag c #9",
+  "hex": "3011310f300d06035504030c063b5cf8a0c1a0",
+  "expected": "CN=\\;\\\\����"
+ },
+ {
+  "label": "fuzz tag c #10",
+  "hex": "300f310d300b06035504030c04903d2080",
+  "expected": "CN=�\\= �"
+ },
+ {
+  "label": "fuzz tag c #11",
+  "hex": "300e310c300a06035504030c03e1ef80",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #12",
+  "hex": "300d310b300906035504030c028fa0",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #13",
+  "hex": "3011310f300d06035504030c067a4122f52023",
+  "expected": "CN=zA\\\"� \\#"
+ },
+ {
+  "label": "fuzz tag c #14",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #15",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #16",
+  "hex": "3011310f300d06035504030c06f42280003cc2",
+  "expected": "CN=�\\\"�\\00\\<�"
+ },
+ {
+  "label": "fuzz tag c #17",
+  "hex": "30133111300f06035504030c0820f43d9090239022",
+  "expected": "CN=\\ �\\=��\\#�\\\""
+ },
+ {
+  "label": "fuzz tag c #18",
+  "hex": "3011310f300d06035504030c0690a0c1413b90",
+  "expected": "CN=���A\\;�"
+ },
+ {
+  "label": "fuzz tag c #19",
+  "hex": "30133111300f06035504030c085c90009080c280f4",
+  "expected": "CN=\\\\�\\00���"
+ },
+ {
+  "label": "fuzz tag c #20",
+  "hex": "300f310d300b06035504030c04f48090a0",
+  "expected": "CN=􀐠"
+ },
+ {
+  "label": "fuzz tag c #21",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #22",
+  "hex": "30133111300f06035504030c0890f83bed2bc2f8c1",
+  "expected": "CN=��\\;�\\+���"
+ },
+ {
+  "label": "fuzz tag c #23",
+  "hex": "300f310d300b06035504030c04f8e0ed3b",
+  "expected": "CN=���\\;"
+ },
+ {
+  "label": "fuzz tag c #24",
+  "hex": "300d310b300906035504030c02ffa0",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #25",
+  "hex": "3011310f300d06035504030c063ddf0d7aa0ed",
+  "expected": "CN=\\=�\rz��"
+ },
+ {
+  "label": "fuzz tag c #26",
+  "hex": "300f310d300b06035504030c04ef90a0a0",
+  "expected": "CN=�"
+ },
+ {
+  "label": "fuzz tag c #27",
+  "hex": "300f310d300b06035504030c04a0f03b90",
+  "expected": "CN=��\\;�"
+ },
+ {
+  "label": "fuzz tag c #28",
+  "hex": "300e310c300a06035504030c030d90e0",
+  "expected": "CN=\\\r��"
+ },
+ {
+  "label": "fuzz tag c #29",
+  "hex": "300d310b300906035504030c02803b",
+  "expected": "CN=�\\;"
+ },
+ {
+  "label": "fuzz tag c #30",
+  "hex": "3011310f300d06035504030c06237a09c0230d",
+  "expected": "CN=\\#z\t�\\#\\\r"
+ },
+ {
+  "label": "fuzz tag c #31",
+  "hex": "30133111300f06035504030c08df80dfc0e00d0dff",
+  "expected": "CN=߀���\r\r�"
+ },
+ {
+  "label": "fuzz tag c #32",
+  "hex": "300f310d300b06035504030c04a0909080",
+  "expected": "CN=����"
+ },
+ {
+  "label": "fuzz tag c #33",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #34",
+  "hex": "300f310d300b06035504030c042ba000df",
+  "expected": "CN=\\+�\\00�"
+ },
+ {
+  "label": "fuzz tag c #35",
+  "hex": "300f310d300b06035504030c047a3e3e0d",
+  "expected": "CN=z\\>\\>\\\r"
+ },
+ {
+  "label": "fuzz tag c #36",
+  "hex": "30133111300f06035504030c08e15c3c800990ef9f",
+  "expected": "CN=�\\\\\\<�\t��"
+ },
+ {
+  "label": "fuzz tag c #37",
+  "hex": "30133111300f06035504030c08c0f5ff802b802241",
+  "expected": "CN=����\\+�\\\"A"
+ },
+ {
+  "label": "fuzz tag c #38",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #39",
+  "hex": "300d310b300906035504030c02807a",
+  "expected": "CN=�z"
+ },
+ {
+  "label": "fuzz tag c #40",
+  "hex": "3011310f300d06035504030c062309e19080f4",
+  "expected": "CN=\\#\t᐀�"
+ },
+ {
+  "label": "fuzz tag c #41",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #42",
+  "hex": "30133111300f06035504030c08f0ffe0207a22a080",
+  "expected": "CN=��� z\\\"��"
+ },
+ {
+  "label": "fuzz tag c #43",
+  "hex": "300f310d300b06035504030c042c80c280",
+  "expected": "CN=\\,�"
+ },
+ {
+  "label": "fuzz tag c #44",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #45",
+  "hex": "30133111300f06035504030c0880c2f480c090227a",
+  "expected": "CN=�����\\\"z"
+ },
+ {
+  "label": "fuzz tag c #46",
+  "hex": "300d310b300906035504030c0280c0",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #47",
+  "hex": "3011310f300d06035504030c0680e0c0ef2b2b",
+  "expected": "CN=����\\+\\+"
+ },
+ {
+  "label": "fuzz tag c #48",
+  "hex": "30133111300f06035504030c08e1f08080f4f5a080",
+  "expected": "CN=��������"
+ },
+ {
+  "label": "fuzz tag c #49",
+  "hex": "30133111300f06035504030c08a0a0f84120df20f8",
+  "expected": "CN=���A � �"
+ },
+ {
+  "label": "fuzz tag c #50",
+  "hex": "300f310d300b06035504030c043da0205c",
+  "expected": "CN=\\=� \\\\"
+ },
+ {
+  "label": "fuzz tag c #51",
+  "hex": "3011310f300d06035504030c0609c23bdf80f8",
+  "expected": "CN=\t�\\;߀�"
+ },
+ {
+  "label": "fuzz tag c #52",
+  "hex": "30133111300f06035504030c08a09000902c0080e0",
+  "expected": "CN=��\\00�\\,\\00��"
+ },
+ {
+  "label": "fuzz tag c #53",
+  "hex": "300f310d300b06035504030c04e03c2ca0",
+  "expected": "CN=�\\<\\,�"
+ },
+ {
+  "label": "fuzz tag c #54",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #55",
+  "hex": "3011310f300d06035504030c06a0dfe0008041",
+  "expected": "CN=���\\00�A"
+ },
+ {
+  "label": "fuzz tag c #56",
+  "hex": "30133111300f06035504030c08c080a04190c1235c",
+  "expected": "CN=���A��\\#\\\\"
+ },
+ {
+  "label": "fuzz tag c #57",
+  "hex": "300f310d300b06035504030c0490a0eda0",
+  "expected": "CN=���"
+ },
+ {
+  "label": "fuzz tag c #58",
+  "hex": "30133111300f06035504030c08edf480a0ff90f5df",
+  "expected": "CN=������"
+ },
+ {
+  "label": "fuzz tag c #59",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #60",
+  "hex": "30133111300f06035504030c08f5413bc2c15c2c80",
+  "expected": "CN=�A\\;��\\\\\\,�"
+ },
+ {
+  "label": "fuzz tag c #61",
+  "hex": "300d310b300906035504030c02f85c",
+  "expected": "CN=�\\\\"
+ },
+ {
+  "label": "fuzz tag c #62",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #63",
+  "hex": "30133111300f06035504030c0890908090c29090ff",
+  "expected": "CN=������"
+ },
+ {
+  "label": "fuzz tag c #64",
+  "hex": "30143112301006035504030c09902b5c80f0a0a09080",
+  "expected": "CN=�\\+\\\\�𠠐�"
+ },
+ {
+  "label": "fuzz tag c #65",
+  "hex": "300d310b300906035504030c02e1ed",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #66",
+  "hex": "300f310d300b06035504030c049fed2280",
+  "expected": "CN=��\\\"�"
+ },
+ {
+  "label": "fuzz tag c #67",
+  "hex": "300f310d300b06035504030c0422ff80e0",
+  "expected": "CN=\\\"���"
+ },
+ {
+  "label": "fuzz tag c #68",
+  "hex": "300e310c300a06035504030c037aa080",
+  "expected": "CN=z��"
+ },
+ {
+  "label": "fuzz tag c #69",
+  "hex": "3011310f300d06035504030c06f0223def5c90",
+  "expected": "CN=�\\\"\\=�\\\\�"
+ },
+ {
+  "label": "fuzz tag c #70",
+  "hex": "300d310b300906035504030c02807a",
+  "expected": "CN=�z"
+ },
+ {
+  "label": "fuzz tag c #71",
+  "hex": "300f310d300b06035504030c045ca0c07a",
+  "expected": "CN=\\\\��z"
+ },
+ {
+  "label": "fuzz tag c #72",
+  "hex": "300d310b300906035504030c02dfe1",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #73",
+  "hex": "300f310d300b06035504030c04edc141a0",
+  "expected": "CN=��A�"
+ },
+ {
+  "label": "fuzz tag c #74",
+  "hex": "30123110300e06035504030c0722e0e1802ce180",
+  "expected": "CN=\\\"��\\,�"
+ },
+ {
+  "label": "fuzz tag c #75",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #76",
+  "hex": "300d310b300906035504030c02f0a0",
+  "expected": "CN=�"
+ },
+ {
+  "label": "fuzz tag c #77",
+  "hex": "3011310f300d06035504030c068022df2209a0",
+  "expected": "CN=�\\\"�\\\"\t�"
+ },
+ {
+  "label": "fuzz tag c #78",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #79",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #80",
+  "hex": "300d310b300906035504030c02f8f8",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #81",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #82",
+  "hex": "30133111300f06035504030c0809c2a023903deff5",
+  "expected": "CN=\t \\#�\\=��"
+ },
+ {
+  "label": "fuzz tag c #83",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #84",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #85",
+  "hex": "30143112301006035504030c09df0dbf90092ba08090",
+  "expected": "CN=�\r��\t\\+���"
+ },
+ {
+  "label": "fuzz tag c #86",
+  "hex": "300d310b300906035504030c02df23",
+  "expected": "CN=�\\#"
+ },
+ {
+  "label": "fuzz tag c #87",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #88",
+  "hex": "300e310c300a06035504030c03203d90",
+  "expected": "CN=\\ \\=�"
+ },
+ {
+  "label": "fuzz tag c #89",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #90",
+  "hex": "30133111300f06035504030c088fc2f490008080ef",
+  "expected": "CN=����\\00���"
+ },
+ {
+  "label": "fuzz tag c #91",
+  "hex": "300f310d300b06035504030c040d0d0090",
+  "expected": "CN=\\\r\\\r\\00�"
+ },
+ {
+  "label": "fuzz tag c #92",
+  "hex": "300f310d300b06035504030c049fa0a090",
+  "expected": "CN=����"
+ },
+ {
+  "label": "fuzz tag c #93",
+  "hex": "300d310b300906035504030c02a05c",
+  "expected": "CN=�\\\\"
+ },
+ {
+  "label": "fuzz tag c #94",
+  "hex": "30133111300f06035504030c083ded5ca02ba0df00",
+  "expected": "CN=\\=�\\\\�\\+��\\00"
+ },
+ {
+  "label": "fuzz tag c #95",
+  "hex": "30133111300f06035504030c0880a09080edeff4a0",
+  "expected": "CN=��������"
+ },
+ {
+  "label": "fuzz tag c #96",
+  "hex": "300d310b300906035504030c0280c0",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #97",
+  "hex": "300d310b300906035504030c02eff5",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #98",
+  "hex": "300f310d300b06035504030c04bff00d3c",
+  "expected": "CN=��\r\\<"
+ },
+ {
+  "label": "fuzz tag c #99",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #100",
+  "hex": "3011310f300d06035504030c06f5e00d20223b",
+  "expected": "CN=��\r \\\"\\;"
+ },
+ {
+  "label": "fuzz tag c #101",
+  "hex": "300d310b300906035504030c02f8c2",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #102",
+  "hex": "300d310b300906035504030c023d20",
+  "expected": "CN=\\=\\ "
+ },
+ {
+  "label": "fuzz tag c #103",
+  "hex": "3011310f300d06035504030c06dfdfc22b41df",
+  "expected": "CN=���\\+A�"
+ },
+ {
+  "label": "fuzz tag c #104",
+  "hex": "300f310d300b06035504030c04efa03d80",
+  "expected": "CN=�\\=�"
+ },
+ {
+  "label": "fuzz tag c #105",
+  "hex": "300d310b300906035504030c023b09",
+  "expected": "CN=\\;\t"
+ },
+ {
+  "label": "fuzz tag c #106",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #107",
+  "hex": "30133111300f06035504030c0823e1c1c0a00da03d",
+  "expected": "CN=\\#����\r�\\="
+ },
+ {
+  "label": "fuzz tag c #108",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #109",
+  "hex": "300d310b300906035504030c02e1ef",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #110",
+  "hex": "300d310b300906035504030c0200a0",
+  "expected": "CN=\\00�"
+ },
+ {
+  "label": "fuzz tag c #111",
+  "hex": "3011310f300d06035504030c06e090e1a0e0a0",
+  "expected": "CN=����"
+ },
+ {
+  "label": "fuzz tag c #112",
+  "hex": "300d310b300906035504030c020d2c",
+  "expected": "CN=\\\r\\,"
+ },
+ {
+  "label": "fuzz tag c #113",
+  "hex": "300c310a300806035504030c013e",
+  "expected": "CN=\\>"
+ },
+ {
+  "label": "fuzz tag c #114",
+  "hex": "300d310b300906035504030c022c3e",
+  "expected": "CN=\\,\\>"
+ },
+ {
+  "label": "fuzz tag c #115",
+  "hex": "3011310f300d06035504030c06a0228090f4a0",
+  "expected": "CN=�\\\"����"
+ },
+ {
+  "label": "fuzz tag c #116",
+  "hex": "30133111300f06035504030c08e0c0f80900908080",
+  "expected": "CN=���\t\\00���"
+ },
+ {
+  "label": "fuzz tag c #117",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #118",
+  "hex": "3011310f300d06035504030c065ca022f5a080",
+  "expected": "CN=\\\\�\\\"���"
+ },
+ {
+  "label": "fuzz tag c #119",
+  "hex": "3011310f300d06035504030c062280e10d803d",
+  "expected": "CN=\\\"��\r�\\="
+ },
+ {
+  "label": "fuzz tag c #0",
+  "hex": "3011310f300d06035504030c067aa023a020ef",
+  "expected": "CN=z�\\#� �"
+ },
+ {
+  "label": "fuzz tag c #1",
+  "hex": "3011310f300d06035504030c063eeff890c0f5",
+  "expected": "CN=\\>�����"
+ },
+ {
+  "label": "fuzz tag c #2",
+  "hex": "3011310f300d06035504030c068f3c3d7a80df",
+  "expected": "CN=�\\<\\=z��"
+ },
+ {
+  "label": "fuzz tag c #3",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #4",
+  "hex": "300d310b300906035504030c02c0ed",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #5",
+  "hex": "300f310d300b06035504030c044190f490",
+  "expected": "CN=A���"
+ },
+ {
+  "label": "fuzz tag c #6",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #7",
+  "hex": "30133111300f06035504030c089090a07ac1f89020",
+  "expected": "CN=���z���\\ "
+ },
+ {
+  "label": "fuzz tag c #8",
+  "hex": "3011310f300d06035504030c06f82c229ff022",
+  "expected": "CN=�\\,\\\"��\\\""
+ },
+ {
+  "label": "fuzz tag c #9",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #10",
+  "hex": "30133111300f06035504030c08a080ff8fa0c05ca0",
+  "expected": "CN=������\\\\�"
+ },
+ {
+  "label": "fuzz tag c #11",
+  "hex": "3011310f300d06035504030c06a0c2ed223d2b",
+  "expected": "CN=���\\\"\\=\\+"
+ },
+ {
+  "label": "fuzz tag c #12",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #13",
+  "hex": "300f310d300b06035504030c043bc1a0c0",
+  "expected": "CN=\\;���"
+ },
+ {
+  "label": "fuzz tag c #14",
+  "hex": "30143112301006035504030c099020f8f05cc090dfe1",
+  "expected": "CN=� ��\\\\����"
+ },
+ {
+  "label": "fuzz tag c #15",
+  "hex": "30133111300f06035504030c0841f880f8f5c1c190",
+  "expected": "CN=A�������"
+ },
+ {
+  "label": "fuzz tag c #16",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #17",
+  "hex": "3011310f300d06035504030c06a080f83ef480",
+  "expected": "CN=���\\>�"
+ },
+ {
+  "label": "fuzz tag c #18",
+  "hex": "3011310f300d06035504030c06f8093c3e20f0",
+  "expected": "CN=�\t\\<\\> �"
+ },
+ {
+  "label": "fuzz tag c #19",
+  "hex": "300d310b300906035504030c02e190",
+  "expected": "CN=�"
+ },
+ {
+  "label": "fuzz tag c #20",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #21",
+  "hex": "300d310b300906035504030c02a0bf",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #22",
+  "hex": "300f310d300b06035504030c04ef9f3d23",
+  "expected": "CN=�\\=\\#"
+ },
+ {
+  "label": "fuzz tag c #23",
+  "hex": "3011310f300d06035504030c06f58020f50090",
+  "expected": "CN=�� �\\00�"
+ },
+ {
+  "label": "fuzz tag c #24",
+  "hex": "30133111300f06035504030c0890c2f4ffdff5f423",
+  "expected": "CN=�������\\#"
+ },
+ {
+  "label": "fuzz tag c #25",
+  "hex": "3011310f300d06035504030c06ffa08090c03b",
+  "expected": "CN=�����\\;"
+ },
+ {
+  "label": "fuzz tag c #26",
+  "hex": "300d310b300906035504030c02a080",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #27",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #28",
+  "hex": "30133111300f06035504030c08ff3e237a412b2c80",
+  "expected": "CN=�\\>\\#zA\\+\\,�"
+ },
+ {
+  "label": "fuzz tag c #29",
+  "hex": "300f310d300b06035504030c04903c09c0",
+  "expected": "CN=�\\<\t�"
+ },
+ {
+  "label": "fuzz tag c #30",
+  "hex": "300d310b300906035504030c022bf8",
+  "expected": "CN=\\+�"
+ },
+ {
+  "label": "fuzz tag c #31",
+  "hex": "300f310d300b06035504030c04ffc0902c",
+  "expected": "CN=���\\,"
+ },
+ {
+  "label": "fuzz tag c #32",
+  "hex": "30123110300e06035504030c07e13ee141a0902c",
+  "expected": "CN=�\\>�A��\\,"
+ },
+ {
+  "label": "fuzz tag c #33",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #34",
+  "hex": "3011310f300d06035504030c063d0d7af8a05c",
+  "expected": "CN=\\=\rz��\\\\"
+ },
+ {
+  "label": "fuzz tag c #35",
+  "hex": "30133111300f06035504030c085ce041e122ffc03e",
+  "expected": "CN=\\\\�A�\\\"��\\>"
+ },
+ {
+  "label": "fuzz tag c #36",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #37",
+  "hex": "30133111300f06035504030c08f53ba0803d903c23",
+  "expected": "CN=�\\;��\\=�\\<\\#"
+ },
+ {
+  "label": "fuzz tag c #38",
+  "hex": "3011310f300d06035504030c06419090df23a0",
+  "expected": "CN=A���\\#�"
+ },
+ {
+  "label": "fuzz tag c #39",
+  "hex": "300c310a300806035504030c017a",
+  "expected": "CN=z"
+ },
+ {
+  "label": "fuzz tag c #40",
+  "hex": "300f310d300b06035504030c049041c0c1",
+  "expected": "CN=�A��"
+ },
+ {
+  "label": "fuzz tag c #41",
+  "hex": "300f310d300b06035504030c04c2c2900d",
+  "expected": "CN=�\\\r"
+ },
+ {
+  "label": "fuzz tag c #42",
+  "hex": "30133111300f06035504030c08e1e080a0f4803d80",
+  "expected": "CN=�����\\=�"
+ },
+ {
+  "label": "fuzz tag c #43",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #44",
+  "hex": "30133111300f06035504030c08a0a090a0edef41ff",
+  "expected": "CN=������A�"
+ },
+ {
+  "label": "fuzz tag c #45",
+  "hex": "3011310f300d06035504030c06efa03dc1e020",
+  "expected": "CN=�\\=��\\ "
+ },
+ {
+  "label": "fuzz tag c #46",
+  "hex": "300d310b300906035504030c02003c",
+  "expected": "CN=\\00\\<"
+ },
+ {
+  "label": "fuzz tag c #47",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #48",
+  "hex": "30133111300f06035504030c08c080c080f5e0a022",
+  "expected": "CN=������\\\""
+ },
+ {
+  "label": "fuzz tag c #49",
+  "hex": "300d310b300906035504030c0222a0",
+  "expected": "CN=\\\"�"
+ },
+ {
+  "label": "fuzz tag c #50",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #51",
+  "hex": "30133111300f06035504030c08a0a0908023205cf0",
+  "expected": "CN=����\\# \\\\�"
+ },
+ {
+  "label": "fuzz tag c #52",
+  "hex": "300d310b300906035504030c022bf4",
+  "expected": "CN=\\+�"
+ },
+ {
+  "label": "fuzz tag c #53",
+  "hex": "3011310f300d06035504030c067a90c223802b",
+  "expected": "CN=z��\\#�\\+"
+ },
+ {
+  "label": "fuzz tag c #54",
+  "hex": "300d310b300906035504030c02227a",
+  "expected": "CN=\\\"z"
+ },
+ {
+  "label": "fuzz tag c #55",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #56",
+  "hex": "30133111300f06035504030c0890dfed3c90f03ea0",
+  "expected": "CN=���\\<��\\>�"
+ },
+ {
+  "label": "fuzz tag c #57",
+  "hex": "300f310d300b06035504030c043e8090e0",
+  "expected": "CN=\\>���"
+ },
+ {
+  "label": "fuzz tag c #58",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #59",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #60",
+  "hex": "30133111300f06035504030c08f0dfedf8f080f020",
+  "expected": "CN=�������\\ "
+ },
+ {
+  "label": "fuzz tag c #61",
+  "hex": "300f310d300b06035504030c04a0a000c1",
+  "expected": "CN=��\\00�"
+ },
+ {
+  "label": "fuzz tag c #62",
+  "hex": "300f310d300b06035504030c0423908090",
+  "expected": "CN=\\#���"
+ },
+ {
+  "label": "fuzz tag c #63",
+  "hex": "300f310d300b06035504030c04c00d220d",
+  "expected": "CN=�\r\\\"\\\r"
+ },
+ {
+  "label": "fuzz tag c #64",
+  "hex": "3011310f300d06035504030c06f823a0c0803e",
+  "expected": "CN=�\\#���\\>"
+ },
+ {
+  "label": "fuzz tag c #65",
+  "hex": "300f310d300b06035504030c048f5cdfa0",
+  "expected": "CN=�\\\\ߠ"
+ },
+ {
+  "label": "fuzz tag c #66",
+  "hex": "3011310f300d06035504030c0641f090c13c3e",
+  "expected": "CN=A��\\<\\>"
+ },
+ {
+  "label": "fuzz tag c #67",
+  "hex": "30133111300f06035504030c08009fe10d5c200080",
+  "expected": "CN=\\00��\r\\\\ \\00�"
+ },
+ {
+  "label": "fuzz tag c #68",
+  "hex": "300f310d300b06035504030c04c0c2a05c",
+  "expected": "CN=� \\\\"
+ },
+ {
+  "label": "fuzz tag c #69",
+  "hex": "3011310f300d06035504030c06c0a0f5a0f022",
+  "expected": "CN=�����\\\""
+ },
+ {
+  "label": "fuzz tag c #70",
+  "hex": "30123110300e06035504030c075c23f4809090f5",
+  "expected": "CN=\\\\\\#􀐐�"
+ },
+ {
+  "label": "fuzz tag c #71",
+  "hex": "300d310b300906035504030c02e000",
+  "expected": "CN=�\\00"
+ },
+ {
+  "label": "fuzz tag c #72",
+  "hex": "300d310b300906035504030c025ca0",
+  "expected": "CN=\\\\�"
+ },
+ {
+  "label": "fuzz tag c #73",
+  "hex": "30133111300f06035504030c08eff4ef903dc180c2",
+  "expected": "CN=���\\=���"
+ },
+ {
+  "label": "fuzz tag c #74",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #75",
+  "hex": "300f310d300b06035504030c04c080e19f",
+  "expected": "CN=���"
+ },
+ {
+  "label": "fuzz tag c #76",
+  "hex": "300f310d300b06035504030c04c2ff0dc0",
+  "expected": "CN=��\r�"
+ },
+ {
+  "label": "fuzz tag c #77",
+  "hex": "3011310f300d06035504030c0623efc0c1907a",
+  "expected": "CN=\\#����z"
+ },
+ {
+  "label": "fuzz tag c #78",
+  "hex": "300d310b300906035504030c02eff8",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #79",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #80",
+  "hex": "300f310d300b06035504030c04e1a080a0",
+  "expected": "CN=᠀�"
+ },
+ {
+  "label": "fuzz tag c #81",
+  "hex": "30133111300f06035504030c089feda0802be0a080",
+  "expected": "CN=��\\+ࠀ"
+ },
+ {
+  "label": "fuzz tag c #82",
+  "hex": "3011310f300d06035504030c0600ffdff4ef3d",
+  "expected": "CN=\\00����\\="
+ },
+ {
+  "label": "fuzz tag c #83",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #84",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #85",
+  "hex": "300f310d300b06035504030c04a03e0d90",
+  "expected": "CN=�\\>\r�"
+ },
+ {
+  "label": "fuzz tag c #86",
+  "hex": "300f310d300b06035504030c0441235c2c",
+  "expected": "CN=A\\#\\\\\\,"
+ },
+ {
+  "label": "fuzz tag c #87",
+  "hex": "300d310b300906035504030c0290e0",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #88",
+  "hex": "300d310b300906035504030c02c290",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #89",
+  "hex": "30133111300f06035504030c0890ed908080803bf5",
+  "expected": "CN=�퐀��\\;�"
+ },
+ {
+  "label": "fuzz tag c #90",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #91",
+  "hex": "300f310d300b06035504030c04a0ff2c90",
+  "expected": "CN=��\\,�"
+ },
+ {
+  "label": "fuzz tag c #92",
+  "hex": "30133111300f06035504030c08803b3ef8903e80a0",
+  "expected": "CN=�\\;\\>��\\>��"
+ },
+ {
+  "label": "fuzz tag c #93",
+  "hex": "3011310f300d06035504030c06a080a020f4c1",
+  "expected": "CN=��� ��"
+ },
+ {
+  "label": "fuzz tag c #94",
+  "hex": "300d310b300906035504030c02c13e",
+  "expected": "CN=�\\>"
+ },
+ {
+  "label": "fuzz tag c #95",
+  "hex": "3011310f300d06035504030c0622f8c1233df8",
+  "expected": "CN=\\\"��\\#\\=�"
+ },
+ {
+  "label": "fuzz tag c #96",
+  "hex": "3011310f300d06035504030c0609e13e903e5c",
+  "expected": "CN=\t�\\>�\\>\\\\"
+ },
+ {
+  "label": "fuzz tag c #97",
+  "hex": "3011310f300d06035504030c0680a0a0f08080",
+  "expected": "CN=������"
+ },
+ {
+  "label": "fuzz tag c #98",
+  "hex": "300f310d300b06035504030c0400228090",
+  "expected": "CN=\\00\\\"��"
+ },
+ {
+  "label": "fuzz tag c #99",
+  "hex": "30133111300f06035504030c08c20941ed00a0e090",
+  "expected": "CN=�\tA�\\00���"
+ },
+ {
+  "label": "fuzz tag c #100",
+  "hex": "300f310d300b06035504030c049fc09fc1",
+  "expected": "CN=����"
+ },
+ {
+  "label": "fuzz tag c #101",
+  "hex": "300f310d300b06035504030c0490205c80",
+  "expected": "CN=� \\\\�"
+ },
+ {
+  "label": "fuzz tag c #102",
+  "hex": "300f310d300b06035504030c043c0d90df",
+  "expected": "CN=\\<\r��"
+ },
+ {
+  "label": "fuzz tag c #103",
+  "hex": "30133111300f06035504030c08233c2cdf0da0233d",
+  "expected": "CN=\\#\\<\\,�\r�\\#\\="
+ },
+ {
+  "label": "fuzz tag c #104",
+  "hex": "3011310f300d06035504030c068020e0a090e0",
+  "expected": "CN=� ࠐ�"
+ },
+ {
+  "label": "fuzz tag c #105",
+  "hex": "30123110300e06035504030c0741e109c0802c90",
+  "expected": "CN=A�\t��\\,�"
+ },
+ {
+  "label": "fuzz tag c #106",
+  "hex": "300d310b300906035504030c020080",
+  "expected": "CN=\\00�"
+ },
+ {
+  "label": "fuzz tag c #107",
+  "hex": "300f310d300b06035504030c0490205c2b",
+  "expected": "CN=� \\\\\\+"
+ },
+ {
+  "label": "fuzz tag c #108",
+  "hex": "30133111300f06035504030c089080f58080e1905c",
+  "expected": "CN=������\\\\"
+ },
+ {
+  "label": "fuzz tag c #109",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #110",
+  "hex": "300d310b300906035504030c02413e",
+  "expected": "CN=A\\>"
+ },
+ {
+  "label": "fuzz tag c #111",
+  "hex": "30133111300f06035504030c08f03c098f80a023c0",
+  "expected": "CN=�\\<\t���\\#�"
+ },
+ {
+  "label": "fuzz tag c #112",
+  "hex": "300f310d300b06035504030c042b205c22",
+  "expected": "CN=\\+ \\\\\\\""
+ },
+ {
+  "label": "fuzz tag c #113",
+  "hex": "3011310f300d06035504030c06a0f4ed80907a",
+  "expected": "CN=��퀐z"
+ },
+ {
+  "label": "fuzz tag c #114",
+  "hex": "3011310f300d06035504030c06f4a080df09f4",
+  "expected": "CN=����\t�"
+ },
+ {
+  "label": "fuzz tag c #115",
+  "hex": "300e310c300a06035504030c032023c2",
+  "expected": "CN=\\ \\#�"
+ },
+ {
+  "label": "fuzz tag c #116",
+  "hex": "3011310f300d06035504030c06ff5c3e23e1f4",
+  "expected": "CN=�\\\\\\>\\#��"
+ },
+ {
+  "label": "fuzz tag c #117",
+  "hex": "300f310d300b06035504030c04f0ed3def",
+  "expected": "CN=��\\=�"
+ },
+ {
+  "label": "fuzz tag c #118",
+  "hex": "30133111300f06035504030c083cf82b22a0e1907a",
+  "expected": "CN=\\<�\\+\\\"��z"
+ },
+ {
+  "label": "fuzz tag c #119",
+  "hex": "30133111300f06035504030c08ef229000229080e1",
+  "expected": "CN=�\\\"�\\00\\\"���"
+ },
+ {
+  "label": "fuzz tag c #0",
+  "hex": "3011310f300d06035504030c06c1f0a09090a0",
+  "expected": "CN=�𠐐�"
+ },
+ {
+  "label": "fuzz tag c #1",
+  "hex": "30123110300e06035504030c07e0f8df3da080f5",
+  "expected": "CN=���\\=���"
+ },
+ {
+  "label": "fuzz tag c #2",
+  "hex": "30133111300f06035504030c08f5a0222380c1c123",
+  "expected": "CN=��\\\"\\#���\\#"
+ },
+ {
+  "label": "fuzz tag c #3",
+  "hex": "30143112301006035504030c093e5c3ea0e0e080a0a0",
+  "expected": "CN=\\>\\\\\\>������"
+ },
+ {
+  "label": "fuzz tag c #4",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #5",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #6",
+  "hex": "3011310f300d06035504030c063bffefe000a0",
+  "expected": "CN=\\;���\\00�"
+ },
+ {
+  "label": "fuzz tag c #7",
+  "hex": "3011310f300d06035504030c0680a00080a0c1",
+  "expected": "CN=��\\00���"
+ },
+ {
+  "label": "fuzz tag c #8",
+  "hex": "300f310d300b06035504030c0490093c80",
+  "expected": "CN=�\t\\<�"
+ },
+ {
+  "label": "fuzz tag c #9",
+  "hex": "300d310b300906035504030c02c10d",
+  "expected": "CN=�\\\r"
+ },
+ {
+  "label": "fuzz tag c #10",
+  "hex": "30133111300f06035504030c084122a0bf3cf890e1",
+  "expected": "CN=A\\\"��\\<���"
+ },
+ {
+  "label": "fuzz tag c #11",
+  "hex": "300c310a300806035504030c012c",
+  "expected": "CN=\\,"
+ },
+ {
+  "label": "fuzz tag c #12",
+  "hex": "300d310b300906035504030c02bf2b",
+  "expected": "CN=�\\+"
+ },
+ {
+  "label": "fuzz tag c #13",
+  "hex": "300d310b300906035504030c025c3d",
+  "expected": "CN=\\\\\\="
+ },
+ {
+  "label": "fuzz tag c #14",
+  "hex": "300f310d300b06035504030c045c2b8090",
+  "expected": "CN=\\\\\\+��"
+ },
+ {
+  "label": "fuzz tag c #15",
+  "hex": "300d310b300906035504030c022080",
+  "expected": "CN=\\ �"
+ },
+ {
+  "label": "fuzz tag c #16",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #17",
+  "hex": "3011310f300d06035504030c06ff0d23237aa0",
+  "expected": "CN=�\r\\#\\#z�"
+ },
+ {
+  "label": "fuzz tag c #18",
+  "hex": "300f310d300b06035504030c04902befa0",
+  "expected": "CN=�\\+�"
+ },
+ {
+  "label": "fuzz tag c #19",
+  "hex": "300d310b300906035504030c02a022",
+  "expected": "CN=�\\\""
+ },
+ {
+  "label": "fuzz tag c #20",
+  "hex": "30133111300f06035504030c08c12c7aa0ffed8f3d",
+  "expected": "CN=�\\,z���\\="
+ },
+ {
+  "label": "fuzz tag c #21",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #22",
+  "hex": "300f310d300b06035504030c043e90e15c",
+  "expected": "CN=\\>��\\\\"
+ },
+ {
+  "label": "fuzz tag c #23",
+  "hex": "30133111300f06035504030c082bf480f80980bf80",
+  "expected": "CN=\\+��\t���"
+ },
+ {
+  "label": "fuzz tag c #24",
+  "hex": "30143112301006035504030c093c2ced41f5f53c00ed",
+  "expected": "CN=\\<\\,�A��\\<\\00�"
+ },
+ {
+  "label": "fuzz tag c #25",
+  "hex": "30133111300f06035504030c0800f0a0ff2c225ced",
+  "expected": "CN=\\00��\\,\\\"\\\\�"
+ },
+ {
+  "label": "fuzz tag c #26",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #27",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #28",
+  "hex": "3011310f300d06035504030c06229fbfa09090",
+  "expected": "CN=\\\"�����"
+ },
+ {
+  "label": "fuzz tag c #29",
+  "hex": "300d310b300906035504030c02800d",
+  "expected": "CN=�\\\r"
+ },
+ {
+  "label": "fuzz tag c #30",
+  "hex": "300d310b300906035504030c02c1c1",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #31",
+  "hex": "30133111300f06035504030c082290ff90bfa0a02c",
+  "expected": "CN=\\\"������\\,"
+ },
+ {
+  "label": "fuzz tag c #32",
+  "hex": "3011310f300d06035504030c06a02ced5ce190",
+  "expected": "CN=�\\,�\\\\�"
+ },
+ {
+  "label": "fuzz tag c #33",
+  "hex": "30133111300f06035504030c0880edef3ba0dfdf2c",
+  "expected": "CN=���\\;���\\,"
+ },
+ {
+  "label": "fuzz tag c #34",
+  "hex": "3011310f300d06035504030c06f44190a09000",
+  "expected": "CN=�A���\\00"
+ },
+ {
+  "label": "fuzz tag c #35",
+  "hex": "300f310d300b06035504030c042ce080f8",
+  "expected": "CN=\\,���"
+ },
+ {
+  "label": "fuzz tag c #36",
+  "hex": "300f310d300b06035504030c0423df8090",
+  "expected": "CN=\\#߀�"
+ },
+ {
+  "label": "fuzz tag c #37",
+  "hex": "3011310f300d06035504030c06c080900d803c",
+  "expected": "CN=���\r�\\<"
+ },
+ {
+  "label": "fuzz tag c #38",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #39",
+  "hex": "300f310d300b06035504030c04f8ffa0c1",
+  "expected": "CN=����"
+ },
+ {
+  "label": "fuzz tag c #40",
+  "hex": "300d310b300906035504030c023d90",
+  "expected": "CN=\\=�"
+ },
+ {
+  "label": "fuzz tag c #41",
+  "hex": "3011310f300d06035504030c06a0a0f8a0ede0",
+  "expected": "CN=������"
+ },
+ {
+  "label": "fuzz tag c #42",
+  "hex": "3011310f300d06035504030c06f4e1edf5c22b",
+  "expected": "CN=�����\\+"
+ },
+ {
+  "label": "fuzz tag c #43",
+  "hex": "30133111300f06035504030c083e9fe18fa02020c0",
+  "expected": "CN=\\>�Ꮰ  �"
+ },
+ {
+  "label": "fuzz tag c #44",
+  "hex": "3011310f300d06035504030c06809080f53cf5",
+  "expected": "CN=����\\<�"
+ },
+ {
+  "label": "fuzz tag c #45",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #46",
+  "hex": "300d310b300906035504030c02093b",
+  "expected": "CN=\t\\;"
+ },
+ {
+  "label": "fuzz tag c #47",
+  "hex": "30133111300f06035504030c087ae02290ef804190",
+  "expected": "CN=z�\\\"��A�"
+ },
+ {
+  "label": "fuzz tag c #48",
+  "hex": "300f310d300b06035504030c049000dfa0",
+  "expected": "CN=�\\00ߠ"
+ },
+ {
+  "label": "fuzz tag c #49",
+  "hex": "300f310d300b06035504030c04f8ef0df5",
+  "expected": "CN=��\r�"
+ },
+ {
+  "label": "fuzz tag c #50",
+  "hex": "300f310d300b06035504030c042c80a009",
+  "expected": "CN=\\,��\t"
+ },
+ {
+  "label": "fuzz tag c #51",
+  "hex": "300f310d300b06035504030c0422c08009",
+  "expected": "CN=\\\"��\t"
+ },
+ {
+  "label": "fuzz tag c #52",
+  "hex": "300d310b300906035504030c022bf0",
+  "expected": "CN=\\+�"
+ },
+ {
+  "label": "fuzz tag c #53",
+  "hex": "300d310b300906035504030c02c27a",
+  "expected": "CN=�z"
+ },
+ {
+  "label": "fuzz tag c #54",
+  "hex": "30123110300e06035504030c0720908ff59f9041",
+  "expected": "CN=\\ �����A"
+ },
+ {
+  "label": "fuzz tag c #55",
+  "hex": "300d310b300906035504030c0280e1",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #56",
+  "hex": "30133111300f06035504030c0880222bf522905c80",
+  "expected": "CN=�\\\"\\+�\\\"�\\\\�"
+ },
+ {
+  "label": "fuzz tag c #57",
+  "hex": "30133111300f06035504030c08a0803b8090a02c22",
+  "expected": "CN=��\\;���\\,\\\""
+ },
+ {
+  "label": "fuzz tag c #58",
+  "hex": "3011310f300d06035504030c06c13b2b3b80ed",
+  "expected": "CN=�\\;\\+\\;��"
+ },
+ {
+  "label": "fuzz tag c #59",
+  "hex": "300d310b300906035504030c02c280",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #60",
+  "hex": "300d310b300906035504030c02e1f8",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #61",
+  "hex": "300f310d300b06035504030c0441df00c2",
+  "expected": "CN=A�\\00�"
+ },
+ {
+  "label": "fuzz tag c #62",
+  "hex": "300f310d300b06035504030c04f4909080",
+  "expected": "CN=����"
+ },
+ {
+  "label": "fuzz tag c #63",
+  "hex": "300d310b300906035504030c02a07a",
+  "expected": "CN=�z"
+ },
+ {
+  "label": "fuzz tag c #64",
+  "hex": "300f310d300b06035504030c04c1e0413e",
+  "expected": "CN=��A\\>"
+ },
+ {
+  "label": "fuzz tag c #65",
+  "hex": "3011310f300d06035504030c06f0f83ef08090",
+  "expected": "CN=��\\>���"
+ },
+ {
+  "label": "fuzz tag c #66",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #67",
+  "hex": "300d310b300906035504030c02c17a",
+  "expected": "CN=�z"
+ },
+ {
+  "label": "fuzz tag c #68",
+  "hex": "300d310b300906035504030c0290c2",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #69",
+  "hex": "3011310f300d06035504030c060090f8a000ff",
+  "expected": "CN=\\00���\\00�"
+ },
+ {
+  "label": "fuzz tag c #70",
+  "hex": "300f310d300b06035504030c04ef3c235c",
+  "expected": "CN=�\\<\\#\\\\"
+ },
+ {
+  "label": "fuzz tag c #71",
+  "hex": "300f310d300b06035504030c04c1ed80a0",
+  "expected": "CN=�퀠"
+ },
+ {
+  "label": "fuzz tag c #72",
+  "hex": "3011310f300d06035504030c06809000e1f8a0",
+  "expected": "CN=��\\00���"
+ },
+ {
+  "label": "fuzz tag c #73",
+  "hex": "300f310d300b06035504030c04f4a0a0a0",
+  "expected": "CN=����"
+ },
+ {
+  "label": "fuzz tag c #74",
+  "hex": "300d310b300906035504030c027ae1",
+  "expected": "CN=z�"
+ },
+ {
+  "label": "fuzz tag c #75",
+  "hex": "3011310f300d06035504030c0641a02b22a090",
+  "expected": "CN=A�\\+\\\"��"
+ },
+ {
+  "label": "fuzz tag c #76",
+  "hex": "30133111300f06035504030c0880a0c0a03e2b8080",
+  "expected": "CN=����\\>\\+��"
+ },
+ {
+  "label": "fuzz tag c #77",
+  "hex": "300f310d300b06035504030c042ca0ff22",
+  "expected": "CN=\\,��\\\""
+ },
+ {
+  "label": "fuzz tag c #78",
+  "hex": "30133111300f06035504030c08803d9090edc1903b",
+  "expected": "CN=�\\=�����\\;"
+ },
+ {
+  "label": "fuzz tag c #79",
+  "hex": "300f310d300b06035504030c04903da023",
+  "expected": "CN=�\\=�\\#"
+ },
+ {
+  "label": "fuzz tag c #80",
+  "hex": "300d310b300906035504030c0241f0",
+  "expected": "CN=A�"
+ },
+ {
+  "label": "fuzz tag c #81",
+  "hex": "30133111300f06035504030c088090908023dfc0f8",
+  "expected": "CN=����\\#���"
+ },
+ {
+  "label": "fuzz tag c #82",
+  "hex": "3011310f300d06035504030c0690c020222390",
+  "expected": "CN=�� \\\"\\#�"
+ },
+ {
+  "label": "fuzz tag c #83",
+  "hex": "3011310f300d06035504030c063c802cf090ff",
+  "expected": "CN=\\<�\\,��"
+ },
+ {
+  "label": "fuzz tag c #84",
+  "hex": "3011310f300d06035504030c063bedc10ddf09",
+  "expected": "CN=\\;��\r�\t"
+ },
+ {
+  "label": "fuzz tag c #85",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #86",
+  "hex": "300f310d300b06035504030c042be00d90",
+  "expected": "CN=\\+�\r�"
+ },
+ {
+  "label": "fuzz tag c #87",
+  "hex": "3011310f300d06035504030c062c41003b3e00",
+  "expected": "CN=\\,A\\00\\;\\>\\00"
+ },
+ {
+  "label": "fuzz tag c #88",
+  "hex": "300f310d300b06035504030c04a0c23d90",
+  "expected": "CN=��\\=�"
+ },
+ {
+  "label": "fuzz tag c #89",
+  "hex": "30133111300f06035504030c08090d23f0f5a02c00",
+  "expected": "CN=\t\r\\#���\\,\\00"
+ },
+ {
+  "label": "fuzz tag c #90",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #91",
+  "hex": "30123110300e06035504030c073b0923ed90ef80",
+  "expected": "CN=\\;\t\\#��"
+ },
+ {
+  "label": "fuzz tag c #92",
+  "hex": "30133111300f06035504030c082c80c2f4ffe03b80",
+  "expected": "CN=\\,�����\\;�"
+ },
+ {
+  "label": "fuzz tag c #93",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #94",
+  "hex": "30133111300f06035504030c0841238090c08080ff",
+  "expected": "CN=A\\#������"
+ },
+ {
+  "label": "fuzz tag c #95",
+  "hex": "300d310b300906035504030c02a05c",
+  "expected": "CN=�\\\\"
+ },
+ {
+  "label": "fuzz tag c #96",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #97",
+  "hex": "3010310e300c06035504030c053e225ced80",
+  "expected": "CN=\\>\\\"\\\\�"
+ },
+ {
+  "label": "fuzz tag c #98",
+  "hex": "300d310b300906035504030c02ff3e",
+  "expected": "CN=�\\>"
+ },
+ {
+  "label": "fuzz tag c #99",
+  "hex": "3011310f300d06035504030c06f523a0bfef2c",
+  "expected": "CN=�\\#���\\,"
+ },
+ {
+  "label": "fuzz tag c #100",
+  "hex": "300d310b300906035504030c025c20",
+  "expected": "CN=\\\\\\ "
+ },
+ {
+  "label": "fuzz tag c #101",
+  "hex": "30133111300f06035504030c083c2c2300ed80f4bf",
+  "expected": "CN=\\<\\,\\#\\00���"
+ },
+ {
+  "label": "fuzz tag c #102",
+  "hex": "30123110300e06035504030c07f580a00980f800",
+  "expected": "CN=���\t��\\00"
+ },
+ {
+  "label": "fuzz tag c #103",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #104",
+  "hex": "3011310f300d06035504030c0690f800f8ef7a",
+  "expected": "CN=��\\00��z"
+ },
+ {
+  "label": "fuzz tag c #105",
+  "hex": "300f310d300b06035504030c0420a080c2",
+  "expected": "CN=\\ ���"
+ },
+ {
+  "label": "fuzz tag c #106",
+  "hex": "3011310f300d06035504030c068f5c80902280",
+  "expected": "CN=�\\\\��\\\"�"
+ },
+ {
+  "label": "fuzz tag c #107",
+  "hex": "3011310f300d06035504030c06ffa090df803b",
+  "expected": "CN=���߀\\;"
+ },
+ {
+  "label": "fuzz tag c #108",
+  "hex": "3011310f300d06035504030c06f49090f45ca0",
+  "expected": "CN=����\\\\�"
+ },
+ {
+  "label": "fuzz tag c #109",
+  "hex": "30133111300f06035504030c08003e232b80233c09",
+  "expected": "CN=\\00\\>\\#\\+�\\#\\<\t"
+ },
+ {
+  "label": "fuzz tag c #110",
+  "hex": "30143112301006035504030c0980ef3cf509f580c2f4",
+  "expected": "CN=��\\<�\t����"
+ },
+ {
+  "label": "fuzz tag c #111",
+  "hex": "300f310d300b06035504030c042b3d095c",
+  "expected": "CN=\\+\\=\t\\\\"
+ },
+ {
+  "label": "fuzz tag c #112",
+  "hex": "300f310d300b06035504030c049009a03b",
+  "expected": "CN=�\t�\\;"
+ },
+ {
+  "label": "fuzz tag c #113",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #114",
+  "hex": "30133111300f06035504030c0890f0a0ed0d3bff90",
+  "expected": "CN=���\r\\;��"
+ },
+ {
+  "label": "fuzz tag c #115",
+  "hex": "30133111300f06035504030c08efa0ff2023f42309",
+  "expected": "CN=�� \\#�\\#\t"
+ },
+ {
+  "label": "fuzz tag c #116",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #117",
+  "hex": "300d310b300906035504030c02c0ef",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #118",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #119",
+  "hex": "300d310b300906035504030c028fdf",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #0",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #1",
+  "hex": "300d310b300906035504030c02a0df",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #2",
+  "hex": "3011310f300d06035504030c0690a0ed205ca0",
+  "expected": "CN=��� \\\\�"
+ },
+ {
+  "label": "fuzz tag c #3",
+  "hex": "300f310d300b06035504030c043e3d2280",
+  "expected": "CN=\\>\\=\\\"�"
+ },
+ {
+  "label": "fuzz tag c #4",
+  "hex": "300d310b300906035504030c02220d",
+  "expected": "CN=\\\"\\\r"
+ },
+ {
+  "label": "fuzz tag c #5",
+  "hex": "3011310f300d06035504030c06c23bc190eff4",
+  "expected": "CN=�\\;����"
+ },
+ {
+  "label": "fuzz tag c #6",
+  "hex": "3010310e300c06035504030c05a08023f090",
+  "expected": "CN=��\\#�"
+ },
+ {
+  "label": "fuzz tag c #7",
+  "hex": "3011310f300d06035504030c06ff229080e0f4",
+  "expected": "CN=�\\\"����"
+ },
+ {
+  "label": "fuzz tag c #8",
+  "hex": "30143112301006035504030c09ef2080e03cf52c90f0",
+  "expected": "CN=� ��\\<�\\,��"
+ },
+ {
+  "label": "fuzz tag c #9",
+  "hex": "3011310f300d06035504030c06ed909ff0f8ef",
+  "expected": "CN=퐟���"
+ },
+ {
+  "label": "fuzz tag c #10",
+  "hex": "30133111300f06035504030c085c09902c90efdf20",
+  "expected": "CN=\\\\\t�\\,���\\ "
+ },
+ {
+  "label": "fuzz tag c #11",
+  "hex": "3011310f300d06035504030c06f43ca05cc0f0",
+  "expected": "CN=�\\<�\\\\��"
+ },
+ {
+  "label": "fuzz tag c #12",
+  "hex": "300d310b300906035504030c02f823",
+  "expected": "CN=�\\#"
+ },
+ {
+  "label": "fuzz tag c #13",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #14",
+  "hex": "300f310d300b06035504030c04a020e1a0",
+  "expected": "CN=� �"
+ },
+ {
+  "label": "fuzz tag c #15",
+  "hex": "3011310f300d06035504030c06805c003c3ce0",
+  "expected": "CN=�\\\\\\00\\<\\<�"
+ },
+ {
+  "label": "fuzz tag c #16",
+  "hex": "30133111300f06035504030c08c1e090a080c080a0",
+  "expected": "CN=��������"
+ },
+ {
+  "label": "fuzz tag c #17",
+  "hex": "300d310b300906035504030c028009",
+  "expected": "CN=�\t"
+ },
+ {
+  "label": "fuzz tag c #18",
+  "hex": "30133111300f06035504030c083bdf5c23805ced90",
+  "expected": "CN=\\;�\\\\\\#�\\\\�"
+ },
+ {
+  "label": "fuzz tag c #19",
+  "hex": "300f310d300b06035504030c04e0228022",
+  "expected": "CN=�\\\"�\\\""
+ },
+ {
+  "label": "fuzz tag c #20",
+  "hex": "30133111300f06035504030c0890eda090df9fc290",
+  "expected": "CN=��ߟ"
+ },
+ {
+  "label": "fuzz tag c #21",
+  "hex": "30133111300f06035504030c08a0f8ffc090f4a090",
+  "expected": "CN=��������"
+ },
+ {
+  "label": "fuzz tag c #22",
+  "hex": "30133111300f06035504030c0823e0a0a0c2f53de0",
+  "expected": "CN=\\#ࠠ��\\=�"
+ },
+ {
+  "label": "fuzz tag c #23",
+  "hex": "300f310d300b06035504030c04802390e0",
+  "expected": "CN=�\\#��"
+ },
+ {
+  "label": "fuzz tag c #24",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #25",
+  "hex": "300f310d300b06035504030c04c200ed80",
+  "expected": "CN=�\\00�"
+ },
+ {
+  "label": "fuzz tag c #26",
+  "hex": "300f310d300b06035504030c047af4a0f8",
+  "expected": "CN=z���"
+ },
+ {
+  "label": "fuzz tag c #27",
+  "hex": "30123110300e06035504030c0709e1df2ca0e1f5",
+  "expected": "CN=\t��\\,���"
+ },
+ {
+  "label": "fuzz tag c #28",
+  "hex": "300f310d300b06035504030c04c1a0f4bf",
+  "expected": "CN=����"
+ },
+ {
+  "label": "fuzz tag c #29",
+  "hex": "30133111300f06035504030c08e1f08090f4c0f85c",
+  "expected": "CN=�������\\\\"
+ },
+ {
+  "label": "fuzz tag c #30",
+  "hex": "30133111300f06035504030c083c5cf0c2c2f8eda0",
+  "expected": "CN=\\<\\\\�����"
+ },
+ {
+  "label": "fuzz tag c #31",
+  "hex": "3011310f300d06035504030c06c04109f480c0",
+  "expected": "CN=�A\t��"
+ },
+ {
+  "label": "fuzz tag c #32",
+  "hex": "3011310f300d06035504030c06ed3ca041a0e1",
+  "expected": "CN=�\\<�A��"
+ },
+ {
+  "label": "fuzz tag c #33",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #34",
+  "hex": "300f310d300b06035504030c04c07a9ff0",
+  "expected": "CN=�z��"
+ },
+ {
+  "label": "fuzz tag c #35",
+  "hex": "300d310b300906035504030c02a023",
+  "expected": "CN=�\\#"
+ },
+ {
+  "label": "fuzz tag c #36",
+  "hex": "3011310f300d06035504030c06090da07aefbf",
+  "expected": "CN=\t\r�z�"
+ },
+ {
+  "label": "fuzz tag c #37",
+  "hex": "30133111300f06035504030c08c22ce0f8902c09e1",
+  "expected": "CN=�\\,���\\,\t�"
+ },
+ {
+  "label": "fuzz tag c #38",
+  "hex": "300d310b300906035504030c02a0f5",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #39",
+  "hex": "300d310b300906035504030c02ed3b",
+  "expected": "CN=�\\;"
+ },
+ {
+  "label": "fuzz tag c #40",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #41",
+  "hex": "300f310d300b06035504030c04a0efa090",
+  "expected": "CN=�"
+ },
+ {
+  "label": "fuzz tag c #42",
+  "hex": "300d310b300906035504030c02ffa0",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #43",
+  "hex": "3011310f300d06035504030c06efe020410900",
+  "expected": "CN=�� A\t\\00"
+ },
+ {
+  "label": "fuzz tag c #44",
+  "hex": "300d310b300906035504030c02c090",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #45",
+  "hex": "300d310b300906035504030c02c222",
+  "expected": "CN=�\\\""
+ },
+ {
+  "label": "fuzz tag c #46",
+  "hex": "300d310b300906035504030c02edc1",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #47",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #48",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #49",
+  "hex": "300d310b300906035504030c02f4c2",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #50",
+  "hex": "30133111300f06035504030c08eff8a00df0907aa0",
+  "expected": "CN=���\r�z�"
+ },
+ {
+  "label": "fuzz tag c #51",
+  "hex": "3011310f300d06035504030c063d2323c08020",
+  "expected": "CN=\\=\\#\\#��\\ "
+ },
+ {
+  "label": "fuzz tag c #52",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #53",
+  "hex": "300d310b300906035504030c02a0c0",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #54",
+  "hex": "30133111300f06035504030c089fa0a09090800d80",
+  "expected": "CN=������\r�"
+ },
+ {
+  "label": "fuzz tag c #55",
+  "hex": "300f310d300b06035504030c04905c23a0",
+  "expected": "CN=�\\\\\\#�"
+ },
+ {
+  "label": "fuzz tag c #56",
+  "hex": "30133111300f06035504030c08a09fbf9090809090",
+  "expected": "CN=��������"
+ },
+ {
+  "label": "fuzz tag c #57",
+  "hex": "300f310d300b06035504030c04ed23df3c",
+  "expected": "CN=�\\#�\\<"
+ },
+ {
+  "label": "fuzz tag c #58",
+  "hex": "300d310b300906035504030c02f0a0",
+  "expected": "CN=�"
+ },
+ {
+  "label": "fuzz tag c #59",
+  "hex": "300f310d300b06035504030c043ca080a0",
+  "expected": "CN=\\<���"
+ },
+ {
+  "label": "fuzz tag c #60",
+  "hex": "3011310f300d06035504030c067ac1a0efa0a0",
+  "expected": "CN=z��"
+ },
+ {
+  "label": "fuzz tag c #61",
+  "hex": "30133111300f06035504030c080d8009a0ff2cf8a0",
+  "expected": "CN=\\\r�\t��\\,��"
+ },
+ {
+  "label": "fuzz tag c #62",
+  "hex": "300d310b300906035504030c02c220",
+  "expected": "CN=�\\ "
+ },
+ {
+  "label": "fuzz tag c #63",
+  "hex": "3011310f300d06035504030c062b8090f0803b",
+  "expected": "CN=\\+����\\;"
+ },
+ {
+  "label": "fuzz tag c #64",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #65",
+  "hex": "300f310d300b06035504030c045c8020c2",
+  "expected": "CN=\\\\� �"
+ },
+ {
+  "label": "fuzz tag c #66",
+  "hex": "300f310d300b06035504030c0490f5205c",
+  "expected": "CN=�� \\\\"
+ },
+ {
+  "label": "fuzz tag c #67",
+  "hex": "30133111300f06035504030c08f8413ee00da08000",
+  "expected": "CN=�A\\>�\r��\\00"
+ },
+ {
+  "label": "fuzz tag c #68",
+  "hex": "300f310d300b06035504030c0422f5edf0",
+  "expected": "CN=\\\"���"
+ },
+ {
+  "label": "fuzz tag c #69",
+  "hex": "3010310e300c06035504030c05ef805c3df5",
+  "expected": "CN=�\\\\\\=�"
+ },
+ {
+  "label": "fuzz tag c #70",
+  "hex": "300f310d300b06035504030c04ed203de0",
+  "expected": "CN=� \\=�"
+ },
+ {
+  "label": "fuzz tag c #71",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #72",
+  "hex": "300f310d300b06035504030c04e1c0c109",
+  "expected": "CN=���\t"
+ },
+ {
+  "label": "fuzz tag c #73",
+  "hex": "30133111300f06035504030c083be03e20907af8f4",
+  "expected": "CN=\\;�\\> �z��"
+ },
+ {
+  "label": "fuzz tag c #74",
+  "hex": "300f310d300b06035504030c04902b3df8",
+  "expected": "CN=�\\+\\=�"
+ },
+ {
+  "label": "fuzz tag c #75",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #76",
+  "hex": "3011310f300d06035504030c0680e1418080ed",
+  "expected": "CN=��A���"
+ },
+ {
+  "label": "fuzz tag c #77",
+  "hex": "300f310d300b06035504030c042c80f83e",
+  "expected": "CN=\\,��\\>"
+ },
+ {
+  "label": "fuzz tag c #78",
+  "hex": "300f310d300b06035504030c04803cc000",
+  "expected": "CN=�\\<�\\00"
+ },
+ {
+  "label": "fuzz tag c #79",
+  "hex": "3011310f300d06035504030c06ef903e0da090",
+  "expected": "CN=�\\>\r��"
+ },
+ {
+  "label": "fuzz tag c #80",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #81",
+  "hex": "300f310d300b06035504030c043eff90ed",
+  "expected": "CN=\\>���"
+ },
+ {
+  "label": "fuzz tag c #82",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #83",
+  "hex": "300d310b300906035504030c02ff20",
+  "expected": "CN=�\\ "
+ },
+ {
+  "label": "fuzz tag c #84",
+  "hex": "3011310f300d06035504030c06c2ef2be0e123",
+  "expected": "CN=��\\+��\\#"
+ },
+ {
+  "label": "fuzz tag c #85",
+  "hex": "3011310f300d06035504030c0680a09022bf2c",
+  "expected": "CN=���\\\"�\\,"
+ },
+ {
+  "label": "fuzz tag c #86",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #87",
+  "hex": "3011310f300d06035504030c060d2320002b2b",
+  "expected": "CN=\\\r\\# \\00\\+\\+"
+ },
+ {
+  "label": "fuzz tag c #88",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #89",
+  "hex": "30133111300f06035504030c08903b3ce023a0205c",
+  "expected": "CN=�\\;\\<�\\#� \\\\"
+ },
+ {
+  "label": "fuzz tag c #90",
+  "hex": "300f310d300b06035504030c0420f8ff90",
+  "expected": "CN=\\ ���"
+ },
+ {
+  "label": "fuzz tag c #91",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #92",
+  "hex": "300f310d300b06035504030c04902ca022",
+  "expected": "CN=�\\,�\\\""
+ },
+ {
+  "label": "fuzz tag c #93",
+  "hex": "300f310d300b06035504030c04f0090020",
+  "expected": "CN=�\t\\00\\ "
+ },
+ {
+  "label": "fuzz tag c #94",
+  "hex": "30133111300f06035504030c08e03ec1c2a080a090",
+  "expected": "CN=�\\>� ���"
+ },
+ {
+  "label": "fuzz tag c #95",
+  "hex": "30133111300f06035504030c08e080a0c1a0c02c41",
+  "expected": "CN=������\\,A"
+ },
+ {
+  "label": "fuzz tag c #96",
+  "hex": "300d310b300906035504030c0200a0",
+  "expected": "CN=\\00�"
+ },
+ {
+  "label": "fuzz tag c #97",
+  "hex": "30133111300f06035504030c08a0f03ea0e05cdfe0",
+  "expected": "CN=��\\>��\\\\��"
+ },
+ {
+  "label": "fuzz tag c #98",
+  "hex": "3010310e300c06035504030c05ef2c900d00",
+  "expected": "CN=�\\,�\r\\00"
+ },
+ {
+  "label": "fuzz tag c #99",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #100",
+  "hex": "300f310d300b06035504030c04903cf500",
+  "expected": "CN=�\\<�\\00"
+ },
+ {
+  "label": "fuzz tag c #101",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #102",
+  "hex": "300d310b300906035504030c02bf80",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #103",
+  "hex": "3011310f300d06035504030c062209c22b3b22",
+  "expected": "CN=\\\"\t�\\+\\;\\\""
+ },
+ {
+  "label": "fuzz tag c #104",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #105",
+  "hex": "300f310d300b06035504030c040def09a0",
+  "expected": "CN=\\\r�\t�"
+ },
+ {
+  "label": "fuzz tag c #106",
+  "hex": "3011310f300d06035504030c063b2c3e9041f5",
+  "expected": "CN=\\;\\,\\>�A�"
+ },
+ {
+  "label": "fuzz tag c #107",
+  "hex": "30133111300f06035504030c08c28ff0c28022fff8",
+  "expected": "CN=�\\\"��"
+ },
+ {
+  "label": "fuzz tag c #108",
+  "hex": "3011310f300d06035504030c062ba03cdf8022",
+  "expected": "CN=\\+�\\<߀\\\""
+ },
+ {
+  "label": "fuzz tag c #109",
+  "hex": "3011310f300d06035504030c068080f4a0c2a0",
+  "expected": "CN=���� "
+ },
+ {
+  "label": "fuzz tag c #110",
+  "hex": "300f310d300b06035504030c04fff02080",
+  "expected": "CN=�� �"
+ },
+ {
+  "label": "fuzz tag c #111",
+  "hex": "300d310b300906035504030c0290a0",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #112",
+  "hex": "300d310b300906035504030c0280bf",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag c #113",
+  "hex": "3011310f300d06035504030c06c0f53ddf9009",
+  "expected": "CN=��\\=ߐ\t"
+ },
+ {
+  "label": "fuzz tag c #114",
+  "hex": "3011310f300d06035504030c0623e1f4efed41",
+  "expected": "CN=\\#����A"
+ },
+ {
+  "label": "fuzz tag c #115",
+  "hex": "300d310b300906035504030c02ef41",
+  "expected": "CN=�A"
+ },
+ {
+  "label": "fuzz tag c #116",
+  "hex": "3011310f300d06035504030c06ed3c00bf9090",
+  "expected": "CN=�\\<\\00���"
+ },
+ {
+  "label": "fuzz tag c #117",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #118",
+  "hex": "300b3109300706035504030c00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag c #119",
+  "hex": "300f310d300b06035504030c04e1eda080",
+  "expected": "CN=��"
+ },
+ {
+  "label": "fuzz tag 1e #0",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #1",
+  "hex": "3011310f300d06035504031e0690a0a03be0ed",
+  "expected": "CN=邠ꀻ"
+ },
+ {
+  "label": "fuzz tag 1e #2",
+  "hex": "3011310f300d06035504031e0690ff90002b0d",
+  "expected": "CN=郿退⬍"
+ },
+ {
+  "label": "fuzz tag 1e #3",
+  "hex": "3011310f300d06035504031e06f4e1f8e1a0a0",
+  "expected": "CN=ꂠ"
+ },
+ {
+  "label": "fuzz tag 1e #4",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #5",
+  "hex": "300d310b300906035504031e02efff",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #6",
+  "hex": "30133111300f06035504031e0880a009802ce0902b",
+  "expected": "CN=肠ঀⳠ逫"
+ },
+ {
+  "label": "fuzz tag 1e #7",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #8",
+  "hex": "300f310d300b06035504031e04edc18f8f",
+  "expected": "CN=辏"
+ },
+ {
+  "label": "fuzz tag 1e #9",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #10",
+  "hex": "30133111300f06035504031e08c23cffc0ef22803e",
+  "expected": "CN=숼￀耾"
+ },
+ {
+  "label": "fuzz tag 1e #11",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #12",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #13",
+  "hex": "30133111300f06035504031e08809080f0c2ff3d3c",
+  "expected": "CN=肐胰싿㴼"
+ },
+ {
+  "label": "fuzz tag 1e #14",
+  "hex": "3011310f300d06035504031e06f590232b0d3e",
+  "expected": "CN=⌫ാ"
+ },
+ {
+  "label": "fuzz tag 1e #15",
+  "hex": "30133111300f06035504031e08ef3ba0e03c0dc0a0",
+  "expected": "CN=ꃠ㰍삠"
+ },
+ {
+  "label": "fuzz tag 1e #16",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #17",
+  "hex": "30133111300f06035504031e08c23ca0a090f0e080",
+  "expected": "CN=숼ꂠ郰"
+ },
+ {
+  "label": "fuzz tag 1e #18",
+  "hex": "30133111300f06035504031e08e0418080a0f0df00",
+  "expected": "CN=肀ꃰ�"
+ },
+ {
+  "label": "fuzz tag 1e #19",
+  "hex": "300d310b300906035504031e0290e1",
+  "expected": "CN=郡"
+ },
+ {
+  "label": "fuzz tag 1e #20",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #21",
+  "hex": "300d310b300906035504031e02e00d",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #22",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #23",
+  "hex": "300d310b300906035504031e02c1c2",
+  "expected": "CN=쇂"
+ },
+ {
+  "label": "fuzz tag 1e #24",
+  "hex": "30133111300f06035504031e08a022a0efe080a0c1",
+  "expected": "CN=ꀢꃯꃁ"
+ },
+ {
+  "label": "fuzz tag 1e #25",
+  "hex": "300f310d300b06035504031e0490802000",
+  "expected": "CN=邀 "
+ },
+ {
+  "label": "fuzz tag 1e #26",
+  "hex": "300f310d300b06035504031e04ff80a0f0",
+  "expected": "CN=ﾀꃰ"
+ },
+ {
+  "label": "fuzz tag 1e #27",
+  "hex": "30133111300f06035504031e08a09080f490bfef2c",
+  "expected": "CN=ꂐ胴邿"
+ },
+ {
+  "label": "fuzz tag 1e #28",
+  "hex": "300d310b300906035504031e02e180",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #29",
+  "hex": "300d310b300906035504031e028090",
+  "expected": "CN=肐"
+ },
+ {
+  "label": "fuzz tag 1e #30",
+  "hex": "300f310d300b06035504031e042b80e1df",
+  "expected": "CN=⮀"
+ },
+ {
+  "label": "fuzz tag 1e #31",
+  "hex": "300e310c300a06035504031e0380e080",
+  "expected": "CN=胠�"
+ },
+ {
+  "label": "fuzz tag 1e #32",
+  "hex": "300f310d300b06035504031e04c22b3b22",
+  "expected": "CN=숫㬢"
+ },
+ {
+  "label": "fuzz tag 1e #33",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #34",
+  "hex": "300f310d300b06035504031e040def09a0",
+  "expected": "CN=෯ঠ"
+ },
+ {
+  "label": "fuzz tag 1e #35",
+  "hex": "3011310f300d06035504031e063b2c3e9041f5",
+  "expected": "CN=㬬㺐䇵"
+ },
+ {
+  "label": "fuzz tag 1e #36",
+  "hex": "30133111300f06035504031e08c28ff0c28022fff8",
+  "expected": "CN=슏耢￸"
+ },
+ {
+  "label": "fuzz tag 1e #37",
+  "hex": "3011310f300d06035504031e062ba03cdf8022",
+  "expected": "CN=⮠㳟耢"
+ },
+ {
+  "label": "fuzz tag 1e #38",
+  "hex": "3011310f300d06035504031e068080f4a0c2a0",
+  "expected": "CN=肀슠"
+ },
+ {
+  "label": "fuzz tag 1e #39",
+  "hex": "300f310d300b06035504031e04fff02080",
+  "expected": "CN=￰₀"
+ },
+ {
+  "label": "fuzz tag 1e #40",
+  "hex": "300d310b300906035504031e0290a0",
+  "expected": "CN=邠"
+ },
+ {
+  "label": "fuzz tag 1e #41",
+  "hex": "300d310b300906035504031e0280bf",
+  "expected": "CN=肿"
+ },
+ {
+  "label": "fuzz tag 1e #42",
+  "hex": "3011310f300d06035504031e06c0f53ddf9009",
+  "expected": "CN=샵㷟选"
+ },
+ {
+  "label": "fuzz tag 1e #43",
+  "hex": "3011310f300d06035504031e0623e1f4efed41",
+  "expected": "CN=⏡"
+ },
+ {
+  "label": "fuzz tag 1e #44",
+  "hex": "300d310b300906035504031e02ef41",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #45",
+  "hex": "3011310f300d06035504031e06ed3c00bf9090",
+  "expected": "CN=¿邐"
+ },
+ {
+  "label": "fuzz tag 1e #46",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #47",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #48",
+  "hex": "300f310d300b06035504031e04e1eda080",
+  "expected": "CN=ꂀ"
+ },
+ {
+  "label": "fuzz tag 1e #49",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #50",
+  "hex": "3011310f300d06035504031e0690a0a03be0ed",
+  "expected": "CN=邠ꀻ"
+ },
+ {
+  "label": "fuzz tag 1e #51",
+  "hex": "3011310f300d06035504031e0690ff90002b0d",
+  "expected": "CN=郿退⬍"
+ },
+ {
+  "label": "fuzz tag 1e #52",
+  "hex": "3011310f300d06035504031e06f4e1f8e1a0a0",
+  "expected": "CN=ꂠ"
+ },
+ {
+  "label": "fuzz tag 1e #53",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #54",
+  "hex": "300d310b300906035504031e02efff",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #55",
+  "hex": "30133111300f06035504031e0880a009802ce0902b",
+  "expected": "CN=肠ঀⳠ逫"
+ },
+ {
+  "label": "fuzz tag 1e #56",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #57",
+  "hex": "300f310d300b06035504031e04edc18f8f",
+  "expected": "CN=辏"
+ },
+ {
+  "label": "fuzz tag 1e #58",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #59",
+  "hex": "30133111300f06035504031e08c23cffc0ef22803e",
+  "expected": "CN=숼￀耾"
+ },
+ {
+  "label": "fuzz tag 1e #60",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #61",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #62",
+  "hex": "30133111300f06035504031e08809080f0c2ff3d3c",
+  "expected": "CN=肐胰싿㴼"
+ },
+ {
+  "label": "fuzz tag 1e #63",
+  "hex": "3011310f300d06035504031e06f590232b0d3e",
+  "expected": "CN=⌫ാ"
+ },
+ {
+  "label": "fuzz tag 1e #64",
+  "hex": "30133111300f06035504031e08ef3ba0e03c0dc0a0",
+  "expected": "CN=ꃠ㰍삠"
+ },
+ {
+  "label": "fuzz tag 1e #65",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #66",
+  "hex": "30133111300f06035504031e08c23ca0a090f0e080",
+  "expected": "CN=숼ꂠ郰"
+ },
+ {
+  "label": "fuzz tag 1e #67",
+  "hex": "30133111300f06035504031e08e0418080a0f0df00",
+  "expected": "CN=肀ꃰ�"
+ },
+ {
+  "label": "fuzz tag 1e #68",
+  "hex": "300d310b300906035504031e0290e1",
+  "expected": "CN=郡"
+ },
+ {
+  "label": "fuzz tag 1e #69",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #70",
+  "hex": "300d310b300906035504031e02e00d",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #71",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #72",
+  "hex": "300d310b300906035504031e02c1c2",
+  "expected": "CN=쇂"
+ },
+ {
+  "label": "fuzz tag 1e #73",
+  "hex": "30133111300f06035504031e08a022a0efe080a0c1",
+  "expected": "CN=ꀢꃯꃁ"
+ },
+ {
+  "label": "fuzz tag 1e #74",
+  "hex": "300f310d300b06035504031e0490802000",
+  "expected": "CN=邀 "
+ },
+ {
+  "label": "fuzz tag 1e #75",
+  "hex": "300f310d300b06035504031e04ff80a0f0",
+  "expected": "CN=ﾀꃰ"
+ },
+ {
+  "label": "fuzz tag 1e #76",
+  "hex": "30133111300f06035504031e08a09080f490bfef2c",
+  "expected": "CN=ꂐ胴邿"
+ },
+ {
+  "label": "fuzz tag 1e #77",
+  "hex": "300d310b300906035504031e02e180",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #78",
+  "hex": "300d310b300906035504031e028090",
+  "expected": "CN=肐"
+ },
+ {
+  "label": "fuzz tag 1e #79",
+  "hex": "300f310d300b06035504031e042b80e1df",
+  "expected": "CN=⮀"
+ },
+ {
+  "label": "fuzz tag 1e #80",
+  "hex": "300e310c300a06035504031e0380e080",
+  "expected": "CN=胠�"
+ },
+ {
+  "label": "fuzz tag 1e #81",
+  "hex": "300f310d300b06035504031e04c22b3b22",
+  "expected": "CN=숫㬢"
+ },
+ {
+  "label": "fuzz tag 1e #82",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #83",
+  "hex": "300f310d300b06035504031e040def09a0",
+  "expected": "CN=෯ঠ"
+ },
+ {
+  "label": "fuzz tag 1e #84",
+  "hex": "3011310f300d06035504031e063b2c3e9041f5",
+  "expected": "CN=㬬㺐䇵"
+ },
+ {
+  "label": "fuzz tag 1e #85",
+  "hex": "30133111300f06035504031e08c28ff0c28022fff8",
+  "expected": "CN=슏耢￸"
+ },
+ {
+  "label": "fuzz tag 1e #86",
+  "hex": "3011310f300d06035504031e062ba03cdf8022",
+  "expected": "CN=⮠㳟耢"
+ },
+ {
+  "label": "fuzz tag 1e #87",
+  "hex": "3011310f300d06035504031e068080f4a0c2a0",
+  "expected": "CN=肀슠"
+ },
+ {
+  "label": "fuzz tag 1e #88",
+  "hex": "300f310d300b06035504031e04fff02080",
+  "expected": "CN=￰₀"
+ },
+ {
+  "label": "fuzz tag 1e #89",
+  "hex": "300d310b300906035504031e0290a0",
+  "expected": "CN=邠"
+ },
+ {
+  "label": "fuzz tag 1e #90",
+  "hex": "300d310b300906035504031e0280bf",
+  "expected": "CN=肿"
+ },
+ {
+  "label": "fuzz tag 1e #91",
+  "hex": "3011310f300d06035504031e06c0f53ddf9009",
+  "expected": "CN=샵㷟选"
+ },
+ {
+  "label": "fuzz tag 1e #92",
+  "hex": "3011310f300d06035504031e0623e1f4efed41",
+  "expected": "CN=⏡"
+ },
+ {
+  "label": "fuzz tag 1e #93",
+  "hex": "300d310b300906035504031e02ef41",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #94",
+  "hex": "3011310f300d06035504031e06ed3c00bf9090",
+  "expected": "CN=¿邐"
+ },
+ {
+  "label": "fuzz tag 1e #95",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #96",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #97",
+  "hex": "300f310d300b06035504031e04e1eda080",
+  "expected": "CN=ꂀ"
+ },
+ {
+  "label": "fuzz tag 1e #98",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #99",
+  "hex": "3011310f300d06035504031e0690a0a03be0ed",
+  "expected": "CN=邠ꀻ"
+ },
+ {
+  "label": "fuzz tag 1e #100",
+  "hex": "3011310f300d06035504031e0690ff90002b0d",
+  "expected": "CN=郿退⬍"
+ },
+ {
+  "label": "fuzz tag 1e #101",
+  "hex": "3011310f300d06035504031e06f4e1f8e1a0a0",
+  "expected": "CN=ꂠ"
+ },
+ {
+  "label": "fuzz tag 1e #102",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #103",
+  "hex": "300d310b300906035504031e02efff",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #104",
+  "hex": "30133111300f06035504031e0880a009802ce0902b",
+  "expected": "CN=肠ঀⳠ逫"
+ },
+ {
+  "label": "fuzz tag 1e #105",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #106",
+  "hex": "300f310d300b06035504031e04edc18f8f",
+  "expected": "CN=辏"
+ },
+ {
+  "label": "fuzz tag 1e #107",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #108",
+  "hex": "30133111300f06035504031e08c23cffc0ef22803e",
+  "expected": "CN=숼￀耾"
+ },
+ {
+  "label": "fuzz tag 1e #109",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #110",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #111",
+  "hex": "30133111300f06035504031e08809080f0c2ff3d3c",
+  "expected": "CN=肐胰싿㴼"
+ },
+ {
+  "label": "fuzz tag 1e #112",
+  "hex": "3011310f300d06035504031e06f590232b0d3e",
+  "expected": "CN=⌫ാ"
+ },
+ {
+  "label": "fuzz tag 1e #113",
+  "hex": "30133111300f06035504031e08ef3ba0e03c0dc0a0",
+  "expected": "CN=ꃠ㰍삠"
+ },
+ {
+  "label": "fuzz tag 1e #114",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #115",
+  "hex": "30133111300f06035504031e08c23ca0a090f0e080",
+  "expected": "CN=숼ꂠ郰"
+ },
+ {
+  "label": "fuzz tag 1e #116",
+  "hex": "30133111300f06035504031e08e0418080a0f0df00",
+  "expected": "CN=肀ꃰ�"
+ },
+ {
+  "label": "fuzz tag 1e #117",
+  "hex": "300d310b300906035504031e0290e1",
+  "expected": "CN=郡"
+ },
+ {
+  "label": "fuzz tag 1e #118",
+  "hex": "300b3109300706035504031e00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1e #119",
+  "hex": "300d310b300906035504031e02e00d",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #0",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #1",
+  "hex": "300d310b300906035504031302c1c2",
+  "expected": "CN=ÁÂ"
+ },
+ {
+  "label": "fuzz tag 13 #2",
+  "hex": "30133111300f06035504031308a022a0efe080a0c1",
+  "expected": "CN= \\\" ïà Á"
+ },
+ {
+  "label": "fuzz tag 13 #3",
+  "hex": "300f310d300b0603550403130490802000",
+  "expected": "CN= \\00"
+ },
+ {
+  "label": "fuzz tag 13 #4",
+  "hex": "300f310d300b06035504031304ff80a0f0",
+  "expected": "CN=ÿ ð"
+ },
+ {
+  "label": "fuzz tag 13 #5",
+  "hex": "30133111300f06035504031308a09080f490bfef2c",
+  "expected": "CN= ô¿ï\\,"
+ },
+ {
+  "label": "fuzz tag 13 #6",
+  "hex": "300d310b300906035504031302e180",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 13 #7",
+  "hex": "300d310b3009060355040313028090",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #8",
+  "hex": "300f310d300b060355040313042b80e1df",
+  "expected": "CN=\\+áß"
+ },
+ {
+  "label": "fuzz tag 13 #9",
+  "hex": "300e310c300a0603550403130380e080",
+  "expected": "CN=à"
+ },
+ {
+  "label": "fuzz tag 13 #10",
+  "hex": "300f310d300b06035504031304c22b3b22",
+  "expected": "CN=Â\\+\\;\\\""
+ },
+ {
+  "label": "fuzz tag 13 #11",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #12",
+  "hex": "300f310d300b060355040313040def09a0",
+  "expected": "CN=\\\rï\t "
+ },
+ {
+  "label": "fuzz tag 13 #13",
+  "hex": "3011310f300d060355040313063b2c3e9041f5",
+  "expected": "CN=\\;\\,\\>Aõ"
+ },
+ {
+  "label": "fuzz tag 13 #14",
+  "hex": "30133111300f06035504031308c28ff0c28022fff8",
+  "expected": "CN=ÂðÂ\\\"ÿø"
+ },
+ {
+  "label": "fuzz tag 13 #15",
+  "hex": "3011310f300d060355040313062ba03cdf8022",
+  "expected": "CN=\\+ \\<ß\\\""
+ },
+ {
+  "label": "fuzz tag 13 #16",
+  "hex": "3011310f300d060355040313068080f4a0c2a0",
+  "expected": "CN=ô Â "
+ },
+ {
+  "label": "fuzz tag 13 #17",
+  "hex": "300f310d300b06035504031304fff02080",
+  "expected": "CN=ÿð "
+ },
+ {
+  "label": "fuzz tag 13 #18",
+  "hex": "300d310b30090603550403130290a0",
+  "expected": "CN= "
+ },
+ {
+  "label": "fuzz tag 13 #19",
+  "hex": "300d310b30090603550403130280bf",
+  "expected": "CN=¿"
+ },
+ {
+  "label": "fuzz tag 13 #20",
+  "hex": "3011310f300d06035504031306c0f53ddf9009",
+  "expected": "CN=Àõ\\=ß\t"
+ },
+ {
+  "label": "fuzz tag 13 #21",
+  "hex": "3011310f300d0603550403130623e1f4efed41",
+  "expected": "CN=\\#áôïíA"
+ },
+ {
+  "label": "fuzz tag 13 #22",
+  "hex": "300d310b300906035504031302ef41",
+  "expected": "CN=ïA"
+ },
+ {
+  "label": "fuzz tag 13 #23",
+  "hex": "3011310f300d06035504031306ed3c00bf9090",
+  "expected": "CN=í\\<\\00¿"
+ },
+ {
+  "label": "fuzz tag 13 #24",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #25",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #26",
+  "hex": "300f310d300b06035504031304e1eda080",
+  "expected": "CN=áí "
+ },
+ {
+  "label": "fuzz tag 13 #27",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #28",
+  "hex": "3011310f300d0603550403130690a0a03be0ed",
+  "expected": "CN=  \\;àí"
+ },
+ {
+  "label": "fuzz tag 13 #29",
+  "hex": "3011310f300d0603550403130690ff90002b0d",
+  "expected": "CN=ÿ\\00\\+\\\r"
+ },
+ {
+  "label": "fuzz tag 13 #30",
+  "hex": "3011310f300d06035504031306f4e1f8e1a0a0",
+  "expected": "CN=ôáøá  "
+ },
+ {
+  "label": "fuzz tag 13 #31",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #32",
+  "hex": "300d310b300906035504031302efff",
+  "expected": "CN=ïÿ"
+ },
+ {
+  "label": "fuzz tag 13 #33",
+  "hex": "30133111300f0603550403130880a009802ce0902b",
+  "expected": "CN= \t\\,à\\+"
+ },
+ {
+  "label": "fuzz tag 13 #34",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #35",
+  "hex": "300f310d300b06035504031304edc18f8f",
+  "expected": "CN=íÁ"
+ },
+ {
+  "label": "fuzz tag 13 #36",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #37",
+  "hex": "30133111300f06035504031308c23cffc0ef22803e",
+  "expected": "CN=Â\\<ÿÀï\\\"\\>"
+ },
+ {
+  "label": "fuzz tag 13 #38",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #39",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #40",
+  "hex": "30133111300f06035504031308809080f0c2ff3d3c",
+  "expected": "CN=ðÂÿ\\=\\<"
+ },
+ {
+  "label": "fuzz tag 13 #41",
+  "hex": "3011310f300d06035504031306f590232b0d3e",
+  "expected": "CN=õ\\#\\+\r\\>"
+ },
+ {
+  "label": "fuzz tag 13 #42",
+  "hex": "30133111300f06035504031308ef3ba0e03c0dc0a0",
+  "expected": "CN=ï\\; à\\<\rÀ "
+ },
+ {
+  "label": "fuzz tag 13 #43",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #44",
+  "hex": "30133111300f06035504031308c23ca0a090f0e080",
+  "expected": "CN=Â\\<  ðà"
+ },
+ {
+  "label": "fuzz tag 13 #45",
+  "hex": "30133111300f06035504031308e0418080a0f0df00",
+  "expected": "CN=àA ðß\\00"
+ },
+ {
+  "label": "fuzz tag 13 #46",
+  "hex": "300d310b30090603550403130290e1",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 13 #47",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #48",
+  "hex": "300d310b300906035504031302e00d",
+  "expected": "CN=à\\\r"
+ },
+ {
+  "label": "fuzz tag 13 #49",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #50",
+  "hex": "300d310b300906035504031302c1c2",
+  "expected": "CN=ÁÂ"
+ },
+ {
+  "label": "fuzz tag 13 #51",
+  "hex": "30133111300f06035504031308a022a0efe080a0c1",
+  "expected": "CN= \\\" ïà Á"
+ },
+ {
+  "label": "fuzz tag 13 #52",
+  "hex": "300f310d300b0603550403130490802000",
+  "expected": "CN= \\00"
+ },
+ {
+  "label": "fuzz tag 13 #53",
+  "hex": "300f310d300b06035504031304ff80a0f0",
+  "expected": "CN=ÿ ð"
+ },
+ {
+  "label": "fuzz tag 13 #54",
+  "hex": "30133111300f06035504031308a09080f490bfef2c",
+  "expected": "CN= ô¿ï\\,"
+ },
+ {
+  "label": "fuzz tag 13 #55",
+  "hex": "300d310b300906035504031302e180",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 13 #56",
+  "hex": "300d310b3009060355040313028090",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #57",
+  "hex": "300f310d300b060355040313042b80e1df",
+  "expected": "CN=\\+áß"
+ },
+ {
+  "label": "fuzz tag 13 #58",
+  "hex": "300e310c300a0603550403130380e080",
+  "expected": "CN=à"
+ },
+ {
+  "label": "fuzz tag 13 #59",
+  "hex": "300f310d300b06035504031304c22b3b22",
+  "expected": "CN=Â\\+\\;\\\""
+ },
+ {
+  "label": "fuzz tag 13 #60",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #61",
+  "hex": "300f310d300b060355040313040def09a0",
+  "expected": "CN=\\\rï\t "
+ },
+ {
+  "label": "fuzz tag 13 #62",
+  "hex": "3011310f300d060355040313063b2c3e9041f5",
+  "expected": "CN=\\;\\,\\>Aõ"
+ },
+ {
+  "label": "fuzz tag 13 #63",
+  "hex": "30133111300f06035504031308c28ff0c28022fff8",
+  "expected": "CN=ÂðÂ\\\"ÿø"
+ },
+ {
+  "label": "fuzz tag 13 #64",
+  "hex": "3011310f300d060355040313062ba03cdf8022",
+  "expected": "CN=\\+ \\<ß\\\""
+ },
+ {
+  "label": "fuzz tag 13 #65",
+  "hex": "3011310f300d060355040313068080f4a0c2a0",
+  "expected": "CN=ô Â "
+ },
+ {
+  "label": "fuzz tag 13 #66",
+  "hex": "300f310d300b06035504031304fff02080",
+  "expected": "CN=ÿð "
+ },
+ {
+  "label": "fuzz tag 13 #67",
+  "hex": "300d310b30090603550403130290a0",
+  "expected": "CN= "
+ },
+ {
+  "label": "fuzz tag 13 #68",
+  "hex": "300d310b30090603550403130280bf",
+  "expected": "CN=¿"
+ },
+ {
+  "label": "fuzz tag 13 #69",
+  "hex": "3011310f300d06035504031306c0f53ddf9009",
+  "expected": "CN=Àõ\\=ß\t"
+ },
+ {
+  "label": "fuzz tag 13 #70",
+  "hex": "3011310f300d0603550403130623e1f4efed41",
+  "expected": "CN=\\#áôïíA"
+ },
+ {
+  "label": "fuzz tag 13 #71",
+  "hex": "300d310b300906035504031302ef41",
+  "expected": "CN=ïA"
+ },
+ {
+  "label": "fuzz tag 13 #72",
+  "hex": "3011310f300d06035504031306ed3c00bf9090",
+  "expected": "CN=í\\<\\00¿"
+ },
+ {
+  "label": "fuzz tag 13 #73",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #74",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #75",
+  "hex": "300f310d300b06035504031304e1eda080",
+  "expected": "CN=áí "
+ },
+ {
+  "label": "fuzz tag 13 #76",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #77",
+  "hex": "3011310f300d0603550403130690a0a03be0ed",
+  "expected": "CN=  \\;àí"
+ },
+ {
+  "label": "fuzz tag 13 #78",
+  "hex": "3011310f300d0603550403130690ff90002b0d",
+  "expected": "CN=ÿ\\00\\+\\\r"
+ },
+ {
+  "label": "fuzz tag 13 #79",
+  "hex": "3011310f300d06035504031306f4e1f8e1a0a0",
+  "expected": "CN=ôáøá  "
+ },
+ {
+  "label": "fuzz tag 13 #80",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #81",
+  "hex": "300d310b300906035504031302efff",
+  "expected": "CN=ïÿ"
+ },
+ {
+  "label": "fuzz tag 13 #82",
+  "hex": "30133111300f0603550403130880a009802ce0902b",
+  "expected": "CN= \t\\,à\\+"
+ },
+ {
+  "label": "fuzz tag 13 #83",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #84",
+  "hex": "300f310d300b06035504031304edc18f8f",
+  "expected": "CN=íÁ"
+ },
+ {
+  "label": "fuzz tag 13 #85",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #86",
+  "hex": "30133111300f06035504031308c23cffc0ef22803e",
+  "expected": "CN=Â\\<ÿÀï\\\"\\>"
+ },
+ {
+  "label": "fuzz tag 13 #87",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #88",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #89",
+  "hex": "30133111300f06035504031308809080f0c2ff3d3c",
+  "expected": "CN=ðÂÿ\\=\\<"
+ },
+ {
+  "label": "fuzz tag 13 #90",
+  "hex": "3011310f300d06035504031306f590232b0d3e",
+  "expected": "CN=õ\\#\\+\r\\>"
+ },
+ {
+  "label": "fuzz tag 13 #91",
+  "hex": "30133111300f06035504031308ef3ba0e03c0dc0a0",
+  "expected": "CN=ï\\; à\\<\rÀ "
+ },
+ {
+  "label": "fuzz tag 13 #92",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #93",
+  "hex": "30133111300f06035504031308c23ca0a090f0e080",
+  "expected": "CN=Â\\<  ðà"
+ },
+ {
+  "label": "fuzz tag 13 #94",
+  "hex": "30133111300f06035504031308e0418080a0f0df00",
+  "expected": "CN=àA ðß\\00"
+ },
+ {
+  "label": "fuzz tag 13 #95",
+  "hex": "300d310b30090603550403130290e1",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 13 #96",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #97",
+  "hex": "300d310b300906035504031302e00d",
+  "expected": "CN=à\\\r"
+ },
+ {
+  "label": "fuzz tag 13 #98",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #99",
+  "hex": "300d310b300906035504031302c1c2",
+  "expected": "CN=ÁÂ"
+ },
+ {
+  "label": "fuzz tag 13 #100",
+  "hex": "30133111300f06035504031308a022a0efe080a0c1",
+  "expected": "CN= \\\" ïà Á"
+ },
+ {
+  "label": "fuzz tag 13 #101",
+  "hex": "300f310d300b0603550403130490802000",
+  "expected": "CN= \\00"
+ },
+ {
+  "label": "fuzz tag 13 #102",
+  "hex": "300f310d300b06035504031304ff80a0f0",
+  "expected": "CN=ÿ ð"
+ },
+ {
+  "label": "fuzz tag 13 #103",
+  "hex": "30133111300f06035504031308a09080f490bfef2c",
+  "expected": "CN= ô¿ï\\,"
+ },
+ {
+  "label": "fuzz tag 13 #104",
+  "hex": "300d310b300906035504031302e180",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 13 #105",
+  "hex": "300d310b3009060355040313028090",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #106",
+  "hex": "300f310d300b060355040313042b80e1df",
+  "expected": "CN=\\+áß"
+ },
+ {
+  "label": "fuzz tag 13 #107",
+  "hex": "300e310c300a0603550403130380e080",
+  "expected": "CN=à"
+ },
+ {
+  "label": "fuzz tag 13 #108",
+  "hex": "300f310d300b06035504031304c22b3b22",
+  "expected": "CN=Â\\+\\;\\\""
+ },
+ {
+  "label": "fuzz tag 13 #109",
+  "hex": "300b3109300706035504031300",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 13 #110",
+  "hex": "300f310d300b060355040313040def09a0",
+  "expected": "CN=\\\rï\t "
+ },
+ {
+  "label": "fuzz tag 13 #111",
+  "hex": "3011310f300d060355040313063b2c3e9041f5",
+  "expected": "CN=\\;\\,\\>Aõ"
+ },
+ {
+  "label": "fuzz tag 13 #112",
+  "hex": "30133111300f06035504031308c28ff0c28022fff8",
+  "expected": "CN=ÂðÂ\\\"ÿø"
+ },
+ {
+  "label": "fuzz tag 13 #113",
+  "hex": "3011310f300d060355040313062ba03cdf8022",
+  "expected": "CN=\\+ \\<ß\\\""
+ },
+ {
+  "label": "fuzz tag 13 #114",
+  "hex": "3011310f300d060355040313068080f4a0c2a0",
+  "expected": "CN=ô Â "
+ },
+ {
+  "label": "fuzz tag 13 #115",
+  "hex": "300f310d300b06035504031304fff02080",
+  "expected": "CN=ÿð "
+ },
+ {
+  "label": "fuzz tag 13 #116",
+  "hex": "300d310b30090603550403130290a0",
+  "expected": "CN= "
+ },
+ {
+  "label": "fuzz tag 13 #117",
+  "hex": "300d310b30090603550403130280bf",
+  "expected": "CN=¿"
+ },
+ {
+  "label": "fuzz tag 13 #118",
+  "hex": "3011310f300d06035504031306c0f53ddf9009",
+  "expected": "CN=Àõ\\=ß\t"
+ },
+ {
+  "label": "fuzz tag 13 #119",
+  "hex": "3011310f300d0603550403130623e1f4efed41",
+  "expected": "CN=\\#áôïíA"
+ },
+ {
+  "label": "fuzz tag 16 #0",
+  "hex": "300d310b300906035504031602ef41",
+  "expected": "CN=ïA"
+ },
+ {
+  "label": "fuzz tag 16 #1",
+  "hex": "3011310f300d06035504031606ed3c00bf9090",
+  "expected": "CN=í\\<\\00¿"
+ },
+ {
+  "label": "fuzz tag 16 #2",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #3",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #4",
+  "hex": "300f310d300b06035504031604e1eda080",
+  "expected": "CN=áí "
+ },
+ {
+  "label": "fuzz tag 16 #5",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #6",
+  "hex": "3011310f300d0603550403160690a0a03be0ed",
+  "expected": "CN=  \\;àí"
+ },
+ {
+  "label": "fuzz tag 16 #7",
+  "hex": "3011310f300d0603550403160690ff90002b0d",
+  "expected": "CN=ÿ\\00\\+\\\r"
+ },
+ {
+  "label": "fuzz tag 16 #8",
+  "hex": "3011310f300d06035504031606f4e1f8e1a0a0",
+  "expected": "CN=ôáøá  "
+ },
+ {
+  "label": "fuzz tag 16 #9",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #10",
+  "hex": "300d310b300906035504031602efff",
+  "expected": "CN=ïÿ"
+ },
+ {
+  "label": "fuzz tag 16 #11",
+  "hex": "30133111300f0603550403160880a009802ce0902b",
+  "expected": "CN= \t\\,à\\+"
+ },
+ {
+  "label": "fuzz tag 16 #12",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #13",
+  "hex": "300f310d300b06035504031604edc18f8f",
+  "expected": "CN=íÁ"
+ },
+ {
+  "label": "fuzz tag 16 #14",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #15",
+  "hex": "30133111300f06035504031608c23cffc0ef22803e",
+  "expected": "CN=Â\\<ÿÀï\\\"\\>"
+ },
+ {
+  "label": "fuzz tag 16 #16",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #17",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #18",
+  "hex": "30133111300f06035504031608809080f0c2ff3d3c",
+  "expected": "CN=ðÂÿ\\=\\<"
+ },
+ {
+  "label": "fuzz tag 16 #19",
+  "hex": "3011310f300d06035504031606f590232b0d3e",
+  "expected": "CN=õ\\#\\+\r\\>"
+ },
+ {
+  "label": "fuzz tag 16 #20",
+  "hex": "30133111300f06035504031608ef3ba0e03c0dc0a0",
+  "expected": "CN=ï\\; à\\<\rÀ "
+ },
+ {
+  "label": "fuzz tag 16 #21",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #22",
+  "hex": "30133111300f06035504031608c23ca0a090f0e080",
+  "expected": "CN=Â\\<  ðà"
+ },
+ {
+  "label": "fuzz tag 16 #23",
+  "hex": "30133111300f06035504031608e0418080a0f0df00",
+  "expected": "CN=àA ðß\\00"
+ },
+ {
+  "label": "fuzz tag 16 #24",
+  "hex": "300d310b30090603550403160290e1",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 16 #25",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #26",
+  "hex": "300d310b300906035504031602e00d",
+  "expected": "CN=à\\\r"
+ },
+ {
+  "label": "fuzz tag 16 #27",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #28",
+  "hex": "300d310b300906035504031602c1c2",
+  "expected": "CN=ÁÂ"
+ },
+ {
+  "label": "fuzz tag 16 #29",
+  "hex": "30133111300f06035504031608a022a0efe080a0c1",
+  "expected": "CN= \\\" ïà Á"
+ },
+ {
+  "label": "fuzz tag 16 #30",
+  "hex": "300f310d300b0603550403160490802000",
+  "expected": "CN= \\00"
+ },
+ {
+  "label": "fuzz tag 16 #31",
+  "hex": "300f310d300b06035504031604ff80a0f0",
+  "expected": "CN=ÿ ð"
+ },
+ {
+  "label": "fuzz tag 16 #32",
+  "hex": "30133111300f06035504031608a09080f490bfef2c",
+  "expected": "CN= ô¿ï\\,"
+ },
+ {
+  "label": "fuzz tag 16 #33",
+  "hex": "300d310b300906035504031602e180",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 16 #34",
+  "hex": "300d310b3009060355040316028090",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #35",
+  "hex": "300f310d300b060355040316042b80e1df",
+  "expected": "CN=\\+áß"
+ },
+ {
+  "label": "fuzz tag 16 #36",
+  "hex": "300e310c300a0603550403160380e080",
+  "expected": "CN=à"
+ },
+ {
+  "label": "fuzz tag 16 #37",
+  "hex": "300f310d300b06035504031604c22b3b22",
+  "expected": "CN=Â\\+\\;\\\""
+ },
+ {
+  "label": "fuzz tag 16 #38",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #39",
+  "hex": "300f310d300b060355040316040def09a0",
+  "expected": "CN=\\\rï\t "
+ },
+ {
+  "label": "fuzz tag 16 #40",
+  "hex": "3011310f300d060355040316063b2c3e9041f5",
+  "expected": "CN=\\;\\,\\>Aõ"
+ },
+ {
+  "label": "fuzz tag 16 #41",
+  "hex": "30133111300f06035504031608c28ff0c28022fff8",
+  "expected": "CN=ÂðÂ\\\"ÿø"
+ },
+ {
+  "label": "fuzz tag 16 #42",
+  "hex": "3011310f300d060355040316062ba03cdf8022",
+  "expected": "CN=\\+ \\<ß\\\""
+ },
+ {
+  "label": "fuzz tag 16 #43",
+  "hex": "3011310f300d060355040316068080f4a0c2a0",
+  "expected": "CN=ô Â "
+ },
+ {
+  "label": "fuzz tag 16 #44",
+  "hex": "300f310d300b06035504031604fff02080",
+  "expected": "CN=ÿð "
+ },
+ {
+  "label": "fuzz tag 16 #45",
+  "hex": "300d310b30090603550403160290a0",
+  "expected": "CN= "
+ },
+ {
+  "label": "fuzz tag 16 #46",
+  "hex": "300d310b30090603550403160280bf",
+  "expected": "CN=¿"
+ },
+ {
+  "label": "fuzz tag 16 #47",
+  "hex": "3011310f300d06035504031606c0f53ddf9009",
+  "expected": "CN=Àõ\\=ß\t"
+ },
+ {
+  "label": "fuzz tag 16 #48",
+  "hex": "3011310f300d0603550403160623e1f4efed41",
+  "expected": "CN=\\#áôïíA"
+ },
+ {
+  "label": "fuzz tag 16 #49",
+  "hex": "300d310b300906035504031602ef41",
+  "expected": "CN=ïA"
+ },
+ {
+  "label": "fuzz tag 16 #50",
+  "hex": "3011310f300d06035504031606ed3c00bf9090",
+  "expected": "CN=í\\<\\00¿"
+ },
+ {
+  "label": "fuzz tag 16 #51",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #52",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #53",
+  "hex": "300f310d300b06035504031604e1eda080",
+  "expected": "CN=áí "
+ },
+ {
+  "label": "fuzz tag 16 #54",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #55",
+  "hex": "3011310f300d0603550403160690a0a03be0ed",
+  "expected": "CN=  \\;àí"
+ },
+ {
+  "label": "fuzz tag 16 #56",
+  "hex": "3011310f300d0603550403160690ff90002b0d",
+  "expected": "CN=ÿ\\00\\+\\\r"
+ },
+ {
+  "label": "fuzz tag 16 #57",
+  "hex": "3011310f300d06035504031606f4e1f8e1a0a0",
+  "expected": "CN=ôáøá  "
+ },
+ {
+  "label": "fuzz tag 16 #58",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #59",
+  "hex": "300d310b300906035504031602efff",
+  "expected": "CN=ïÿ"
+ },
+ {
+  "label": "fuzz tag 16 #60",
+  "hex": "30133111300f0603550403160880a009802ce0902b",
+  "expected": "CN= \t\\,à\\+"
+ },
+ {
+  "label": "fuzz tag 16 #61",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #62",
+  "hex": "300f310d300b06035504031604edc18f8f",
+  "expected": "CN=íÁ"
+ },
+ {
+  "label": "fuzz tag 16 #63",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #64",
+  "hex": "30133111300f06035504031608c23cffc0ef22803e",
+  "expected": "CN=Â\\<ÿÀï\\\"\\>"
+ },
+ {
+  "label": "fuzz tag 16 #65",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #66",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #67",
+  "hex": "30133111300f06035504031608809080f0c2ff3d3c",
+  "expected": "CN=ðÂÿ\\=\\<"
+ },
+ {
+  "label": "fuzz tag 16 #68",
+  "hex": "3011310f300d06035504031606f590232b0d3e",
+  "expected": "CN=õ\\#\\+\r\\>"
+ },
+ {
+  "label": "fuzz tag 16 #69",
+  "hex": "30133111300f06035504031608ef3ba0e03c0dc0a0",
+  "expected": "CN=ï\\; à\\<\rÀ "
+ },
+ {
+  "label": "fuzz tag 16 #70",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #71",
+  "hex": "30133111300f06035504031608c23ca0a090f0e080",
+  "expected": "CN=Â\\<  ðà"
+ },
+ {
+  "label": "fuzz tag 16 #72",
+  "hex": "30133111300f06035504031608e0418080a0f0df00",
+  "expected": "CN=àA ðß\\00"
+ },
+ {
+  "label": "fuzz tag 16 #73",
+  "hex": "300d310b30090603550403160290e1",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 16 #74",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #75",
+  "hex": "300d310b300906035504031602e00d",
+  "expected": "CN=à\\\r"
+ },
+ {
+  "label": "fuzz tag 16 #76",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #77",
+  "hex": "300d310b300906035504031602c1c2",
+  "expected": "CN=ÁÂ"
+ },
+ {
+  "label": "fuzz tag 16 #78",
+  "hex": "30133111300f06035504031608a022a0efe080a0c1",
+  "expected": "CN= \\\" ïà Á"
+ },
+ {
+  "label": "fuzz tag 16 #79",
+  "hex": "300f310d300b0603550403160490802000",
+  "expected": "CN= \\00"
+ },
+ {
+  "label": "fuzz tag 16 #80",
+  "hex": "300f310d300b06035504031604ff80a0f0",
+  "expected": "CN=ÿ ð"
+ },
+ {
+  "label": "fuzz tag 16 #81",
+  "hex": "30133111300f06035504031608a09080f490bfef2c",
+  "expected": "CN= ô¿ï\\,"
+ },
+ {
+  "label": "fuzz tag 16 #82",
+  "hex": "300d310b300906035504031602e180",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 16 #83",
+  "hex": "300d310b3009060355040316028090",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #84",
+  "hex": "300f310d300b060355040316042b80e1df",
+  "expected": "CN=\\+áß"
+ },
+ {
+  "label": "fuzz tag 16 #85",
+  "hex": "300e310c300a0603550403160380e080",
+  "expected": "CN=à"
+ },
+ {
+  "label": "fuzz tag 16 #86",
+  "hex": "300f310d300b06035504031604c22b3b22",
+  "expected": "CN=Â\\+\\;\\\""
+ },
+ {
+  "label": "fuzz tag 16 #87",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #88",
+  "hex": "300f310d300b060355040316040def09a0",
+  "expected": "CN=\\\rï\t "
+ },
+ {
+  "label": "fuzz tag 16 #89",
+  "hex": "3011310f300d060355040316063b2c3e9041f5",
+  "expected": "CN=\\;\\,\\>Aõ"
+ },
+ {
+  "label": "fuzz tag 16 #90",
+  "hex": "30133111300f06035504031608c28ff0c28022fff8",
+  "expected": "CN=ÂðÂ\\\"ÿø"
+ },
+ {
+  "label": "fuzz tag 16 #91",
+  "hex": "3011310f300d060355040316062ba03cdf8022",
+  "expected": "CN=\\+ \\<ß\\\""
+ },
+ {
+  "label": "fuzz tag 16 #92",
+  "hex": "3011310f300d060355040316068080f4a0c2a0",
+  "expected": "CN=ô Â "
+ },
+ {
+  "label": "fuzz tag 16 #93",
+  "hex": "300f310d300b06035504031604fff02080",
+  "expected": "CN=ÿð "
+ },
+ {
+  "label": "fuzz tag 16 #94",
+  "hex": "300d310b30090603550403160290a0",
+  "expected": "CN= "
+ },
+ {
+  "label": "fuzz tag 16 #95",
+  "hex": "300d310b30090603550403160280bf",
+  "expected": "CN=¿"
+ },
+ {
+  "label": "fuzz tag 16 #96",
+  "hex": "3011310f300d06035504031606c0f53ddf9009",
+  "expected": "CN=Àõ\\=ß\t"
+ },
+ {
+  "label": "fuzz tag 16 #97",
+  "hex": "3011310f300d0603550403160623e1f4efed41",
+  "expected": "CN=\\#áôïíA"
+ },
+ {
+  "label": "fuzz tag 16 #98",
+  "hex": "300d310b300906035504031602ef41",
+  "expected": "CN=ïA"
+ },
+ {
+  "label": "fuzz tag 16 #99",
+  "hex": "3011310f300d06035504031606ed3c00bf9090",
+  "expected": "CN=í\\<\\00¿"
+ },
+ {
+  "label": "fuzz tag 16 #100",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #101",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #102",
+  "hex": "300f310d300b06035504031604e1eda080",
+  "expected": "CN=áí "
+ },
+ {
+  "label": "fuzz tag 16 #103",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #104",
+  "hex": "3011310f300d0603550403160690a0a03be0ed",
+  "expected": "CN=  \\;àí"
+ },
+ {
+  "label": "fuzz tag 16 #105",
+  "hex": "3011310f300d0603550403160690ff90002b0d",
+  "expected": "CN=ÿ\\00\\+\\\r"
+ },
+ {
+  "label": "fuzz tag 16 #106",
+  "hex": "3011310f300d06035504031606f4e1f8e1a0a0",
+  "expected": "CN=ôáøá  "
+ },
+ {
+  "label": "fuzz tag 16 #107",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #108",
+  "hex": "300d310b300906035504031602efff",
+  "expected": "CN=ïÿ"
+ },
+ {
+  "label": "fuzz tag 16 #109",
+  "hex": "30133111300f0603550403160880a009802ce0902b",
+  "expected": "CN= \t\\,à\\+"
+ },
+ {
+  "label": "fuzz tag 16 #110",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #111",
+  "hex": "300f310d300b06035504031604edc18f8f",
+  "expected": "CN=íÁ"
+ },
+ {
+  "label": "fuzz tag 16 #112",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #113",
+  "hex": "30133111300f06035504031608c23cffc0ef22803e",
+  "expected": "CN=Â\\<ÿÀï\\\"\\>"
+ },
+ {
+  "label": "fuzz tag 16 #114",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #115",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 16 #116",
+  "hex": "30133111300f06035504031608809080f0c2ff3d3c",
+  "expected": "CN=ðÂÿ\\=\\<"
+ },
+ {
+  "label": "fuzz tag 16 #117",
+  "hex": "3011310f300d06035504031606f590232b0d3e",
+  "expected": "CN=õ\\#\\+\r\\>"
+ },
+ {
+  "label": "fuzz tag 16 #118",
+  "hex": "30133111300f06035504031608ef3ba0e03c0dc0a0",
+  "expected": "CN=ï\\; à\\<\rÀ "
+ },
+ {
+  "label": "fuzz tag 16 #119",
+  "hex": "300b3109300706035504031600",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #0",
+  "hex": "30133111300f06035504031408c23ca0a090f0e080",
+  "expected": "CN=Â\\<  ðà"
+ },
+ {
+  "label": "fuzz tag 14 #1",
+  "hex": "30133111300f06035504031408e0418080a0f0df00",
+  "expected": "CN=àA ðß\\00"
+ },
+ {
+  "label": "fuzz tag 14 #2",
+  "hex": "300d310b30090603550403140290e1",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 14 #3",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #4",
+  "hex": "300d310b300906035504031402e00d",
+  "expected": "CN=à\\\r"
+ },
+ {
+  "label": "fuzz tag 14 #5",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #6",
+  "hex": "300d310b300906035504031402c1c2",
+  "expected": "CN=ÁÂ"
+ },
+ {
+  "label": "fuzz tag 14 #7",
+  "hex": "30133111300f06035504031408a022a0efe080a0c1",
+  "expected": "CN= \\\" ïà Á"
+ },
+ {
+  "label": "fuzz tag 14 #8",
+  "hex": "300f310d300b0603550403140490802000",
+  "expected": "CN= \\00"
+ },
+ {
+  "label": "fuzz tag 14 #9",
+  "hex": "300f310d300b06035504031404ff80a0f0",
+  "expected": "CN=ÿ ð"
+ },
+ {
+  "label": "fuzz tag 14 #10",
+  "hex": "30133111300f06035504031408a09080f490bfef2c",
+  "expected": "CN= ô¿ï\\,"
+ },
+ {
+  "label": "fuzz tag 14 #11",
+  "hex": "300d310b300906035504031402e180",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 14 #12",
+  "hex": "300d310b3009060355040314028090",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #13",
+  "hex": "300f310d300b060355040314042b80e1df",
+  "expected": "CN=\\+áß"
+ },
+ {
+  "label": "fuzz tag 14 #14",
+  "hex": "300e310c300a0603550403140380e080",
+  "expected": "CN=à"
+ },
+ {
+  "label": "fuzz tag 14 #15",
+  "hex": "300f310d300b06035504031404c22b3b22",
+  "expected": "CN=Â\\+\\;\\\""
+ },
+ {
+  "label": "fuzz tag 14 #16",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #17",
+  "hex": "300f310d300b060355040314040def09a0",
+  "expected": "CN=\\\rï\t "
+ },
+ {
+  "label": "fuzz tag 14 #18",
+  "hex": "3011310f300d060355040314063b2c3e9041f5",
+  "expected": "CN=\\;\\,\\>Aõ"
+ },
+ {
+  "label": "fuzz tag 14 #19",
+  "hex": "30133111300f06035504031408c28ff0c28022fff8",
+  "expected": "CN=ÂðÂ\\\"ÿø"
+ },
+ {
+  "label": "fuzz tag 14 #20",
+  "hex": "3011310f300d060355040314062ba03cdf8022",
+  "expected": "CN=\\+ \\<ß\\\""
+ },
+ {
+  "label": "fuzz tag 14 #21",
+  "hex": "3011310f300d060355040314068080f4a0c2a0",
+  "expected": "CN=ô Â "
+ },
+ {
+  "label": "fuzz tag 14 #22",
+  "hex": "300f310d300b06035504031404fff02080",
+  "expected": "CN=ÿð "
+ },
+ {
+  "label": "fuzz tag 14 #23",
+  "hex": "300d310b30090603550403140290a0",
+  "expected": "CN= "
+ },
+ {
+  "label": "fuzz tag 14 #24",
+  "hex": "300d310b30090603550403140280bf",
+  "expected": "CN=¿"
+ },
+ {
+  "label": "fuzz tag 14 #25",
+  "hex": "3011310f300d06035504031406c0f53ddf9009",
+  "expected": "CN=Àõ\\=ß\t"
+ },
+ {
+  "label": "fuzz tag 14 #26",
+  "hex": "3011310f300d0603550403140623e1f4efed41",
+  "expected": "CN=\\#áôïíA"
+ },
+ {
+  "label": "fuzz tag 14 #27",
+  "hex": "300d310b300906035504031402ef41",
+  "expected": "CN=ïA"
+ },
+ {
+  "label": "fuzz tag 14 #28",
+  "hex": "3011310f300d06035504031406ed3c00bf9090",
+  "expected": "CN=í\\<\\00¿"
+ },
+ {
+  "label": "fuzz tag 14 #29",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #30",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #31",
+  "hex": "300f310d300b06035504031404e1eda080",
+  "expected": "CN=áí "
+ },
+ {
+  "label": "fuzz tag 14 #32",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #33",
+  "hex": "3011310f300d0603550403140690a0a03be0ed",
+  "expected": "CN=  \\;àí"
+ },
+ {
+  "label": "fuzz tag 14 #34",
+  "hex": "3011310f300d0603550403140690ff90002b0d",
+  "expected": "CN=ÿ\\00\\+\\\r"
+ },
+ {
+  "label": "fuzz tag 14 #35",
+  "hex": "3011310f300d06035504031406f4e1f8e1a0a0",
+  "expected": "CN=ôáøá  "
+ },
+ {
+  "label": "fuzz tag 14 #36",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #37",
+  "hex": "300d310b300906035504031402efff",
+  "expected": "CN=ïÿ"
+ },
+ {
+  "label": "fuzz tag 14 #38",
+  "hex": "30133111300f0603550403140880a009802ce0902b",
+  "expected": "CN= \t\\,à\\+"
+ },
+ {
+  "label": "fuzz tag 14 #39",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #40",
+  "hex": "300f310d300b06035504031404edc18f8f",
+  "expected": "CN=íÁ"
+ },
+ {
+  "label": "fuzz tag 14 #41",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #42",
+  "hex": "30133111300f06035504031408c23cffc0ef22803e",
+  "expected": "CN=Â\\<ÿÀï\\\"\\>"
+ },
+ {
+  "label": "fuzz tag 14 #43",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #44",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #45",
+  "hex": "30133111300f06035504031408809080f0c2ff3d3c",
+  "expected": "CN=ðÂÿ\\=\\<"
+ },
+ {
+  "label": "fuzz tag 14 #46",
+  "hex": "3011310f300d06035504031406f590232b0d3e",
+  "expected": "CN=õ\\#\\+\r\\>"
+ },
+ {
+  "label": "fuzz tag 14 #47",
+  "hex": "30133111300f06035504031408ef3ba0e03c0dc0a0",
+  "expected": "CN=ï\\; à\\<\rÀ "
+ },
+ {
+  "label": "fuzz tag 14 #48",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #49",
+  "hex": "30133111300f06035504031408c23ca0a090f0e080",
+  "expected": "CN=Â\\<  ðà"
+ },
+ {
+  "label": "fuzz tag 14 #50",
+  "hex": "30133111300f06035504031408e0418080a0f0df00",
+  "expected": "CN=àA ðß\\00"
+ },
+ {
+  "label": "fuzz tag 14 #51",
+  "hex": "300d310b30090603550403140290e1",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 14 #52",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #53",
+  "hex": "300d310b300906035504031402e00d",
+  "expected": "CN=à\\\r"
+ },
+ {
+  "label": "fuzz tag 14 #54",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #55",
+  "hex": "300d310b300906035504031402c1c2",
+  "expected": "CN=ÁÂ"
+ },
+ {
+  "label": "fuzz tag 14 #56",
+  "hex": "30133111300f06035504031408a022a0efe080a0c1",
+  "expected": "CN= \\\" ïà Á"
+ },
+ {
+  "label": "fuzz tag 14 #57",
+  "hex": "300f310d300b0603550403140490802000",
+  "expected": "CN= \\00"
+ },
+ {
+  "label": "fuzz tag 14 #58",
+  "hex": "300f310d300b06035504031404ff80a0f0",
+  "expected": "CN=ÿ ð"
+ },
+ {
+  "label": "fuzz tag 14 #59",
+  "hex": "30133111300f06035504031408a09080f490bfef2c",
+  "expected": "CN= ô¿ï\\,"
+ },
+ {
+  "label": "fuzz tag 14 #60",
+  "hex": "300d310b300906035504031402e180",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 14 #61",
+  "hex": "300d310b3009060355040314028090",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #62",
+  "hex": "300f310d300b060355040314042b80e1df",
+  "expected": "CN=\\+áß"
+ },
+ {
+  "label": "fuzz tag 14 #63",
+  "hex": "300e310c300a0603550403140380e080",
+  "expected": "CN=à"
+ },
+ {
+  "label": "fuzz tag 14 #64",
+  "hex": "300f310d300b06035504031404c22b3b22",
+  "expected": "CN=Â\\+\\;\\\""
+ },
+ {
+  "label": "fuzz tag 14 #65",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #66",
+  "hex": "300f310d300b060355040314040def09a0",
+  "expected": "CN=\\\rï\t "
+ },
+ {
+  "label": "fuzz tag 14 #67",
+  "hex": "3011310f300d060355040314063b2c3e9041f5",
+  "expected": "CN=\\;\\,\\>Aõ"
+ },
+ {
+  "label": "fuzz tag 14 #68",
+  "hex": "30133111300f06035504031408c28ff0c28022fff8",
+  "expected": "CN=ÂðÂ\\\"ÿø"
+ },
+ {
+  "label": "fuzz tag 14 #69",
+  "hex": "3011310f300d060355040314062ba03cdf8022",
+  "expected": "CN=\\+ \\<ß\\\""
+ },
+ {
+  "label": "fuzz tag 14 #70",
+  "hex": "3011310f300d060355040314068080f4a0c2a0",
+  "expected": "CN=ô Â "
+ },
+ {
+  "label": "fuzz tag 14 #71",
+  "hex": "300f310d300b06035504031404fff02080",
+  "expected": "CN=ÿð "
+ },
+ {
+  "label": "fuzz tag 14 #72",
+  "hex": "300d310b30090603550403140290a0",
+  "expected": "CN= "
+ },
+ {
+  "label": "fuzz tag 14 #73",
+  "hex": "300d310b30090603550403140280bf",
+  "expected": "CN=¿"
+ },
+ {
+  "label": "fuzz tag 14 #74",
+  "hex": "3011310f300d06035504031406c0f53ddf9009",
+  "expected": "CN=Àõ\\=ß\t"
+ },
+ {
+  "label": "fuzz tag 14 #75",
+  "hex": "3011310f300d0603550403140623e1f4efed41",
+  "expected": "CN=\\#áôïíA"
+ },
+ {
+  "label": "fuzz tag 14 #76",
+  "hex": "300d310b300906035504031402ef41",
+  "expected": "CN=ïA"
+ },
+ {
+  "label": "fuzz tag 14 #77",
+  "hex": "3011310f300d06035504031406ed3c00bf9090",
+  "expected": "CN=í\\<\\00¿"
+ },
+ {
+  "label": "fuzz tag 14 #78",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #79",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #80",
+  "hex": "300f310d300b06035504031404e1eda080",
+  "expected": "CN=áí "
+ },
+ {
+  "label": "fuzz tag 14 #81",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #82",
+  "hex": "3011310f300d0603550403140690a0a03be0ed",
+  "expected": "CN=  \\;àí"
+ },
+ {
+  "label": "fuzz tag 14 #83",
+  "hex": "3011310f300d0603550403140690ff90002b0d",
+  "expected": "CN=ÿ\\00\\+\\\r"
+ },
+ {
+  "label": "fuzz tag 14 #84",
+  "hex": "3011310f300d06035504031406f4e1f8e1a0a0",
+  "expected": "CN=ôáøá  "
+ },
+ {
+  "label": "fuzz tag 14 #85",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #86",
+  "hex": "300d310b300906035504031402efff",
+  "expected": "CN=ïÿ"
+ },
+ {
+  "label": "fuzz tag 14 #87",
+  "hex": "30133111300f0603550403140880a009802ce0902b",
+  "expected": "CN= \t\\,à\\+"
+ },
+ {
+  "label": "fuzz tag 14 #88",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #89",
+  "hex": "300f310d300b06035504031404edc18f8f",
+  "expected": "CN=íÁ"
+ },
+ {
+  "label": "fuzz tag 14 #90",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #91",
+  "hex": "30133111300f06035504031408c23cffc0ef22803e",
+  "expected": "CN=Â\\<ÿÀï\\\"\\>"
+ },
+ {
+  "label": "fuzz tag 14 #92",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #93",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #94",
+  "hex": "30133111300f06035504031408809080f0c2ff3d3c",
+  "expected": "CN=ðÂÿ\\=\\<"
+ },
+ {
+  "label": "fuzz tag 14 #95",
+  "hex": "3011310f300d06035504031406f590232b0d3e",
+  "expected": "CN=õ\\#\\+\r\\>"
+ },
+ {
+  "label": "fuzz tag 14 #96",
+  "hex": "30133111300f06035504031408ef3ba0e03c0dc0a0",
+  "expected": "CN=ï\\; à\\<\rÀ "
+ },
+ {
+  "label": "fuzz tag 14 #97",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #98",
+  "hex": "30133111300f06035504031408c23ca0a090f0e080",
+  "expected": "CN=Â\\<  ðà"
+ },
+ {
+  "label": "fuzz tag 14 #99",
+  "hex": "30133111300f06035504031408e0418080a0f0df00",
+  "expected": "CN=àA ðß\\00"
+ },
+ {
+  "label": "fuzz tag 14 #100",
+  "hex": "300d310b30090603550403140290e1",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 14 #101",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #102",
+  "hex": "300d310b300906035504031402e00d",
+  "expected": "CN=à\\\r"
+ },
+ {
+  "label": "fuzz tag 14 #103",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #104",
+  "hex": "300d310b300906035504031402c1c2",
+  "expected": "CN=ÁÂ"
+ },
+ {
+  "label": "fuzz tag 14 #105",
+  "hex": "30133111300f06035504031408a022a0efe080a0c1",
+  "expected": "CN= \\\" ïà Á"
+ },
+ {
+  "label": "fuzz tag 14 #106",
+  "hex": "300f310d300b0603550403140490802000",
+  "expected": "CN= \\00"
+ },
+ {
+  "label": "fuzz tag 14 #107",
+  "hex": "300f310d300b06035504031404ff80a0f0",
+  "expected": "CN=ÿ ð"
+ },
+ {
+  "label": "fuzz tag 14 #108",
+  "hex": "30133111300f06035504031408a09080f490bfef2c",
+  "expected": "CN= ô¿ï\\,"
+ },
+ {
+  "label": "fuzz tag 14 #109",
+  "hex": "300d310b300906035504031402e180",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 14 #110",
+  "hex": "300d310b3009060355040314028090",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #111",
+  "hex": "300f310d300b060355040314042b80e1df",
+  "expected": "CN=\\+áß"
+ },
+ {
+  "label": "fuzz tag 14 #112",
+  "hex": "300e310c300a0603550403140380e080",
+  "expected": "CN=à"
+ },
+ {
+  "label": "fuzz tag 14 #113",
+  "hex": "300f310d300b06035504031404c22b3b22",
+  "expected": "CN=Â\\+\\;\\\""
+ },
+ {
+  "label": "fuzz tag 14 #114",
+  "hex": "300b3109300706035504031400",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 14 #115",
+  "hex": "300f310d300b060355040314040def09a0",
+  "expected": "CN=\\\rï\t "
+ },
+ {
+  "label": "fuzz tag 14 #116",
+  "hex": "3011310f300d060355040314063b2c3e9041f5",
+  "expected": "CN=\\;\\,\\>Aõ"
+ },
+ {
+  "label": "fuzz tag 14 #117",
+  "hex": "30133111300f06035504031408c28ff0c28022fff8",
+  "expected": "CN=ÂðÂ\\\"ÿø"
+ },
+ {
+  "label": "fuzz tag 14 #118",
+  "hex": "3011310f300d060355040314062ba03cdf8022",
+  "expected": "CN=\\+ \\<ß\\\""
+ },
+ {
+  "label": "fuzz tag 14 #119",
+  "hex": "3011310f300d060355040314068080f4a0c2a0",
+  "expected": "CN=ô Â "
+ },
+ {
+  "label": "fuzz tag 1b #0",
+  "hex": "300f310d300b06035504031b04fff02080",
+  "expected": "CN=ÿð "
+ },
+ {
+  "label": "fuzz tag 1b #1",
+  "hex": "300d310b300906035504031b0290a0",
+  "expected": "CN= "
+ },
+ {
+  "label": "fuzz tag 1b #2",
+  "hex": "300d310b300906035504031b0280bf",
+  "expected": "CN=¿"
+ },
+ {
+  "label": "fuzz tag 1b #3",
+  "hex": "3011310f300d06035504031b06c0f53ddf9009",
+  "expected": "CN=Àõ\\=ß\t"
+ },
+ {
+  "label": "fuzz tag 1b #4",
+  "hex": "3011310f300d06035504031b0623e1f4efed41",
+  "expected": "CN=\\#áôïíA"
+ },
+ {
+  "label": "fuzz tag 1b #5",
+  "hex": "300d310b300906035504031b02ef41",
+  "expected": "CN=ïA"
+ },
+ {
+  "label": "fuzz tag 1b #6",
+  "hex": "3011310f300d06035504031b06ed3c00bf9090",
+  "expected": "CN=í\\<\\00¿"
+ },
+ {
+  "label": "fuzz tag 1b #7",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #8",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #9",
+  "hex": "300f310d300b06035504031b04e1eda080",
+  "expected": "CN=áí "
+ },
+ {
+  "label": "fuzz tag 1b #10",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #11",
+  "hex": "3011310f300d06035504031b0690a0a03be0ed",
+  "expected": "CN=  \\;àí"
+ },
+ {
+  "label": "fuzz tag 1b #12",
+  "hex": "3011310f300d06035504031b0690ff90002b0d",
+  "expected": "CN=ÿ\\00\\+\\\r"
+ },
+ {
+  "label": "fuzz tag 1b #13",
+  "hex": "3011310f300d06035504031b06f4e1f8e1a0a0",
+  "expected": "CN=ôáøá  "
+ },
+ {
+  "label": "fuzz tag 1b #14",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #15",
+  "hex": "300d310b300906035504031b02efff",
+  "expected": "CN=ïÿ"
+ },
+ {
+  "label": "fuzz tag 1b #16",
+  "hex": "30133111300f06035504031b0880a009802ce0902b",
+  "expected": "CN= \t\\,à\\+"
+ },
+ {
+  "label": "fuzz tag 1b #17",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #18",
+  "hex": "300f310d300b06035504031b04edc18f8f",
+  "expected": "CN=íÁ"
+ },
+ {
+  "label": "fuzz tag 1b #19",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #20",
+  "hex": "30133111300f06035504031b08c23cffc0ef22803e",
+  "expected": "CN=Â\\<ÿÀï\\\"\\>"
+ },
+ {
+  "label": "fuzz tag 1b #21",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #22",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #23",
+  "hex": "30133111300f06035504031b08809080f0c2ff3d3c",
+  "expected": "CN=ðÂÿ\\=\\<"
+ },
+ {
+  "label": "fuzz tag 1b #24",
+  "hex": "3011310f300d06035504031b06f590232b0d3e",
+  "expected": "CN=õ\\#\\+\r\\>"
+ },
+ {
+  "label": "fuzz tag 1b #25",
+  "hex": "30133111300f06035504031b08ef3ba0e03c0dc0a0",
+  "expected": "CN=ï\\; à\\<\rÀ "
+ },
+ {
+  "label": "fuzz tag 1b #26",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #27",
+  "hex": "30133111300f06035504031b08c23ca0a090f0e080",
+  "expected": "CN=Â\\<  ðà"
+ },
+ {
+  "label": "fuzz tag 1b #28",
+  "hex": "30133111300f06035504031b08e0418080a0f0df00",
+  "expected": "CN=àA ðß\\00"
+ },
+ {
+  "label": "fuzz tag 1b #29",
+  "hex": "300d310b300906035504031b0290e1",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 1b #30",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #31",
+  "hex": "300d310b300906035504031b02e00d",
+  "expected": "CN=à\\\r"
+ },
+ {
+  "label": "fuzz tag 1b #32",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #33",
+  "hex": "300d310b300906035504031b02c1c2",
+  "expected": "CN=ÁÂ"
+ },
+ {
+  "label": "fuzz tag 1b #34",
+  "hex": "30133111300f06035504031b08a022a0efe080a0c1",
+  "expected": "CN= \\\" ïà Á"
+ },
+ {
+  "label": "fuzz tag 1b #35",
+  "hex": "300f310d300b06035504031b0490802000",
+  "expected": "CN= \\00"
+ },
+ {
+  "label": "fuzz tag 1b #36",
+  "hex": "300f310d300b06035504031b04ff80a0f0",
+  "expected": "CN=ÿ ð"
+ },
+ {
+  "label": "fuzz tag 1b #37",
+  "hex": "30133111300f06035504031b08a09080f490bfef2c",
+  "expected": "CN= ô¿ï\\,"
+ },
+ {
+  "label": "fuzz tag 1b #38",
+  "hex": "300d310b300906035504031b02e180",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 1b #39",
+  "hex": "300d310b300906035504031b028090",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #40",
+  "hex": "300f310d300b06035504031b042b80e1df",
+  "expected": "CN=\\+áß"
+ },
+ {
+  "label": "fuzz tag 1b #41",
+  "hex": "300e310c300a06035504031b0380e080",
+  "expected": "CN=à"
+ },
+ {
+  "label": "fuzz tag 1b #42",
+  "hex": "300f310d300b06035504031b04c22b3b22",
+  "expected": "CN=Â\\+\\;\\\""
+ },
+ {
+  "label": "fuzz tag 1b #43",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #44",
+  "hex": "300f310d300b06035504031b040def09a0",
+  "expected": "CN=\\\rï\t "
+ },
+ {
+  "label": "fuzz tag 1b #45",
+  "hex": "3011310f300d06035504031b063b2c3e9041f5",
+  "expected": "CN=\\;\\,\\>Aõ"
+ },
+ {
+  "label": "fuzz tag 1b #46",
+  "hex": "30133111300f06035504031b08c28ff0c28022fff8",
+  "expected": "CN=ÂðÂ\\\"ÿø"
+ },
+ {
+  "label": "fuzz tag 1b #47",
+  "hex": "3011310f300d06035504031b062ba03cdf8022",
+  "expected": "CN=\\+ \\<ß\\\""
+ },
+ {
+  "label": "fuzz tag 1b #48",
+  "hex": "3011310f300d06035504031b068080f4a0c2a0",
+  "expected": "CN=ô Â "
+ },
+ {
+  "label": "fuzz tag 1b #49",
+  "hex": "300f310d300b06035504031b04fff02080",
+  "expected": "CN=ÿð "
+ },
+ {
+  "label": "fuzz tag 1b #50",
+  "hex": "300d310b300906035504031b0290a0",
+  "expected": "CN= "
+ },
+ {
+  "label": "fuzz tag 1b #51",
+  "hex": "300d310b300906035504031b0280bf",
+  "expected": "CN=¿"
+ },
+ {
+  "label": "fuzz tag 1b #52",
+  "hex": "3011310f300d06035504031b06c0f53ddf9009",
+  "expected": "CN=Àõ\\=ß\t"
+ },
+ {
+  "label": "fuzz tag 1b #53",
+  "hex": "3011310f300d06035504031b0623e1f4efed41",
+  "expected": "CN=\\#áôïíA"
+ },
+ {
+  "label": "fuzz tag 1b #54",
+  "hex": "300d310b300906035504031b02ef41",
+  "expected": "CN=ïA"
+ },
+ {
+  "label": "fuzz tag 1b #55",
+  "hex": "3011310f300d06035504031b06ed3c00bf9090",
+  "expected": "CN=í\\<\\00¿"
+ },
+ {
+  "label": "fuzz tag 1b #56",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #57",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #58",
+  "hex": "300f310d300b06035504031b04e1eda080",
+  "expected": "CN=áí "
+ },
+ {
+  "label": "fuzz tag 1b #59",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #60",
+  "hex": "3011310f300d06035504031b0690a0a03be0ed",
+  "expected": "CN=  \\;àí"
+ },
+ {
+  "label": "fuzz tag 1b #61",
+  "hex": "3011310f300d06035504031b0690ff90002b0d",
+  "expected": "CN=ÿ\\00\\+\\\r"
+ },
+ {
+  "label": "fuzz tag 1b #62",
+  "hex": "3011310f300d06035504031b06f4e1f8e1a0a0",
+  "expected": "CN=ôáøá  "
+ },
+ {
+  "label": "fuzz tag 1b #63",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #64",
+  "hex": "300d310b300906035504031b02efff",
+  "expected": "CN=ïÿ"
+ },
+ {
+  "label": "fuzz tag 1b #65",
+  "hex": "30133111300f06035504031b0880a009802ce0902b",
+  "expected": "CN= \t\\,à\\+"
+ },
+ {
+  "label": "fuzz tag 1b #66",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #67",
+  "hex": "300f310d300b06035504031b04edc18f8f",
+  "expected": "CN=íÁ"
+ },
+ {
+  "label": "fuzz tag 1b #68",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #69",
+  "hex": "30133111300f06035504031b08c23cffc0ef22803e",
+  "expected": "CN=Â\\<ÿÀï\\\"\\>"
+ },
+ {
+  "label": "fuzz tag 1b #70",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #71",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #72",
+  "hex": "30133111300f06035504031b08809080f0c2ff3d3c",
+  "expected": "CN=ðÂÿ\\=\\<"
+ },
+ {
+  "label": "fuzz tag 1b #73",
+  "hex": "3011310f300d06035504031b06f590232b0d3e",
+  "expected": "CN=õ\\#\\+\r\\>"
+ },
+ {
+  "label": "fuzz tag 1b #74",
+  "hex": "30133111300f06035504031b08ef3ba0e03c0dc0a0",
+  "expected": "CN=ï\\; à\\<\rÀ "
+ },
+ {
+  "label": "fuzz tag 1b #75",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #76",
+  "hex": "30133111300f06035504031b08c23ca0a090f0e080",
+  "expected": "CN=Â\\<  ðà"
+ },
+ {
+  "label": "fuzz tag 1b #77",
+  "hex": "30133111300f06035504031b08e0418080a0f0df00",
+  "expected": "CN=àA ðß\\00"
+ },
+ {
+  "label": "fuzz tag 1b #78",
+  "hex": "300d310b300906035504031b0290e1",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 1b #79",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #80",
+  "hex": "300d310b300906035504031b02e00d",
+  "expected": "CN=à\\\r"
+ },
+ {
+  "label": "fuzz tag 1b #81",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #82",
+  "hex": "300d310b300906035504031b02c1c2",
+  "expected": "CN=ÁÂ"
+ },
+ {
+  "label": "fuzz tag 1b #83",
+  "hex": "30133111300f06035504031b08a022a0efe080a0c1",
+  "expected": "CN= \\\" ïà Á"
+ },
+ {
+  "label": "fuzz tag 1b #84",
+  "hex": "300f310d300b06035504031b0490802000",
+  "expected": "CN= \\00"
+ },
+ {
+  "label": "fuzz tag 1b #85",
+  "hex": "300f310d300b06035504031b04ff80a0f0",
+  "expected": "CN=ÿ ð"
+ },
+ {
+  "label": "fuzz tag 1b #86",
+  "hex": "30133111300f06035504031b08a09080f490bfef2c",
+  "expected": "CN= ô¿ï\\,"
+ },
+ {
+  "label": "fuzz tag 1b #87",
+  "hex": "300d310b300906035504031b02e180",
+  "expected": "CN=á"
+ },
+ {
+  "label": "fuzz tag 1b #88",
+  "hex": "300d310b300906035504031b028090",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #89",
+  "hex": "300f310d300b06035504031b042b80e1df",
+  "expected": "CN=\\+áß"
+ },
+ {
+  "label": "fuzz tag 1b #90",
+  "hex": "300e310c300a06035504031b0380e080",
+  "expected": "CN=à"
+ },
+ {
+  "label": "fuzz tag 1b #91",
+  "hex": "300f310d300b06035504031b04c22b3b22",
+  "expected": "CN=Â\\+\\;\\\""
+ },
+ {
+  "label": "fuzz tag 1b #92",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #93",
+  "hex": "300f310d300b06035504031b040def09a0",
+  "expected": "CN=\\\rï\t "
+ },
+ {
+  "label": "fuzz tag 1b #94",
+  "hex": "3011310f300d06035504031b063b2c3e9041f5",
+  "expected": "CN=\\;\\,\\>Aõ"
+ },
+ {
+  "label": "fuzz tag 1b #95",
+  "hex": "30133111300f06035504031b08c28ff0c28022fff8",
+  "expected": "CN=ÂðÂ\\\"ÿø"
+ },
+ {
+  "label": "fuzz tag 1b #96",
+  "hex": "3011310f300d06035504031b062ba03cdf8022",
+  "expected": "CN=\\+ \\<ß\\\""
+ },
+ {
+  "label": "fuzz tag 1b #97",
+  "hex": "3011310f300d06035504031b068080f4a0c2a0",
+  "expected": "CN=ô Â "
+ },
+ {
+  "label": "fuzz tag 1b #98",
+  "hex": "300f310d300b06035504031b04fff02080",
+  "expected": "CN=ÿð "
+ },
+ {
+  "label": "fuzz tag 1b #99",
+  "hex": "300d310b300906035504031b0290a0",
+  "expected": "CN= "
+ },
+ {
+  "label": "fuzz tag 1b #100",
+  "hex": "300d310b300906035504031b0280bf",
+  "expected": "CN=¿"
+ },
+ {
+  "label": "fuzz tag 1b #101",
+  "hex": "3011310f300d06035504031b06c0f53ddf9009",
+  "expected": "CN=Àõ\\=ß\t"
+ },
+ {
+  "label": "fuzz tag 1b #102",
+  "hex": "3011310f300d06035504031b0623e1f4efed41",
+  "expected": "CN=\\#áôïíA"
+ },
+ {
+  "label": "fuzz tag 1b #103",
+  "hex": "300d310b300906035504031b02ef41",
+  "expected": "CN=ïA"
+ },
+ {
+  "label": "fuzz tag 1b #104",
+  "hex": "3011310f300d06035504031b06ed3c00bf9090",
+  "expected": "CN=í\\<\\00¿"
+ },
+ {
+  "label": "fuzz tag 1b #105",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #106",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #107",
+  "hex": "300f310d300b06035504031b04e1eda080",
+  "expected": "CN=áí "
+ },
+ {
+  "label": "fuzz tag 1b #108",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #109",
+  "hex": "3011310f300d06035504031b0690a0a03be0ed",
+  "expected": "CN=  \\;àí"
+ },
+ {
+  "label": "fuzz tag 1b #110",
+  "hex": "3011310f300d06035504031b0690ff90002b0d",
+  "expected": "CN=ÿ\\00\\+\\\r"
+ },
+ {
+  "label": "fuzz tag 1b #111",
+  "hex": "3011310f300d06035504031b06f4e1f8e1a0a0",
+  "expected": "CN=ôáøá  "
+ },
+ {
+  "label": "fuzz tag 1b #112",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #113",
+  "hex": "300d310b300906035504031b02efff",
+  "expected": "CN=ïÿ"
+ },
+ {
+  "label": "fuzz tag 1b #114",
+  "hex": "30133111300f06035504031b0880a009802ce0902b",
+  "expected": "CN= \t\\,à\\+"
+ },
+ {
+  "label": "fuzz tag 1b #115",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #116",
+  "hex": "300f310d300b06035504031b04edc18f8f",
+  "expected": "CN=íÁ"
+ },
+ {
+  "label": "fuzz tag 1b #117",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ },
+ {
+  "label": "fuzz tag 1b #118",
+  "hex": "30133111300f06035504031b08c23cffc0ef22803e",
+  "expected": "CN=Â\\<ÿÀï\\\"\\>"
+ },
+ {
+  "label": "fuzz tag 1b #119",
+  "hex": "300b3109300706035504031b00",
+  "expected": "CN="
+ }
+]

@@ -1,0 +1,66 @@
+# Rendered by verifier-entrypoint from /etc/verifier/anchor.xml. Do not edit the
+# rendered copy; the anchor is the only input.
+#   upstream origin: ${UPSTREAM_ORIGIN}
+#   directory path:  ${DIRECTORY_PATH}
+# Same mapping as apps/web/vite.config.ts: /globalconf/<p> -> <origin>/<p>.
+
+# The upstream is a variable so that an unresolvable host yields 502 at request
+# time instead of nginx refusing to start.
+resolver ${RESOLVER} valid=30s ipv6=off;
+resolver_timeout 5s;
+server_tokens off;
+
+server {
+    listen 80 default_server;
+    server_name _;
+    root /usr/share/nginx/html;
+    client_max_body_size 1k;
+
+    include /etc/nginx/verifier/security-headers.conf;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location = /index.html {
+        include /etc/nginx/verifier/security-headers.conf;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    location /assets/ {
+        try_files $uri =404;
+        include /etc/nginx/verifier/security-headers.conf;
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
+    }
+
+    location = /anchor.xml {
+        limit_except GET { deny all; }
+        alias /etc/verifier/anchor.xml;
+        types { }
+        default_type application/xml;
+        include /etc/nginx/verifier/security-headers.conf;
+        add_header Cache-Control "no-store" always;
+    }
+
+    # Signed directory; the query string (?version=6) passes through.
+    location = /globalconf${DIRECTORY_PATH} {
+        limit_except GET { deny all; }
+        set $xrav_upstream ${UPSTREAM_ORIGIN};
+        proxy_pass $xrav_upstream${DIRECTORY_PATH}$is_args$args;
+        include /etc/nginx/verifier/proxy-common.conf;
+    }
+
+    # Content-location paths from the directory are host-absolute. nextupdate-params
+    # is listed (and fetched by the client) only on some instances.
+    location ~ "^/globalconf/(?<xrav_part>V[0-9]+/[0-9]+/(shared|nextupdate)-params\.xml)$" {
+        limit_except GET { deny all; }
+        set $xrav_upstream ${UPSTREAM_ORIGIN};
+        proxy_pass $xrav_upstream/$xrav_part;
+        include /etc/nginx/verifier/proxy-common.conf;
+    }
+
+    # Everything else (private-params.xml included) stays behind the proxy.
+    location /globalconf/ {
+        return 403;
+    }
+}

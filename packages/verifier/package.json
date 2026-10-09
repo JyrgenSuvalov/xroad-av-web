@@ -1,0 +1,25 @@
+{
+  "name": "@xrav/verifier",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "Platform-neutral X-Road ASiC container verifier core (browser + Node)",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.test.json"
+  },
+  "dependencies": {
+    "@xmldom/xmldom": "^0.9.12",
+    "asn1js": "^3.0.10",
+    "fflate": "^0.8.3",
+    "pkijs": "^3.4.1"
+  },
+  "devDependencies": {
+    "vitest": "^5.0.3"
+  }
+}

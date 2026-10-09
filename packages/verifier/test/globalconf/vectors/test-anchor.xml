@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:configurationAnchor xmlns:ns2="http://x-road.eu/xsd/identifiers" xmlns:ns3="http://x-road.eu/xsd/xroad.xsd">
+    <generatedAt>2025-11-05T22:10:45.770Z</generatedAt>
+    <instanceIdentifier>DEV</instanceIdentifier>
+    <source>
+        <downloadURL>http://cs/internalconf</downloadURL>
+        <verificationCert>MIIDEzCCAfugAwIBAgIUeTO8mxxMt3DC95IMKtzWMf+lb6swDQYJKoZIhvcNAQENBQAwGTEXMBUGA1UEAwwOdGVzdFNpZ25pbmdLZXkwHhcNNzAwMTAxMDAwMDAwWhcNMzgwMTAxMDAwMDAwWjAZMRcwFQYDVQQDDA50ZXN0U2lnbmluZ0tleTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJ7npaK9QGS7KzTOQl5fpk0Z2HLVUNpv1vV5dKpRmnYx2h+4HfRNNMGPqnxRTkUITlGszdKDKqTtX5qdCibWgwBpxTmryKFH8OtXoBx/e9OJIXsqxj+AMi376FAIZ/vfSM7z3lEcT+KmYbE9mY7CoShXmjpZfcRJcFZsm12nwfN2EL+T08tCrpL+3S7LbVUzvtxvl+Rt7QIjiMgsw1pKK0IzjpgEb1yM/vzTVfwNpTQy/x8qAG2OywjO2hI04UoRLzqAZexP3wrgcphLSTnZNfJDr4i+Y60TZkj1ypOpI76+e4Sic+kUR4LyhEfmNMm51CTsCb+/gwdnwGm8Q9lwx/kCAwEAAaNTMFEwHQYDVR0OBBYEFDhox7A/XhGAOA8vs/qnEaDqkNYSMB8GA1UdIwQYMBaAFDhox7A/XhGAOA8vs/qnEaDqkNYSMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQENBQADggEBAFe8MCe0/TdzXLY+RUerMOw3U1lw3CRHA+YWuYadEg1IPkNjpwv4I2ZIETkvIluRsUbZjdjm14TW5EUYYaueJnNVK8mNpU4igIivD3Kg/Ec9B3wGEm5py3XazgyqsXsELiCze3eZnYQeus8VXiQO0ZuN2sCuD+C2w8Ts+KFoMiKK8yQBjdzLb905q/Rs1Ayobvj0MjdtBaFJu5wOdfZyMQCcsW8BjCzJ+Ti+RTkbDKGnlgd4vASZRYjROHyR3f3+ej0C+lomHisHI/EWQAO4v1R0WGgUN+q6KCq2KiA2+PZda4B3U2D+WR+EUU5FhkbzyMqA2OePq14y71ncZDmSWoI=</verificationCert>
+    </source>
+    <source>
+        <downloadURL>https://cs/internalconf</downloadURL>
+        <verificationCert>MIIDEzCCAfugAwIBAgIUeTO8mxxMt3DC95IMKtzWMf+lb6swDQYJKoZIhvcNAQENBQAwGTEXMBUGA1UEAwwOdGVzdFNpZ25pbmdLZXkwHhcNNzAwMTAxMDAwMDAwWhcNMzgwMTAxMDAwMDAwWjAZMRcwFQYDVQQDDA50ZXN0U2lnbmluZ0tleTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJ7npaK9QGS7KzTOQl5fpk0Z2HLVUNpv1vV5dKpRmnYx2h+4HfRNNMGPqnxRTkUITlGszdKDKqTtX5qdCibWgwBpxTmryKFH8OtXoBx/e9OJIXsqxj+AMi376FAIZ/vfSM7z3lEcT+KmYbE9mY7CoShXmjpZfcRJcFZsm12nwfN2EL+T08tCrpL+3S7LbVUzvtxvl+Rt7QIjiMgsw1pKK0IzjpgEb1yM/vzTVfwNpTQy/x8qAG2OywjO2hI04UoRLzqAZexP3wrgcphLSTnZNfJDr4i+Y60TZkj1ypOpI76+e4Sic+kUR4LyhEfmNMm51CTsCb+/gwdnwGm8Q9lwx/kCAwEAAaNTMFEwHQYDVR0OBBYEFDhox7A/XhGAOA8vs/qnEaDqkNYSMB8GA1UdIwQYMBaAFDhox7A/XhGAOA8vs/qnEaDqkNYSMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQENBQADggEBAFe8MCe0/TdzXLY+RUerMOw3U1lw3CRHA+YWuYadEg1IPkNjpwv4I2ZIETkvIluRsUbZjdjm14TW5EUYYaueJnNVK8mNpU4igIivD3Kg/Ec9B3wGEm5py3XazgyqsXsELiCze3eZnYQeus8VXiQO0ZuN2sCuD+C2w8Ts+KFoMiKK8yQBjdzLb905q/Rs1Ayobvj0MjdtBaFJu5wOdfZyMQCcsW8BjCzJ+Ti+RTkbDKGnlgd4vASZRYjROHyR3f3+ej0C+lomHisHI/EWQAO4v1R0WGgUN+q6KCq2KiA2+PZda4B3U2D+WR+EUU5FhkbzyMqA2OePq14y71ncZDmSWoI=</verificationCert>
+    </source>
+</ns3:configurationAnchor>

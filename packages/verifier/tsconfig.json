@@ -1,0 +1,11 @@
+{
+  // Source must run in both the browser and Node. No DOM lib and no @types/node:
+  // "WebWorker" gives the WebCrypto / TextEncoder / URL typings that both runtimes
+  // share, with no `document`/`window`. Use globalThis.crypto.subtle for crypto.
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "WebWorker"],
+    "types": []
+  },
+  "include": ["src"]
+}

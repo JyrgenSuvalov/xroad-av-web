@@ -1,0 +1,22 @@
+{
+  "name": "xroad-asic-verifier",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@11.22.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "pnpm --filter @xrav/verifier test",
+    "typecheck": "pnpm -r typecheck",
+    "build": "pnpm -r build",
+    "dev": "pnpm --filter web dev",
+    "docker:build": "docker build -f docker/Dockerfile -t xroad-asic-verifier .",
+    "docker:run": "docker run --rm -p 8080:80 xroad-asic-verifier"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.1",
+    "typescript": "^6.0.3"
+  }
+}

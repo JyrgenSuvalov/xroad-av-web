@@ -1,0 +1,8 @@
+# Used by BuildKit for docker/Dockerfile (context = repo root).
+**/node_modules
+**/dist
+**/coverage
+**/*.tsbuildinfo
+.git
+**/.DS_Store
+**/.env*
