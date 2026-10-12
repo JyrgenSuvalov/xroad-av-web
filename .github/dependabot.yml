@@ -25,3 +25,15 @@ updates:
       docker-images:
         patterns:
           - "*"
+
+  # Workflow actions (pinned to commit SHAs)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+    groups:
+      github-actions:
+        patterns:
+          - "*"
