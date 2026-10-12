@@ -25,12 +25,12 @@ import type { AsicContainer } from '../container/read';
 import { ENTRY_MESSAGE } from '../container/read';
 import { CodedError, ErrorCodes } from '../util/errors';
 import {
+  type ClientId,
   clientIdToString,
   IdentifierError,
   securityServerIdToString,
   serviceClientId,
   serviceIdToString,
-  type ClientId,
 } from './ids';
 import { parseRest, type RestParseResult } from './rest';
 import { isResponseServiceName, parseSoap, type SoapParseResult } from './soap';
@@ -147,7 +147,10 @@ function restView(r: RestParseResult): MessageHeaderView {
   return v;
 }
 
-function withSigner(base: Omit<ParsedMessage, 'expectedSigner' | 'expectedSignerId'>, signer: ClientId | null): ParsedMessage {
+function withSigner(
+  base: Omit<ParsedMessage, 'expectedSigner' | 'expectedSignerId'>,
+  signer: ClientId | null,
+): ParsedMessage {
   return { ...base, expectedSigner: signer, expectedSignerId: signer ? clientIdToString(signer) : null };
 }
 
@@ -161,7 +164,12 @@ function parseRestFallback(text: string): ParsedMessage {
         kind: 'rest',
         direction: null,
         header: {},
-        signerError: { faultCode: ErrorCodes.X_INTERNAL_ERROR, faultString: INVALID_MESSAGE, thrown: true, cause: causeOf(e) },
+        signerError: {
+          faultCode: ErrorCodes.X_INTERNAL_ERROR,
+          faultString: INVALID_MESSAGE,
+          thrown: true,
+          cause: causeOf(e),
+        },
       },
       null,
     );
@@ -199,13 +207,19 @@ export function parseMessage(input: AsicContainer | string): ParsedMessage {
         kind: 'soap',
         direction: null,
         header: {},
-        signerError: { faultCode: ErrorCodes.X_INTERNAL_ERROR, faultString: NULL_SIGNER_MESSAGE, thrown: false, cause: causeOf(e) },
+        signerError: {
+          faultCode: ErrorCodes.X_INTERNAL_ERROR,
+          faultString: NULL_SIGNER_MESSAGE,
+          thrown: false,
+          cause: causeOf(e),
+        },
       },
       null,
     );
   }
 
-  const direction: ParsedMessage['direction'] = soap.serviceName == null ? null : isResponseServiceName(soap.serviceName) ? 'response' : 'request';
+  const direction: ParsedMessage['direction'] =
+    soap.serviceName == null ? null : isResponseServiceName(soap.serviceName) ? 'response' : 'request';
   const base = { kind: 'soap' as const, direction, header: soapView(soap) };
   if (soap.error) {
     return withSigner(
@@ -230,7 +244,15 @@ export function parseMessage(input: AsicContainer | string): ParsedMessage {
     // that getSigner does not catch → verify() fails with internal_error at V3.
     if (!(e instanceof IdentifierError)) throw e;
     return withSigner(
-      { ...base, signerError: { faultCode: ErrorCodes.X_INTERNAL_ERROR, faultString: e.message, thrown: true, cause: causeOf(e) } },
+      {
+        ...base,
+        signerError: {
+          faultCode: ErrorCodes.X_INTERNAL_ERROR,
+          faultString: e.message,
+          thrown: true,
+          cause: causeOf(e),
+        },
+      },
       null,
     );
   }

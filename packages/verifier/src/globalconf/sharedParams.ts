@@ -1,10 +1,10 @@
 // shared-params.xml (V6 primary, V2–V5 tolerated)
 // Only what the verifier needs is modelled, plus members for display.
 
+import { XROAD_NS } from './anchor';
 import { decodeCertField } from './crypto';
 import { GlobalConfError } from './errors';
-import { XROAD_NS } from './anchor';
-import { type XmlElement, child, childText, children, parseXml } from './xml';
+import { child, children, childText, parseXml, type XmlElement } from './xml';
 
 export interface OcspInfo {
   url: string;

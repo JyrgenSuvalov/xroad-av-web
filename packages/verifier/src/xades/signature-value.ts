@@ -38,15 +38,15 @@
 import { C14N_10, C14N_10_WITH_COMMENTS, canonicalize } from '../c14n/c14n';
 import type { AsicContainer } from '../container/read';
 import { attachmentDigest, containerEntryBytes, containerHasEntry, isAttachmentUri } from '../hashchain/asic';
-import { digest, DIGEST_URIS } from '../hashchain/digest';
+import { DIGEST_URIS, digest } from '../hashchain/digest';
 import { bytesEqual } from '../util/bytes';
 import { CodedError, ErrorCodes } from '../util/errors';
-import type { SignatureDocument } from '../xml/signature-doc';
 import type { XDocument, XElement, XNode } from '../xml/safe';
+import type { SignatureDocument } from '../xml/signature-doc';
 import { decodeDsBase64, dsText } from './base64';
 import type { SigningCertificate } from './cert';
 import { importVerificationKey, verifyWithKey } from './crypto';
-import { readSignatureModel, referenceAt, referenceCount, type ReferenceModel, type SignatureModel } from './model';
+import { type ReferenceModel, readSignatureModel, referenceAt, referenceCount, type SignatureModel } from './model';
 
 const internal = (msg: string) => new CodedError(ErrorCodes.X_INTERNAL_ERROR, msg);
 const invalid = () => new CodedError(ErrorCodes.X_INVALID_SIGNATURE_VALUE, 'Signature is not valid');
@@ -84,7 +84,10 @@ async function verifyReferences(doc: XDocument, model: SignatureModel, container
   return all;
 }
 
-type Input = { kind: 'precomputed'; digest: Uint8Array } | { kind: 'node'; node: XNode } | { kind: 'bytes'; bytes: Uint8Array };
+type Input =
+  | { kind: 'precomputed'; digest: Uint8Array }
+  | { kind: 'node'; node: XNode }
+  | { kind: 'bytes'; bytes: Uint8Array };
 
 async function verifyReference(doc: XDocument, ref: ReferenceModel, container: AsicContainer): Promise<boolean> {
   const expected = decodeDsBase64(dsText(ref.digestValueElement));

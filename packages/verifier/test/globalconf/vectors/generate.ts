@@ -21,13 +21,31 @@ const SP_DIR = 'V6/20251110170000548026000';
 const keyPath = join(out, 'test-signing-key.pem');
 const certPath = join(out, 'test-signing-cert.der');
 if (!existsSync(keyPath) || !existsSync(certPath)) {
-  execFileSync('openssl', [
-    'req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-sha512',
-    '-keyout', keyPath, '-subj', '/CN=testSigningKey',
-    // Validity 1970..2038, so pinned test clocks fall inside it.
-    '-not_before', '19700101000000Z', '-not_after', '20380101000000Z',
-    '-outform', 'DER', '-out', certPath,
-  ], { stdio: 'inherit' });
+  execFileSync(
+    'openssl',
+    [
+      'req',
+      '-x509',
+      '-newkey',
+      'rsa:2048',
+      '-nodes',
+      '-sha512',
+      '-keyout',
+      keyPath,
+      '-subj',
+      '/CN=testSigningKey',
+      // Validity 1970..2038, so pinned test clocks fall inside it.
+      '-not_before',
+      '19700101000000Z',
+      '-not_after',
+      '20380101000000Z',
+      '-outform',
+      'DER',
+      '-out',
+      certPath,
+    ],
+    { stdio: 'inherit' },
+  );
 }
 const testKey = createPrivateKey(readFileSync(keyPath));
 const testCertDer = readFileSync(certPath);
@@ -43,19 +61,21 @@ if (process.env.XROAD_SRC) {
   copyFileSync(join(pub, '20251110170000548026000/shared-params.xml'), join(xrOut, SP_DIR, 'shared-params.xml'));
   copyFileSync(join(xr, 'files/trusted-anchor/configuration_anchor_CS_internal.xml'), join(xrOut, 'anchor.xml'));
   writeFileSync(
-  join(xrOut, 'NOTICE.md'),
-  'Copied from X-Road 7.8.3 (MIT License, Copyright (c) 2019- Nordic Institute for Interoperability Solutions (NIIS)),\n' +
-    'src/security-server/system-test/src/intTest/resources/{nginx-container-files/var/lib/xroad/public/V6,files/trusted-anchor}.\n' +
-    'Used unchanged as a cross-implementation test vector and as the base of the other globalconf test vectors.\n',
+    join(xrOut, 'NOTICE.md'),
+    'Copied from X-Road 7.8.3 (MIT License, Copyright (c) 2019- Nordic Institute for Interoperability Solutions (NIIS)),\n' +
+      'src/security-server/system-test/src/intTest/resources/{nginx-container-files/var/lib/xroad/public/V6,files/trusted-anchor}.\n' +
+      'Used unchanged as a cross-implementation test vector and as the base of the other globalconf test vectors.\n',
   );
 }
-
 
 // --- test anchor: fixture anchor with every verificationCert replaced -----------
 const anchorXml = readFileSync(join(xrOut, 'anchor.xml'), 'utf8');
 writeFileSync(
   join(out, 'test-anchor.xml'),
-  anchorXml.replace(/<verificationCert>[^<]*<\/verificationCert>/g, `<verificationCert>${b64(testCertDer)}</verificationCert>`),
+  anchorXml.replace(
+    /<verificationCert>[^<]*<\/verificationCert>/g,
+    `<verificationCert>${b64(testCertDer)}</verificationCert>`,
+  ),
 );
 
 // --- re-sign tool -------------------------------------------------------------
@@ -114,11 +134,17 @@ const vectors: Record<string, string> = {
   // V4 = resigned.internalconf with the fixture anchor. V5: hash header forged to the fixture anchor cert.
   'forged-hash.internalconf': resign(v6, { keepCertHash: true }),
   // V6 signed-bytes tamper (not re-signed): one byte of the Expire-date value.
-  'tampered-expire.internalconf': v6.replace(/(Expire-date: \d{3})(\d)/, (_, a: string, d: string) => a + ((Number(d) + 1) % 10)),
+  'tampered-expire.internalconf': v6.replace(
+    /(Expire-date: \d{3})(\d)/,
+    (_, a: string, d: string) => a + ((Number(d) + 1) % 10),
+  ),
   // V8 part-hash tamper, re-signed.
   'part-hash-resigned.internalconf': resign(v6, {
     edit: (inner) =>
-      inner.replace(/(SHARED-PARAMETERS[\s\S]*?\r\n\r\n)([^\r]+)/, (_, h: string) => h + b64(sha512('not the shared params'))),
+      inner.replace(
+        /(SHARED-PARAMETERS[\s\S]*?\r\n\r\n)([^\r]+)/,
+        (_, h: string) => h + b64(sha512('not the shared params')),
+      ),
   }),
   // V10 instance mismatch.
   'instance-other.internalconf': resign(v6, {
@@ -128,22 +154,26 @@ const vectors: Record<string, string> = {
   'no-expire.internalconf': resign(v6, { edit: (inner) => inner.replace(/Expire-date: [^\r]+\r\n/, '') }),
   'bad-expire.internalconf': resign(v6, { edit: setExpire('tomorrow') }),
   'cte-uppercase.internalconf': resign(v6, {
-    edit: (inner) => inner.replace(
-      /Content-transfer-encoding: base64(\r\nContent-identifier: SHARED)/,
-      'Content-transfer-encoding: BASE64$1',
-    ),
+    edit: (inner) =>
+      inner.replace(
+        /Content-transfer-encoding: base64(\r\nContent-identifier: SHARED)/,
+        'Content-transfer-encoding: BASE64$1',
+      ),
   }),
   'unknown-sigalg.internalconf': resign(v6, {
-    editSigHeaders: (h) => h.replace(/Signature-Algorithm-Id: [^\r]+/, 'Signature-Algorithm-Id: http://example.com/rot13'),
+    editSigHeaders: (h) =>
+      h.replace(/Signature-Algorithm-Id: [^\r]+/, 'Signature-Algorithm-Id: http://example.com/rot13'),
   }),
   'two-shared.internalconf': resign(v6, {
     edit: (inner) => {
-      const m = /--[^\r]+\r\nContent-type[^]*?SHARED-PARAMETERS[^]*?\r\n\r\n[^\r]+\r\n/.exec(inner)!;
+      const m = /--[^\r]+\r\nContent-type[\s\S]*?SHARED-PARAMETERS[\s\S]*?\r\n\r\n[^\r]+\r\n/.exec(inner)!;
       return inner.replace(m[0], m[0] + m[0]);
     },
   }),
   // V12 Content-location escapes.
-  'location-evil-host.internalconf': resign(v6, { edit: (inner) => inner.replace(sharedBlock, '$1//evil.example/x.xml') }),
+  'location-evil-host.internalconf': resign(v6, {
+    edit: (inner) => inner.replace(sharedBlock, '$1//evil.example/x.xml'),
+  }),
   'location-dotdot.internalconf': resign(v6, { edit: (inner) => inner.replace(sharedBlock, '$1/V6/../x.xml') }),
   // Version header that disagrees with ?version=6.
   'version-5.internalconf': resign(v6, { edit: (inner) => inner.replace('Version: 6', 'Version: 5') }),

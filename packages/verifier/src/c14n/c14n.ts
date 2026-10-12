@@ -60,7 +60,7 @@ function inheritedXmlAttrs(el: XElement): Map<string, string> {
     const attrs = (p as XElement).attributes;
     for (let i = 0; i < attrs.length; i++) {
       const a = attrs.item(i)!;
-      if (a.namespaceURI === XML_NS && !m.has((a.localName ?? a.name))) m.set((a.localName ?? a.name), a.value);
+      if (a.namespaceURI === XML_NS && !m.has(a.localName ?? a.name)) m.set(a.localName ?? a.name, a.value);
     }
   }
   return m;
@@ -121,9 +121,7 @@ function renderElement(
       if (!ownXml.has(local)) attrs.push({ ns: XML_NS, local, name: `xml:${local}`, value });
     }
   }
-  attrs.sort((a, b) =>
-    a.ns !== b.ns ? (a.ns < b.ns ? -1 : 1) : a.local < b.local ? -1 : a.local > b.local ? 1 : 0,
-  );
+  attrs.sort((a, b) => (a.ns !== b.ns ? (a.ns < b.ns ? -1 : 1) : a.local < b.local ? -1 : a.local > b.local ? 1 : 0));
 
   out.push('<', el.tagName);
   for (const [p, u] of nsToRender) out.push(p === '' ? ' xmlns="' : ` xmlns:${p}="`, escAttr(u), '"');
@@ -156,9 +154,7 @@ function pi(n: XProcessingInstruction): string {
 }
 
 function escText(s: string): string {
-  return s.replace(/[&<>\r]/g, (c) =>
-    c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : '&#xD;',
-  );
+  return s.replace(/[&<>\r]/g, (c) => (c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : '&#xD;'));
 }
 
 function escAttr(s: string): string {

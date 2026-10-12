@@ -18,17 +18,17 @@
  *
  * Every non-CodedError goes through translateException.
  */
-import { ENTRY_SIGNATURE, readContainer } from './container/read';
-import { verifySignatureHashChain, verifyTimestampHashChain, type AttachmentDigest } from './hashchain';
-import { parseMessage } from './header/index';
-import { verifyCertificateChain } from './certpath';
-import { trustedCert } from './ocsp/verify';
+
 import { verifySignerName } from './binding';
+import { verifyCertificateChain } from './certpath';
+import { ENTRY_SIGNATURE, readContainer } from './container/read';
+import { type AttachmentDigest, verifySignatureHashChain, verifyTimestampHashChain } from './hashchain';
+import { parseMessage } from './header/index';
+import { trustedCert } from './ocsp/verify';
 import { certSummary } from './result';
 import { parseTimestampToken, verifyTimestampToken } from './timestamp';
 import type { TrustContext, VerificationResult } from './types';
 import { CodedError, ErrorCodes, translateException } from './util/errors';
-import { loadSignatureDocument, type SignatureHooks } from './xml/signature-doc';
 import {
   checkMessagePartsReferenced,
   checkRequiredReferences,
@@ -39,6 +39,7 @@ import {
   readSignatureModel,
   verifySignatureValue,
 } from './xades';
+import { loadSignatureDocument, type SignatureHooks } from './xml/signature-doc';
 
 export interface VerifyOptions {
   /** Wall clock for the non-main instance visibility filter (default: new Date()). */

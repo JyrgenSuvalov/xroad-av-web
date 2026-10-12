@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { parseNextUpdateParams, parseSharedParams, toTrustedCert } from '../../src/globalconf/index';
 import { toHex } from '../../src/util/bytes';
-import { FIXTURE, SP_LOCATION, V6_EXPIRE, fixtureSharedParams, fixtureTrust } from './helpers';
+import { FIXTURE, fixtureSharedParams, fixtureTrust, SP_LOCATION, V6_EXPIRE } from './helpers';
 
 const FIVRK = 'ee.ria.xroad.common.certificateprofile.impl.FiVRKCertificateProfileInfoProvider';
 const cn = (der: Uint8Array) =>
@@ -30,7 +30,10 @@ describe('parseSharedParams', () => {
     const der = parseSharedParams(fixtureSharedParams()).approvedCAs[0]!.topCA.cert;
     const b64 = Buffer.from(der).toString('base64');
     const pem = `-----BEGIN CERTIFICATE-----\n${b64.replace(/.{64}/g, '$&\n')}\n-----END CERTIFICATE-----\n`;
-    const xml = fixtureXml().replace(/(<topCA>\s*<cert>)[^<]+/, (_, open: string) => open + Buffer.from(pem).toString('base64'));
+    const xml = fixtureXml().replace(
+      /(<topCA>\s*<cert>)[^<]+/,
+      (_, open: string) => open + Buffer.from(pem).toString('base64'),
+    );
     expect(toHex(parseSharedParams(xml).approvedCAs[0]!.topCA.cert)).toBe(toHex(der));
   });
 

@@ -13,12 +13,8 @@ import { defineConfig, type Plugin } from 'vite';
 // directory (e.g. /globalconf/internalconf) and `/globalconf` + Content-location
 // for parts. GLOBALCONF_UPSTREAM may be the full downloadURL; only its origin is used.
 const repoRoot = resolve(import.meta.dirname, '../..');
-const upstream = new URL(
-  process.env.GLOBALCONF_UPSTREAM ?? 'https://cs.example.org/internalconf',
-).origin;
-const anchorPath = resolve(
-  process.env.ANCHOR_PATH ?? resolve(repoRoot, 'docker/anchor.example.xml'),
-);
+const upstream = new URL(process.env.GLOBALCONF_UPSTREAM ?? 'https://cs.example.org/internalconf').origin;
+const anchorPath = resolve(process.env.ANCHOR_PATH ?? resolve(repoRoot, 'docker/anchor.example.xml'));
 
 function devAnchorAndProxyGuard(): Plugin {
   return {

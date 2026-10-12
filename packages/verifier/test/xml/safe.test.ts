@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { canonicalizeToString } from '../../src/c14n/c14n';
-import { CodedError, translateException } from '../../src/util/errors';
 import { decodeBase64Lenient, isJavaBlank } from '../../src/util/bytes';
+import { CodedError, translateException } from '../../src/util/errors';
 import { firstElementByTagName, parseXml } from '../../src/xml/safe';
 
 describe('parseXml', () => {
@@ -28,7 +28,9 @@ describe('parseXml', () => {
 
 describe('c14n', () => {
   it('renders in-scope namespaces and inherited xml:* on the apex, sorted', () => {
-    const d = parseXml('<r xmlns="d" xmlns:b="B" xmlns:a="A" xml:lang="en"><a:x z="1" a:y="&lt;&#9;" b="2">t&gt;&#13;</a:x></r>');
+    const d = parseXml(
+      '<r xmlns="d" xmlns:b="B" xmlns:a="A" xml:lang="en"><a:x z="1" a:y="&lt;&#9;" b="2">t&gt;&#13;</a:x></r>',
+    );
     const x = firstElementByTagName(d, 'a:x')!;
     expect(canonicalizeToString(x)).toBe(
       '<a:x xmlns="d" xmlns:a="A" xmlns:b="B" b="2" z="1" a:y="&lt;&#x9;" xml:lang="en">t&gt;&#xD;</a:x>',

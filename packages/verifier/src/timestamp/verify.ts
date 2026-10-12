@@ -18,14 +18,14 @@
  */
 
 import * as asn1js from 'asn1js';
-import * as pkijs from 'pkijs';
-import type { TrustContext, TrustedCert } from '../types';
-import { CodedError, ErrorCodes } from '../util/errors';
-import { UnsupportedAlgorithmError, digestByOid, sha1, verifyByOid } from '../trust/crypto';
-import { bytesEqual } from '../util/bytes';
+import type * as pkijs from 'pkijs';
+import { digestByOid, sha1, UnsupportedAlgorithmError, verifyByOid } from '../trust/crypto';
 import { elementDer, octetStringBytes, primitiveBytes, timeValue } from '../trust/der';
 import { trustQueries } from '../trust/queries';
 import { issuerDer, x500Equal } from '../trust/x500';
+import type { TrustContext, TrustedCert } from '../types';
+import { bytesEqual } from '../util/bytes';
+import { CodedError, ErrorCodes } from '../util/errors';
 import { parseTimestampToken, type SignerIdentifier, type TimestampToken } from './token';
 
 export interface TimestampVerification {
@@ -133,11 +133,13 @@ async function verifySignerInfo(token: TimestampToken, cert: pkijs.Certificate):
   const unsigned = si.unsignedAttrs?.attributes ?? [];
 
   const single = (oid: string, name: string): asn1js.AsnType | null => {
-    if (unsigned.some((a) => a.type === oid)) throw new SignerInfoError(`The ${name} attribute MUST NOT be an unsigned attribute`);
+    if (unsigned.some((a) => a.type === oid))
+      throw new SignerInfoError(`The ${name} attribute MUST NOT be an unsigned attribute`);
     const all = signed.filter((a) => a.type === oid);
     if (all.length === 0) return null;
     if (all.length > 1) throw new SignerInfoError(`multiple instances of the ${name} attribute`);
-    if (all[0]!.values.length !== 1) throw new SignerInfoError(`A ${name} attribute MUST have a single attribute value`);
+    if (all[0]!.values.length !== 1)
+      throw new SignerInfoError(`A ${name} attribute MUST have a single attribute value`);
     return all[0]!.values[0] as asn1js.AsnType;
   };
 
@@ -153,7 +155,8 @@ async function verifySignerInfo(token: TimestampToken, cert: pkijs.Certificate):
 
   // content-type
   const ct = single(OID_CONTENT_TYPE, 'content-type');
-  if (!ct) throw new SignerInfoError('The content-type attribute type MUST be present whenever signed attributes are present');
+  if (!ct)
+    throw new SignerInfoError('The content-type attribute type MUST be present whenever signed attributes are present');
   if (!(ct instanceof asn1js.ObjectIdentifier) || ct.valueBlock.toString() !== token.eContentType) {
     throw new SignerInfoError('content-type attribute value does not match eContentType');
   }
@@ -163,13 +166,15 @@ async function verifySignerInfo(token: TimestampToken, cert: pkijs.Certificate):
     throw new SignerInfoError('A cmsAlgorithmProtect attribute MUST be a signed attribute');
   }
   const protect = signed.filter((a) => a.type === OID_CMS_ALGORITHM_PROTECT);
-  if (protect.length > 1) throw new SignerInfoError('Only one instance of a cmsAlgorithmProtect attribute can be present');
+  if (protect.length > 1)
+    throw new SignerInfoError('Only one instance of a cmsAlgorithmProtect attribute can be present');
   if (protect.length === 1) checkAlgorithmProtection(protect[0]!, si);
 
   // message-digest
   const md = single(OID_MESSAGE_DIGEST, 'message-digest');
   if (!md) throw new SignerInfoError('the message-digest signed attribute type MUST be present');
-  if (!(md instanceof asn1js.OctetString)) throw new SignerInfoError('message-digest attribute value not of ASN.1 type OCTET STRING');
+  if (!(md instanceof asn1js.OctetString))
+    throw new SignerInfoError('message-digest attribute value not of ASN.1 type OCTET STRING');
   const contentDigest = await digestByOid(si.digestAlgorithm.algorithmId, token.eContent);
   if (!bytesEqual(contentDigest, octetStringBytes(md))) {
     throw new SignerInfoError('message-digest attribute value does not match calculated value');
@@ -180,7 +185,8 @@ async function verifySignerInfo(token: TimestampToken, cert: pkijs.Certificate):
     throw new SignerInfoError('A countersignature attribute MUST NOT be a signed attribute');
   }
   for (const a of unsigned.filter((x) => x.type === OID_COUNTER_SIGNATURE)) {
-    if (a.values.length < 1) throw new SignerInfoError('A countersignature attribute MUST contain at least one AttributeValue');
+    if (a.values.length < 1)
+      throw new SignerInfoError('A countersignature attribute MUST contain at least one AttributeValue');
   }
 
   const ok = await verifyByOid({
@@ -205,7 +211,7 @@ function derSignedAttributes(si: pkijs.SignerInfo): Uint8Array {
   const raw = new Uint8Array(si.signedAttrs!.encodedValue);
   const parsed = asn1js.fromBER(raw);
   const items =
-    parsed.offset === -1 ? [] : (parsed.result.valueBlock as unknown as { value: asn1js.AsnType[] }).value ?? [];
+    parsed.offset === -1 ? [] : ((parsed.result.valueBlock as unknown as { value: asn1js.AsnType[] }).value ?? []);
   const encs = items.map(elementDer).sort(compareDer);
   const body = new Uint8Array(encs.reduce((n, e) => n + e.length, 0));
   let off = 0;

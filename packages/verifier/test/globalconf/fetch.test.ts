@@ -1,17 +1,17 @@
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { GlobalConfError, fetchVerifiedConf, loadAnchor } from '../../src/globalconf/index';
+import { fetchVerifiedConf, GlobalConfError, loadAnchor } from '../../src/globalconf/index';
 import {
   FRESH,
-  V6_EXPIRE,
-  V6_SP_PATH,
-  VECTORS,
   fakeFetch,
   fixtureAnchor,
   fixtureDirectory,
   fixtureSharedParams,
   read,
   testAnchor,
+  V6_EXPIRE,
+  V6_SP_PATH,
+  VECTORS,
   vector,
 } from './helpers';
 
@@ -47,7 +47,10 @@ describe('fetchVerifiedConf', () => {
   });
 
   it('steps down on 404 only ', async () => {
-    const f = fakeFetch({ [`${DIR}?version=5`]: vector('version-5.internalconf'), [V6_SP_PATH]: fixtureSharedParams() });
+    const f = fakeFetch({
+      [`${DIR}?version=5`]: vector('version-5.internalconf'),
+      [V6_SP_PATH]: fixtureSharedParams(),
+    });
     const c = await fetchVerifiedConf(f, testAnchor(), { now: FRESH });
     expect(f.calls).toEqual([`${DIR}?version=6`, `${DIR}?version=5`, V6_SP_PATH]);
     expect(c.directory.version).toBe(5);
@@ -73,12 +76,18 @@ describe('fetchVerifiedConf', () => {
   });
 
   it('V7: one byte changed in shared-params → PART_HASH_MISMATCH', async () => {
-    const f = fakeFetch({ [`${DIR}?version=6`]: fixtureDirectory(), [V6_SP_PATH]: vector('shared-params-tampered.xml') });
+    const f = fakeFetch({
+      [`${DIR}?version=6`]: fixtureDirectory(),
+      [V6_SP_PATH]: vector('shared-params-tampered.xml'),
+    });
     expect(await code(fetchVerifiedConf(f, fixtureAnchor(), { now: FRESH }))).toBe('PART_HASH_MISMATCH');
   });
 
   it('V8: re-signed directory with a wrong SHARED-PARAMETERS hash → PART_HASH_MISMATCH', async () => {
-    const f = fakeFetch({ [`${DIR}?version=6`]: vector('part-hash-resigned.internalconf'), [V6_SP_PATH]: fixtureSharedParams() });
+    const f = fakeFetch({
+      [`${DIR}?version=6`]: vector('part-hash-resigned.internalconf'),
+      [V6_SP_PATH]: fixtureSharedParams(),
+    });
     expect(await code(fetchVerifiedConf(f, testAnchor(), { now: FRESH }))).toBe('PART_HASH_MISMATCH');
   });
 
@@ -107,7 +116,6 @@ describe('fetchVerifiedConf', () => {
     });
     await fetchVerifiedConf(f, fixtureAnchor(), { now: FRESH, base: '/x/gc/' });
   });
-
 });
 
 describe('loadAnchor', () => {

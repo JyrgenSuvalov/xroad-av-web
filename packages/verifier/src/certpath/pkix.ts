@@ -23,8 +23,8 @@
  *   the build.
  */
 import type * as pkijs from 'pkijs';
-import { CodedError, ErrorCodes } from '../util/errors';
 import { certSignedBy } from '../ocsp/verify';
+import { CodedError, ErrorCodes } from '../util/errors';
 
 export const PKIX_BUILD_FAILURE = 'unable to find valid certification path to requested target';
 

@@ -7,7 +7,7 @@
   import TrustPanel from './components/TrustPanel.svelte';
   import Verdict from './components/Verdict.svelte';
   import { fmtUtc } from './lib/format';
-  import { type MessageViewResult, digestStatus, loadMessageView } from './lib/messageView';
+  import { digestStatus, loadMessageView, type MessageViewResult } from './lib/messageView';
   import { TrustStore, type TrustView } from './lib/trust.svelte';
 
   /** Dropped-file limit, checked before reading. The core enforces per-entry and total limits. */

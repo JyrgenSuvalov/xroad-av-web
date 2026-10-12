@@ -1,7 +1,7 @@
-import { zipSync, strToU8 } from 'fflate';
+import { strToU8, zipSync } from 'fflate';
 import { describe, expect, it } from 'vitest';
-import { readContainer, MIMETYPE } from '../../src/container/read';
-import { readZipEntries, DEFAULT_LIMITS } from '../../src/container/zip';
+import { MIMETYPE, readContainer } from '../../src/container/read';
+import { DEFAULT_LIMITS, readZipEntries } from '../../src/container/zip';
 import { CodedError } from '../../src/util/errors';
 
 const SIG_EMBEDDED = `<asic:XAdESSignatures xmlns:asic="http://uri.etsi.org/02918/v1.2.1#" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#"><ds:Signature Id="signature"><ds:SignedInfo/><ds:Object><xades:EncapsulatedTimeStamp>QUJD&#13;
@@ -41,17 +41,54 @@ describe('readContainer', () => {
   it.each([
     ['non-zip input', () => new Uint8Array([1, 2, 3]), 'asic_mime_type_not_found'],
     ['missing mimetype', () => zip({ ...base(), mimetype: ' \n' }), 'asic_mime_type_not_found'],
-    ['bad mimetype (trailing newline)', () => zip({ ...base(), mimetype: MIMETYPE + '\n' }), 'asic_invalid_mime_type'],
+    ['bad mimetype (trailing newline)', () => zip({ ...base(), mimetype: `${MIMETYPE}\n` }), 'asic_invalid_mime_type'],
     ['mimetype case-insensitive', () => zip({ ...base(), mimetype: MIMETYPE.toUpperCase() }), 'ok'],
-    ['MESSAGE.XML is not message.xml', () => { const b: Record<string, string> = base(); delete b['message.xml']; b['MESSAGE.XML'] = '<m/>'; return zip(b); }, 'asic_message_not_found'],
+    [
+      'MESSAGE.XML is not message.xml',
+      () => {
+        const b: Record<string, string> = base();
+        delete b['message.xml'];
+        b['MESSAGE.XML'] = '<m/>';
+        return zip(b);
+      },
+      'asic_message_not_found',
+    ],
     ['missing signature', () => zip({ mimetype: MIMETYPE, 'message.xml': '<m/>' }), 'asic_signature_not_found'],
-    ['sig chain without result', () => zip({ ...base(), 'sig-hashchain.xml': '<a/>' }), 'asic_hash_chain_result_not_found'],
-    ['sig result without chain', () => zip({ ...base(), 'sig-hashchainresult.xml': '<a/>' }), 'asic_hash_chain_not_found'],
-    ['empty timestamp.tst', () => zip({ ...base(), 'META-INF/timestamp.tst': new Uint8Array() }), 'asic_timestamp_not_found'],
-    ['no timestamp anywhere', () => zip({ ...base(), 'META-INF/signatures.xml': SIG_EMBEDDED.replace(/<ds:Object>.*<\/ds:Object>/s, '<ds:Object/>') }), 'malformed_signature'],
+    [
+      'sig chain without result',
+      () => zip({ ...base(), 'sig-hashchain.xml': '<a/>' }),
+      'asic_hash_chain_result_not_found',
+    ],
+    [
+      'sig result without chain',
+      () => zip({ ...base(), 'sig-hashchainresult.xml': '<a/>' }),
+      'asic_hash_chain_not_found',
+    ],
+    [
+      'empty timestamp.tst',
+      () => zip({ ...base(), 'META-INF/timestamp.tst': new Uint8Array() }),
+      'asic_timestamp_not_found',
+    ],
+    [
+      'no timestamp anywhere',
+      () =>
+        zip({
+          ...base(),
+          'META-INF/signatures.xml': SIG_EMBEDDED.replace(/<ds:Object>.*<\/ds:Object>/s, '<ds:Object/>'),
+        }),
+      'malformed_signature',
+    ],
     ['no ds:Signature', () => zip({ ...base(), 'META-INF/signatures.xml': '<x/>' }), 'malformed_signature'],
-    ['DOCTYPE in signatures.xml', () => zip({ ...base(), 'META-INF/signatures.xml': '<!DOCTYPE x>' + SIG_EMBEDDED }), 'invalid_xml'],
-    ['ts chain without result', () => zip({ ...base(), 'ts-hashchain.xml': '<a/>' }), 'asic_hash_chain_result_not_found'],
+    [
+      'DOCTYPE in signatures.xml',
+      () => zip({ ...base(), 'META-INF/signatures.xml': `<!DOCTYPE x>${SIG_EMBEDDED}` }),
+      'invalid_xml',
+    ],
+    [
+      'ts chain without result',
+      () => zip({ ...base(), 'ts-hashchain.xml': '<a/>' }),
+      'asic_hash_chain_result_not_found',
+    ],
     ['blank manifest', () => zip({ ...base(), 'META-INF/manifest.xml': ' ' }), 'asic_manifest_not_found'],
   ])('%s', async (_n, mk, expected) => {
     expect(await code(readContainer(mk()))).toBe(expected);

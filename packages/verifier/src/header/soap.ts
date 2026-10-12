@@ -16,11 +16,11 @@
 import { CodedError, ErrorCodes } from '../util/errors';
 import { childElements, directText, parseXml, type XElement } from '../xml/safe';
 import {
+  type ClientId,
   createClientId,
   createSecurityServerId,
   createServiceId,
   IdentifierError,
-  type ClientId,
   type SecurityServerId,
   type ServiceId,
 } from './ids';
@@ -61,7 +61,10 @@ const is = (el: XElement, ns: string, local: string) => el.namespaceURI === ns &
 const qn = (ns: string, local: string) => `{${ns}}${local}`;
 
 function duplicate(ns: string, local: string): CodedError {
-  return new CodedError(ErrorCodes.X_DUPLICATE_HEADER_FIELD, `Malformed SOAP message: duplicate header field ${qn(ns, local)}`);
+  return new CodedError(
+    ErrorCodes.X_DUPLICATE_HEADER_FIELD,
+    `Malformed SOAP message: duplicate header field ${qn(ns, local)}`,
+  );
 }
 
 /** XRoadIdentifierHeaderHandler: objectType check (openTag) and the allowed id:* children. */
@@ -114,7 +117,12 @@ function readHeader(headerEl: XElement, h: SoapHeaderFields): void {
         case 'client': {
           if (h.client != null) throw duplicate(NS_XROAD, 'client');
           const v = readIdentifier(el, ['MEMBER', 'SUBSYSTEM'], ID_CLIENT);
-          h.client = createClientId(v.get('xRoadInstance'), v.get('memberClass'), v.get('memberCode'), v.get('subsystemCode'));
+          h.client = createClientId(
+            v.get('xRoadInstance'),
+            v.get('memberClass'),
+            v.get('memberCode'),
+            v.get('subsystemCode'),
+          );
           break;
         }
         case 'service': {
@@ -133,7 +141,12 @@ function readHeader(headerEl: XElement, h: SoapHeaderFields): void {
         case 'securityServer': {
           if (h.securityServer != null) throw duplicate(NS_XROAD, 'securityServer');
           const v = readIdentifier(el, ['SERVER'], ID_SERVER);
-          h.securityServer = createSecurityServerId(v.get('xRoadInstance'), v.get('memberClass'), v.get('memberCode'), v.get('serverCode'));
+          h.securityServer = createSecurityServerId(
+            v.get('xRoadInstance'),
+            v.get('memberClass'),
+            v.get('memberCode'),
+            v.get('serverCode'),
+          );
           break;
         }
         case 'requestHash':
@@ -169,7 +182,11 @@ function readBody(bodyEl: XElement): BodyState {
   for (const el of childElements(bodyEl)) {
     if (is(el, NS_SOAPENV, 'Fault')) b.fault = true;
     else if (b.serviceName == null) b.serviceName = el.localName ?? '';
-    else throw new CodedError(ErrorCodes.X_INVALID_BODY, 'Malformed SOAP message: body must have exactly one child element');
+    else
+      throw new CodedError(
+        ErrorCodes.X_INVALID_BODY,
+        'Malformed SOAP message: body must have exactly one child element',
+      );
   }
   return b;
 }
@@ -181,9 +198,11 @@ function validateEnvelope(headerSeen: boolean, h: SoapHeaderFields, body: BodySt
   if (h.protocolVersion == null) throw missing('protocolVersion');
   if (h.client == null) throw missing('client');
   if (h.queryId == null) throw missing('id');
-  if (h.service == null) throw new CodedError(ErrorCodes.X_MISSING_HEADER_FIELD, 'Malformed SOAP message: service missing');
+  if (h.service == null)
+    throw new CodedError(ErrorCodes.X_MISSING_HEADER_FIELD, 'Malformed SOAP message: service missing');
   if (body == null) throw new CodedError(ErrorCodes.X_MISSING_BODY, 'Malformed SOAP message: body missing');
-  if (body.serviceName == null) throw new CodedError(ErrorCodes.X_INVALID_BODY, 'Malformed SOAP message: body must have exactly one child element');
+  if (body.serviceName == null)
+    throw new CodedError(ErrorCodes.X_INVALID_BODY, 'Malformed SOAP message: body must have exactly one child element');
   if (!body.serviceName.startsWith(h.service.serviceCode)) {
     throw new CodedError(
       ErrorCodes.X_INCONSISTENT_HEADERS,
@@ -226,7 +245,8 @@ export function parseSoap(text: string): SoapParseResult {
   } catch (e) {
     if (e instanceof CodedError) return result(e);
     // Identifier validation (Java IllegalArgumentException → translateException → internal_error).
-    if (e instanceof IdentifierError) return result(new CodedError(ErrorCodes.X_INTERNAL_ERROR, e.message, { cause: e }));
+    if (e instanceof IdentifierError)
+      return result(new CodedError(ErrorCodes.X_INTERNAL_ERROR, e.message, { cause: e }));
     throw e;
   }
   return result();

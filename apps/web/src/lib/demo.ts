@@ -208,7 +208,11 @@ export function demoTrust(kind: string | null, now: Date): TrustView | null {
         expired: true,
         expireDate: new Date(now.getTime() - 3 * 60_000),
         lastSuccess: new Date(now.getTime() - 13 * 60_000),
-        error: { code: 'FETCH_FAILED', message: 'HTTP 502 for /globalconf/internalconf?version=6', at: base.lastAttempt! },
+        error: {
+          code: 'FETCH_FAILED',
+          message: 'HTTP 502 for /globalconf/internalconf?version=6',
+          at: base.lastAttempt!,
+        },
       };
     case 'failed':
       return {
@@ -221,7 +225,15 @@ export function demoTrust(kind: string | null, now: Date): TrustView | null {
         },
       };
     case 'none':
-      return { ...base, status: 'none', instanceId: null, confVersion: null, expireDate: null, lastSuccess: null, loading: true };
+      return {
+        ...base,
+        status: 'none',
+        instanceId: null,
+        confVersion: null,
+        expireDate: null,
+        lastSuccess: null,
+        loading: true,
+      };
     default:
       return null;
   }

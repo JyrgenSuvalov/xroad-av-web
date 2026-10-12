@@ -83,7 +83,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font: 16px/1.5 var(--font);
+  font: 16px / 1.5 var(--font);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -137,6 +137,7 @@ a {
 }
 
 .visually-hidden {
+  /* biome-ignore lint/complexity/noImportantStyles: utility must win over component styles */
   position: absolute !important;
   width: 1px;
   height: 1px;

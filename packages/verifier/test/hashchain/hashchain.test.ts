@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { encodeDigestList } from '../../src/hashchain/der';
 import { verifySignatureHashChain, verifyTimestampHashChain } from '../../src/hashchain/asic';
-import { verifyHashChain, type HashChainReferenceResolver } from '../../src/hashchain/verifier';
+import { encodeDigestList } from '../../src/hashchain/der';
+import { type HashChainReferenceResolver, verifyHashChain } from '../../src/hashchain/verifier';
 import { encodeUtf8, toHex } from '../../src/util/bytes';
 import { CodedError } from '../../src/util/errors';
 import {
@@ -274,7 +274,8 @@ describe('verifyHashChain (multi-step, limits)', () => {
   it('DataRef that should resolve but cannot → invalid_reference', async () => {
     const resolver: HashChainReferenceResolver = {
       shouldResolve: () => true,
-      resolve: (uri) => (uri === '/c.xml' ? encodeUtf8(chainXml([step('S', dataRef('/gone', new Uint8Array(64)))])) : null),
+      resolve: (uri) =>
+        uri === '/c.xml' ? encodeUtf8(chainXml([step('S', dataRef('/gone', new Uint8Array(64)))])) : null,
     };
     const e = await fault(verifyHashChain(resultXml('/c.xml#S', new Uint8Array(64)), resolver, []));
     expect(e.faultCode).toBe('invalid_reference');
@@ -297,7 +298,7 @@ describe('verifyTimestampHashChain', () => {
     return {
       result,
       container: fakeContainer({
-        'META-INF/signatures.xml': tamper ? signatures + ' ' : signatures,
+        'META-INF/signatures.xml': tamper ? `${signatures} ` : signatures,
         'ts-hashchain.xml': chain,
         'ts-hashchainresult.xml': result,
       }),

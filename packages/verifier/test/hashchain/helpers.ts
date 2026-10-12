@@ -1,9 +1,9 @@
 // Builders for hand-made hash chains and a minimal in-memory AsicContainer.
 import type { AsicContainer } from '../../src/container/read';
 import { stripSlash } from '../../src/container/read';
-import { encodeBase64, encodeUtf8, sha512 } from '../../src/util/bytes';
 import { encodeDigestList } from '../../src/hashchain/der';
 import { DIGEST_URIS } from '../../src/hashchain/digest';
+import { encodeBase64, encodeUtf8, sha512 } from '../../src/util/bytes';
 
 export const SHA512 = DIGEST_URIS.SHA512;
 export const b64 = encodeBase64;
@@ -31,13 +31,13 @@ export function fakeContainer(
   };
 }
 
-const HEAD =
-  '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
+const HEAD = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
 const NS = 'xmlns="http://www.w3.org/2000/09/xmldsig#" xmlns:ns2="http://cyber.ee/hashchain"';
 
 export const dataRef = (uri: string, digest: Uint8Array) =>
   `<ns2:DataRef URI="${uri}"><DigestValue>${b64(digest)}</DigestValue></ns2:DataRef>`;
-export const hashValue = (digest: Uint8Array) => `<ns2:HashValue><DigestValue>${b64(digest)}</DigestValue></ns2:HashValue>`;
+export const hashValue = (digest: Uint8Array) =>
+  `<ns2:HashValue><DigestValue>${b64(digest)}</DigestValue></ns2:HashValue>`;
 export const stepRef = (uri: string) => `<ns2:StepRef URI="${uri}"/>`;
 export const step = (id: string, ...values: string[]) => `<ns2:HashStep id="${id}">${values.join('')}</ns2:HashStep>`;
 

@@ -29,10 +29,15 @@
  *   containerHasEntry(container, uri)   - AsicContainer.hasEntry (text entries only)
  */
 import type { AsicContainer } from '../container/read';
-import { ENTRY_SIG_HASH_CHAIN_RESULT, ENTRY_TIMESTAMP, ENTRY_TS_HASH_CHAIN_RESULT, stripSlash } from '../container/read';
+import {
+  ENTRY_SIG_HASH_CHAIN_RESULT,
+  ENTRY_TIMESTAMP,
+  ENTRY_TS_HASH_CHAIN_RESULT,
+  stripSlash,
+} from '../container/read';
 import { bytesEqual, encodeUtf8, toHex } from '../util/bytes';
 import { CodedError, ErrorCodes, translateException } from '../util/errors';
-import { verifyHashChain, type HashChainReferenceResolver } from './verifier';
+import { type HashChainReferenceResolver, verifyHashChain } from './verifier';
 
 export const URI_MESSAGE = '/message.xml';
 export const URI_SIGNATURE = '/META-INF/signatures.xml';

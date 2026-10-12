@@ -14,8 +14,8 @@
  *   childElements(el), textContent(node)
  */
 import {
-  DOMParser,
   type Comment,
+  DOMParser,
   type Document,
   type Element,
   type Node,
@@ -48,12 +48,12 @@ export function parseXml(text: string, errorCode: string = ErrorCodes.X_INVALID_
   });
   let doc: XDocument;
   try {
-    doc = parser.parseFromString(text, 'text/xml') ;
+    doc = parser.parseFromString(text, 'text/xml');
   } catch (e) {
     if (e instanceof CodedError) throw e;
     throw new CodedError(errorCode, e instanceof Error ? e.message : String(e), { cause: e });
   }
-  if (!doc || !doc.documentElement) throw new CodedError(errorCode, 'No root element');
+  if (!doc?.documentElement) throw new CodedError(errorCode, 'No root element');
   for (let n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType === DOCTYPE) throw new CodedError(errorCode, 'DOCTYPE is disallowed');
   }

@@ -57,8 +57,6 @@ export function buildTrustContext(input: TrustContextInput): TrustContext {
     confVersion: main.confVersion,
     verifyOcspNextUpdate: input.verifyOcspNextUpdate ?? true,
     visibleInstances: (now: Date) =>
-      instances.filter(
-        (i) => i === main || i.expiresAt === null || Date.parse(i.expiresAt) > now.getTime(),
-      ),
+      instances.filter((i) => i === main || i.expiresAt === null || Date.parse(i.expiresAt) > now.getTime()),
   };
 }

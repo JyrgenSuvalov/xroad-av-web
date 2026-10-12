@@ -10,13 +10,13 @@
  */
 import { decodeBase64Lenient, decodeUtf8 } from '../util/bytes';
 import {
+  type ClientId,
   createClientId,
   createSecurityServerId,
   createServiceId,
-  serviceClientId,
-  type ClientId,
   type SecurityServerId,
   type ServiceId,
+  serviceClientId,
 } from './ids';
 
 export class RestError extends Error {

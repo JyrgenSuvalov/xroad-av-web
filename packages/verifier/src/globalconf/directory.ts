@@ -1,11 +1,11 @@
 // Signed configuration directory: MIME split, signature check against the anchor, inner parts.
 
+import { bytesEqual, decodeBase64Strict } from '../util/bytes';
 import type { ConfigurationAnchor } from './anchor';
 import { anchorCerts } from './anchor';
-import { bytesEqual, decodeBase64Strict } from '../util/bytes';
 import { certValidAt, digest, digestAlgorithm, parseCertificate, signatureAlgorithm, verifySignature } from './crypto';
 import { GlobalConfError } from './errors';
-import { type Headers, boundaryOf, splitEntity, splitMultipart } from './mime';
+import { boundaryOf, type Headers, splitEntity, splitMultipart } from './mime';
 
 export const SHARED_PARAMETERS = 'SHARED-PARAMETERS';
 export const PRIVATE_PARAMETERS = 'PRIVATE-PARAMETERS';
@@ -118,7 +118,10 @@ function param(params: string[], name: string): string | undefined {
   for (const p of params) {
     const i = p.indexOf('=');
     if (i < 0 || p.slice(0, i).trim().toLowerCase() !== name) continue;
-    return p.slice(i + 1).trim().replace(/^(['"])(.*)\1$/, '$2');
+    return p
+      .slice(i + 1)
+      .trim()
+      .replace(/^(['"])(.*)\1$/, '$2');
   }
   return undefined;
 }
@@ -168,7 +171,9 @@ function parseInner(
     throw malformed(`requested version ${expectedVersion}, directory says ${version}`);
   }
 
-  const dirParts = content.map((p) => contentPart(p.headers, signedBytes.subarray(p.bodyStart, p.bodyEnd), instanceIdentifier));
+  const dirParts = content.map((p) =>
+    contentPart(p.headers, signedBytes.subarray(p.bodyStart, p.bodyEnd), instanceIdentifier),
+  );
   const shared = dirParts.filter((p) => p.contentIdentifier === SHARED_PARAMETERS);
   if (shared.length !== 1) throw malformed(`expected exactly one ${SHARED_PARAMETERS} part, got ${shared.length}`);
   const sharedParams = shared[0]!;
@@ -207,7 +212,10 @@ function contentPart(h: Headers, body: Uint8Array, instanceIdentifier: string): 
     if (part.contentIdentifier === SHARED_PARAMETERS || part.contentIdentifier === PRIVATE_PARAMETERS) {
       if (instance === undefined) throw malformed(`${part.contentIdentifier}: instance missing`);
       if (instance !== instanceIdentifier) {
-        throw new GlobalConfError('INSTANCE_MISMATCH', `${part.contentIdentifier} instance '${instance}' ≠ anchor '${instanceIdentifier}'`);
+        throw new GlobalConfError(
+          'INSTANCE_MISMATCH',
+          `${part.contentIdentifier} instance '${instance}' ≠ anchor '${instanceIdentifier}'`,
+        );
       }
     }
   }

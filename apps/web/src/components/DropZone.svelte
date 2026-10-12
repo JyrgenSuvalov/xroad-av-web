@@ -55,6 +55,7 @@
   }
 </script>
 
+<!-- biome-ignore lint/a11y/useSemanticElements: drop target, not a form fieldset -->
 <div
   class="zone"
   class:dragging

@@ -169,7 +169,10 @@ export async function verifyByOid(input: VerifyByOidInput): Promise<boolean> {
   throw new UnsupportedAlgorithmError(`signature ${sigOid}`);
 }
 
-async function importOrNull(spki: BufferSource, alg: RsaHashedImportParams | EcKeyImportParams): Promise<CryptoKey | null> {
+async function importOrNull(
+  spki: BufferSource,
+  alg: RsaHashedImportParams | EcKeyImportParams,
+): Promise<CryptoKey | null> {
   try {
     return await subtle().importKey('spki', spki, alg, false, ['verify']);
   } catch {
@@ -198,7 +201,8 @@ function pssParams(alg: pkijs.AlgorithmIdentifier): { hash: Hash; saltLength: nu
         }
         case 1: {
           const oid = algOid(inner);
-          if (oid !== OID.mgf1 || !(inner instanceof asn1js.Sequence)) throw new UnsupportedAlgorithmError(`PSS MGF ${oid}`);
+          if (oid !== OID.mgf1 || !(inner instanceof asn1js.Sequence))
+            throw new UnsupportedAlgorithmError(`PSS MGF ${oid}`);
           const hOid = algOid(inner.valueBlock.value[1]);
           const h = hOid ? hashForDigestOid(hOid) : null;
           if (!h) throw new UnsupportedAlgorithmError(`MGF1 hash ${hOid}`);
@@ -209,7 +213,8 @@ function pssParams(alg: pkijs.AlgorithmIdentifier): { hash: Hash; saltLength: nu
           if (inner instanceof asn1js.Integer) saltLength = Number(inner.toBigInt());
           break;
         case 3:
-          if (inner instanceof asn1js.Integer && inner.toBigInt() !== 1n) throw new UnsupportedAlgorithmError('PSS trailerField');
+          if (inner instanceof asn1js.Integer && inner.toBigInt() !== 1n)
+            throw new UnsupportedAlgorithmError('PSS trailerField');
           break;
       }
     }

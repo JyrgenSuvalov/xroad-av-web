@@ -27,7 +27,7 @@ export function parseHeaderLines(text: string): Map<string, string> {
   if (/(^|[^\r])\n/.test(text)) throw malformed('header block is not CRLF-terminated');
   const lines: string[] = [];
   for (const line of text.split('\r\n')) {
-    if (/^[ \t]/.test(line) && lines.length > 0) lines[lines.length - 1] += ' ' + line.trim();
+    if (/^[ \t]/.test(line) && lines.length > 0) lines[lines.length - 1] += ` ${line.trim()}`;
     else lines.push(line);
   }
   for (const line of lines) {
@@ -69,15 +69,10 @@ export function splitEntity(bytes: Uint8Array): { headers: Map<string, string>; 
  * part's content ends right before it. Preamble and epilogue are ignored, as
  * mime4j does.
  */
-export function splitMultipart(
-  bytes: Uint8Array,
-  boundary: string,
-  start = 0,
-  end = bytes.length,
-): MimePart[] {
+export function splitMultipart(bytes: Uint8Array, boundary: string, start = 0, end = bytes.length): MimePart[] {
   const s = latin1(bytes.subarray(0, end));
-  const dash = '--' + boundary;
-  const delim = '\r\n' + dash;
+  const dash = `--${boundary}`;
+  const delim = `\r\n${dash}`;
 
   // First delimiter: at the very start of the body, or after a preamble line.
   let pos: number;

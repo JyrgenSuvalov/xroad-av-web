@@ -2,11 +2,11 @@
 // our own C14N of ds:SignedInfo.
 import * as pkijs from 'pkijs';
 import { C14N_10, canonicalize } from '../../src/c14n/c14n';
-import { encodeBase64, encodeUtf8 } from '../../src/util/bytes';
 import { DIGEST_URIS } from '../../src/hashchain/digest';
+import { encodeBase64, encodeUtf8 } from '../../src/util/bytes';
+import type { SigningCertificate } from '../../src/xades/cert';
 import { firstElementByTagName, parseXml } from '../../src/xml/safe';
 import { loadSignatureDocument, type SignatureDocument } from '../../src/xml/signature-doc';
-import type { SigningCertificate } from '../../src/xades/cert';
 import { hooks } from './pipeline';
 
 export const SHA512 = DIGEST_URIS.SHA512;

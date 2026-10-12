@@ -1,13 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { clientIdToString, parseMessage, serviceIdToString } from '../../src/header/index';
 import { createClientId, createServiceId } from '../../src/header/ids';
-import {
-  javaReadLines,
-  javaSplit,
-  parseRequestUri,
-  parseRest,
-  uriSegmentPercentDecode,
-} from '../../src/header/rest';
+import { clientIdToString, parseMessage, serviceIdToString } from '../../src/header/index';
+import { javaReadLines, javaSplit, parseRequestUri, parseRest, uriSegmentPercentDecode } from '../../src/header/rest';
 import { parseSoap } from '../../src/header/soap';
 
 // ---------- SOAP builders ----------
@@ -59,7 +53,11 @@ describe('identifiers', () => {
 describe('SOAP', () => {
   it('request: signer = client; display fields', () => {
     const p = parseMessage(env(STD_HEADER, '<xrd:getTodo><x>1</x></xrd:getTodo>'));
-    expect(p).toMatchObject({ kind: 'soap', direction: 'request', expectedSignerId: 'SUBSYSTEM:EXAMPLE/gov/00000002/consumer' });
+    expect(p).toMatchObject({
+      kind: 'soap',
+      direction: 'request',
+      expectedSignerId: 'SUBSYSTEM:EXAMPLE/gov/00000002/consumer',
+    });
     expect(p.signerError).toBeUndefined();
     expect(p.header).toEqual({
       client: 'SUBSYSTEM:EXAMPLE/gov/00000002/consumer',
@@ -98,7 +96,7 @@ describe('SOAP', () => {
 
   it('BOM, comments and whitespace are tolerated; values are not trimmed', () => {
     const h = STD_HEADER.replace('<xrd:id>q-1</xrd:id>', '<xrd:id> q<!-- c -->1 </xrd:id>');
-    const p = parseMessage('﻿' + env(h, '\n  <getTodo/>\n'));
+    const p = parseMessage(`﻿${env(h, '\n  <getTodo/>\n')}`);
     expect(p.signerError).toBeUndefined();
     expect(p.header.queryId).toBe(' q1 ');
   });
@@ -116,16 +114,36 @@ describe('SOAP', () => {
   describe('swallowed errors → signer null (internal_error at S3)', () => {
     it.each([
       ['missing header', env(null, '<getTodo/>'), 'missing_header'],
-      ['missing protocolVersion', env(STD_HEADER.replace(/<xrd:protocolVersion>.*<\/xrd:protocolVersion>/, ''), '<getTodo/>'), 'missing_header_field'],
+      [
+        'missing protocolVersion',
+        env(STD_HEADER.replace(/<xrd:protocolVersion>.*<\/xrd:protocolVersion>/, ''), '<getTodo/>'),
+        'missing_header_field',
+      ],
       ['missing client', env(STD_HEADER.replace(client(), ''), '<getTodo/>'), 'missing_header_field'],
       ['missing id', env(STD_HEADER.replace('<xrd:id>q-1</xrd:id>', ''), '<getTodo/>'), 'missing_header_field'],
       ['missing service', env(STD_HEADER.replace(service(), ''), '<getTodo/>'), 'missing_header_field'],
-      ['duplicate id', env(STD_HEADER + '<xrd:id>q-2</xrd:id>', '<getTodo/>'), 'duplicate_header_field'],
-      ['duplicate client part', env(STD_HEADER.replace('</id:memberCode>', '</id:memberCode><id:memberCode>x</id:memberCode>'), '<getTodo/>'), 'duplicate_header_field'],
+      ['duplicate id', env(`${STD_HEADER}<xrd:id>q-2</xrd:id>`, '<getTodo/>'), 'duplicate_header_field'],
+      [
+        'duplicate client part',
+        env(STD_HEADER.replace('</id:memberCode>', '</id:memberCode><id:memberCode>x</id:memberCode>'), '<getTodo/>'),
+        'duplicate_header_field',
+      ],
       ['protocol version not 4.x', env(STD_HEADER.replace('>4.0<', '>5.0<'), '<getTodo/>'), 'invalid_protocol_version'],
-      ['missing objectType', env(STD_HEADER.replace('xrd:client id:objectType="SUBSYSTEM"', 'xrd:client'), '<getTodo/>'), 'invalid_xml'],
-      ['unexpected objectType', env(STD_HEADER.replace('objectType="SUBSYSTEM"', 'objectType="SERVICE"'), '<getTodo/>'), 'invalid_xml'],
-      ['unknown objectType', env(STD_HEADER.replace('objectType="SUBSYSTEM"', 'objectType="FOO"'), '<getTodo/>'), 'invalid_xml'],
+      [
+        'missing objectType',
+        env(STD_HEADER.replace('xrd:client id:objectType="SUBSYSTEM"', 'xrd:client'), '<getTodo/>'),
+        'invalid_xml',
+      ],
+      [
+        'unexpected objectType',
+        env(STD_HEADER.replace('objectType="SUBSYSTEM"', 'objectType="SERVICE"'), '<getTodo/>'),
+        'invalid_xml',
+      ],
+      [
+        'unknown objectType',
+        env(STD_HEADER.replace('objectType="SUBSYSTEM"', 'objectType="FOO"'), '<getTodo/>'),
+        'invalid_xml',
+      ],
       ['blank member code', env(STD_HEADER.replace('>00000002<', '> <'), '<getTodo/>'), 'internal_error'],
       ['empty subsystem code', env(STD_HEADER.replace('>consumer<', '><'), '<getTodo/>'), 'internal_error'],
       ['missing body', env(STD_HEADER, null), 'missing_body'],
@@ -167,10 +185,18 @@ describe('SOAP', () => {
   });
 
   it('non-SOAP XML falls back to REST and fails as "Invalid message" (thrown)', () => {
-    for (const xml of ['<a/>', '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">', '   ']) {
+    for (const xml of [
+      '<a/>',
+      '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">',
+      '   ',
+    ]) {
       const p = parseMessage(xml);
       expect(p.kind).toBe('rest');
-      expect(p.signerError).toMatchObject({ faultCode: 'internal_error', faultString: 'Invalid message', thrown: true });
+      expect(p.signerError).toMatchObject({
+        faultCode: 'internal_error',
+        faultString: 'Invalid message',
+        thrown: true,
+      });
     }
   });
 });
@@ -196,7 +222,11 @@ const restThrown = (msg: string) => {
 describe('REST', () => {
   it('request: signer = X-Road-Client; display fields', () => {
     const p = parseMessage(REQ);
-    expect(p).toMatchObject({ kind: 'rest', direction: 'request', expectedSignerId: 'SUBSYSTEM:EXAMPLE/gov/00000002/client' });
+    expect(p).toMatchObject({
+      kind: 'rest',
+      direction: 'request',
+      expectedSignerId: 'SUBSYSTEM:EXAMPLE/gov/00000002/client',
+    });
     expect(p.header).toMatchObject({
       verb: 'GET',
       path: '/r1/EXAMPLE/gov/00000003/petstore/petstore/store/inventory',
@@ -212,7 +242,11 @@ describe('REST', () => {
 
   it('response: signer = client part of x-road-service', () => {
     const p = parseMessage(RESP);
-    expect(p).toMatchObject({ kind: 'rest', direction: 'response', expectedSignerId: 'SUBSYSTEM:EXAMPLE/gov/00000003/petstore' });
+    expect(p).toMatchObject({
+      kind: 'rest',
+      direction: 'response',
+      expectedSignerId: 'SUBSYSTEM:EXAMPLE/gov/00000003/petstore',
+    });
     expect(p.header).toMatchObject({ status: '200', reason: 'OK', requestHash: 'AAAA', queryId: 'qid' });
   });
 
@@ -242,15 +276,15 @@ describe('REST', () => {
     ['wrong protocol version', REQ.replace('/r1/', '/r2/')],
     ['bad protocol version', REQ.replace('/r1/', '/rx/')],
     ['blank service code in path', 'GET\n/r1/I/C/M/S/%20\n'],
-    ['empty line after headers', REQ + '\r\n'],
-    ['header without colon', REQ + 'garbage\r\n'],
-    ['hop-by-hop header', REQ + 'Host:x\r\n'],
+    ['empty line after headers', `${REQ}\r\n`],
+    ['header without colon', `${REQ}garbage\r\n`],
+    ['hop-by-hop header', `${REQ}Host:x\r\n`],
     ['leading space in X-Road-Client', REQ.replace('X-Road-Client:', 'X-Road-Client: ')],
     ['client with 2 parts', REQ.replace('EXAMPLE/gov/00000002/client', 'EXAMPLE/gov')],
     ['client with 5 parts', REQ.replace('EXAMPLE/gov/00000002/client', 'a/b/c/d/e')],
     ['client trailing slash (empty subsystem)', REQ.replace('EXAMPLE/gov/00000002/client', 'a/b/c/')],
-    ['bad security server', REQ + 'X-Road-Security-Server:a/b/c\r\n'],
-    ['bad represented party', REQ + 'X-Road-Represented-Party:a/b/c\r\n'],
+    ['bad security server', `${REQ}X-Road-Security-Server:a/b/c\r\n`],
+    ['bad represented party', `${REQ}X-Road-Represented-Party:a/b/c\r\n`],
     ['response: status not an int', RESP.replace('200', '200 OK')],
     ['response: status overflow', RESP.replace('200', '99999999999')],
     ['response: missing x-road-id', RESP.replace('x-road-id:qid\r\n', '')],
@@ -295,6 +329,7 @@ describe('REST helpers', () => {
     expect(parseRequestUri('/a/b?x=[1]#f')).toEqual({ rawPath: '/a/b', rawQuery: 'x=[1]' });
     expect(parseRequestUri('///a')).toEqual({ rawPath: '/a', rawQuery: null });
     expect(parseRequestUri('/ä')).toEqual({ rawPath: '/ä', rawQuery: null });
-    for (const bad of ['a:b', 'http://x/', '//h/a', '/a b', '/a[', '/%', '/a?b c']) expect(() => parseRequestUri(bad)).toThrow();
+    for (const bad of ['a:b', 'http://x/', '//h/a', '/a b', '/a[', '/%', '/a?b c'])
+      expect(() => parseRequestUri(bad)).toThrow();
   });
 });

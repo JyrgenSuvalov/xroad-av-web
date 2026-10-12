@@ -30,15 +30,15 @@
  */
 import * as asn1js from 'asn1js';
 import type * as pkijs from 'pkijs';
-import { CodedError, ErrorCodes } from '../util/errors';
-import type { TrustContext, TrustedCert } from '../types';
-import { trustQueries } from '../trust/queries';
-import { bytesEqual } from '../util/bytes';
 import { sha1, UnsupportedAlgorithmError, verifyByOid } from '../trust/crypto';
+import { trustQueries } from '../trust/queries';
 import { issuerDer, subjectDer, x500Equal } from '../trust/x500';
+import type { TrustContext, TrustedCert } from '../types';
+import { bytesEqual } from '../util/bytes';
+import { CodedError, ErrorCodes } from '../util/errors';
 import { parseCertificateDer } from '../xades/cert';
-import { basicResponse, type BasicOcspResp, type CertIdValue, type OcspResp, type SingleResp } from './parse';
 import { jdkX500Equal } from './names';
+import { type BasicOcspResp, basicResponse, type CertIdValue, type OcspResp, type SingleResp } from './parse';
 
 export const OID_SHA1 = '1.3.14.3.2.26';
 export const OID_KP_OCSP_SIGNING = '1.3.6.1.5.5.7.3.9';
@@ -190,7 +190,8 @@ async function getOcspCert(
   const matches = async (c: TrustedCert) =>
     'byName' in rid ? x500Equal(c.subjectDer, rid.byName) : bytesEqual(await sha1(publicKeyBits(c.cert)), rid.byKey);
 
-  for (const c of q.ocspResponderCertificates(ctx.now)) if (await matches(c)) return { cert: c, source: 'globalconf-ocsp' };
+  for (const c of q.ocspResponderCertificates(ctx.now))
+    if (await matches(c)) return { cert: c, source: 'globalconf-ocsp' };
   for (const c of q.allCaCerts(ctx.now)) if (await matches(c)) return { cert: c, source: 'globalconf-ca' };
   for (const der of basic.certs) {
     const c = trustedCert(der); // throws → internal_error (Java CertificateException is not expected here)
@@ -217,7 +218,11 @@ async function verifySignature(basic: BasicOcspResp, responder: TrustedCert): Pr
 }
 
 /** OcspVerifier.isAuthorizedOcspSigner (OV:384-420). */
-async function isAuthorizedOcspSigner(ocsp: TrustedCert, issuer: TrustedCert, ctx: OcspVerifyContext): Promise<boolean> {
+async function isAuthorizedOcspSigner(
+  ocsp: TrustedCert,
+  issuer: TrustedCert,
+  ctx: OcspVerifyContext,
+): Promise<boolean> {
   if (trustQueries(ctx.trust).isOcspResponderCert(issuer, ocsp, ctx.now)) return true;
   if (bytesEqual(ocsp.der, issuer.der)) return true;
   if (jdkX500Equal(issuerDer(ocsp.cert), issuer.subjectDer)) {
@@ -250,7 +255,8 @@ export function extendedKeyUsage(cert: pkijs.Certificate): string[] | null {
     throw new Error('CertificateParsingException: malformed ExtendedKeyUsage');
   }
   return asn.result.valueBlock.value.map((o) => {
-    if (!(o instanceof asn1js.ObjectIdentifier)) throw new Error('CertificateParsingException: malformed ExtendedKeyUsage');
+    if (!(o instanceof asn1js.ObjectIdentifier))
+      throw new Error('CertificateParsingException: malformed ExtendedKeyUsage');
     return o.valueBlock.toString();
   });
 }
@@ -267,7 +273,7 @@ export function javaOffsetDateTime(d: Date): string {
   const s = d.getUTCSeconds();
   const ms = d.getUTCMilliseconds();
   if (s === 0 && ms === 0) return `${base}Z`;
-  return `${base}:${p2(s)}${ms ? '.' + String(ms).padStart(3, '0') : ''}Z`;
+  return `${base}:${p2(s)}${ms ? `.${String(ms).padStart(3, '0')}` : ''}Z`;
 }
 
 /** String.format("%tF %tT", date) in UTC. */

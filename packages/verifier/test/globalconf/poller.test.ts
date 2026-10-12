@@ -1,7 +1,22 @@
 import { describe, expect, it } from 'vitest';
-import { ConfPoller, GlobalConfError, type PolledConf, type TimerLike, fetchVerifiedConf } from '../../src/globalconf/index';
+import {
+  ConfPoller,
+  fetchVerifiedConf,
+  GlobalConfError,
+  type PolledConf,
+  type TimerLike,
+} from '../../src/globalconf/index';
 import type { TrustContext } from '../../src/types';
-import { FRESH, V6_EXPIRE, V6_SP_PATH, fakeFetch, fixtureAnchor, fixtureDirectory, fixtureSharedParams, vector } from './helpers';
+import {
+  FRESH,
+  fakeFetch,
+  fixtureAnchor,
+  fixtureDirectory,
+  fixtureSharedParams,
+  V6_EXPIRE,
+  V6_SP_PATH,
+  vector,
+} from './helpers';
 
 const trust = (v: string): TrustContext => ({
   mainInstance: 'EXAMPLE',
@@ -92,7 +107,12 @@ describe('ConfPoller', () => {
   });
 
   it('signature failure on refresh after a good conf → failed, verification disabled', async () => {
-    for (const code of ['SIGNATURE_INVALID', 'VERIFICATION_CERT_NOT_FOUND', 'PART_HASH_MISMATCH', 'INSTANCE_MISMATCH'] as const) {
+    for (const code of [
+      'SIGNATURE_INVALID',
+      'VERIFICATION_CERT_NOT_FOUND',
+      'PART_HASH_MISMATCH',
+      'INSTANCE_MISMATCH',
+    ] as const) {
       const h = harness([T1, E(code), E('FETCH_FAILED')]);
       await h.poller.refresh();
       const s = await h.poller.refresh();
@@ -132,7 +152,13 @@ describe('ConfPoller', () => {
 
   it('concurrent refresh() calls share one load', async () => {
     let loads = 0;
-    const p = new ConfPoller({ load: async () => (loads++, T1), clock: () => FRESH });
+    const p = new ConfPoller({
+      load: async () => {
+        loads++;
+        return T1;
+      },
+      clock: () => FRESH,
+    });
     await Promise.all([p.refresh(), p.refresh()]);
     expect(loads).toBe(1);
   });

@@ -22,9 +22,9 @@
  * PrintableString/UTF8String and compared DER-identical.
  */
 import * as asn1js from 'asn1js';
-import { bytesEqual, toHex } from '../util/bytes';
 import { elementDer } from '../trust/der';
 import { asn1StringValue } from '../trust/x500';
+import { bytesEqual, toHex } from '../util/bytes';
 
 const KEYWORDS: Record<string, string> = {
   '2.5.4.3': 'CN',
@@ -63,7 +63,7 @@ function parseName(der: Uint8Array): RawAva[][] | null {
 
 function canonicalValue(value: asn1js.AsnType): string {
   const s = asn1StringValue(value);
-  if (s === null || s.startsWith('#')) return '#' + toHex(elementDer(value));
+  if (s === null || s.startsWith('#')) return `#${toHex(elementDer(value))}`;
   return s.trim().replace(/\s+/g, ' ').toUpperCase().toLowerCase().normalize('NFKD');
 }
 
@@ -80,10 +80,10 @@ export function jdkX500Equal(a: Uint8Array, b: Uint8Array): boolean {
   });
 }
 
-function escape(s: string): string {
-  let out = s.replace(/[,+"\\<>;]/g, (c) => '\\' + c);
-  if (out.startsWith('#') || out.startsWith(' ')) out = '\\' + out;
-  if (out.length > 1 && out.endsWith(' ') && !out.endsWith('\\ ')) out = out.slice(0, -1) + '\\ ';
+function escapeValue(s: string): string {
+  let out = s.replace(/[,+"\\<>;]/g, (c) => `\\${c}`);
+  if (out.startsWith('#') || out.startsWith(' ')) out = `\\${out}`;
+  if (out.length > 1 && out.endsWith(' ') && !out.endsWith('\\ ')) out = `${out.slice(0, -1)}\\ `;
   return out;
 }
 
@@ -97,7 +97,7 @@ export function jdkRfc2253(nameDer: Uint8Array): string {
         .map(({ oid, value }) => {
           const kw = KEYWORDS[oid];
           const str = kw ? asn1StringValue(value) : null;
-          return str !== null ? `${kw}=${escape(str)}` : `${kw ?? oid}=#${toHex(elementDer(value))}`;
+          return str !== null ? `${kw}=${escapeValue(str)}` : `${kw ?? oid}=#${toHex(elementDer(value))}`;
         })
         .join('+'),
     )
