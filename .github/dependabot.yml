@@ -13,6 +13,13 @@ updates:
           - "minor"
           - "patch"
     open-pull-requests-limit: 10
+    ignore:
+      # Types track the minimum supported Node (engines: >=24); bump together with Node
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      # svelte-check doesn't support TypeScript 7 on its own yet
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
 
   # Base images in docker/Dockerfile (tag + digest pins)
   - package-ecosystem: "docker"
@@ -25,6 +32,10 @@ updates:
       docker-images:
         patterns:
           - "*"
+    ignore:
+      # Stay on the Node LTS line used in CI; Node 26 also drops corepack, which the Dockerfile uses
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]
 
   # Workflow actions (pinned to commit SHAs)
   - package-ecosystem: "github-actions"
