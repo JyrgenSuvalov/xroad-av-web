@@ -16,10 +16,11 @@
  *
  * Real containers have no CompleteCertificateRefs (always an empty list).
  */
-import { CodedError, ErrorCodes } from '../util/errors';
-import { bytesEqual, decodeBase64Lenient } from '../util/bytes';
-import { digestByOid } from '../trust/crypto';
+
 import { xadesChildPath } from '../ocsp/extract';
+import { digestByOid } from '../trust/crypto';
+import { bytesEqual, decodeBase64Lenient } from '../util/bytes';
+import { CodedError, ErrorCodes } from '../util/errors';
 import { parseCertificateDer } from '../xades/cert';
 import { textContent, type XDocument, type XElement, type XNode } from '../xml/safe';
 
@@ -51,7 +52,8 @@ function elementById(doc: XDocument, id: string): XElement | null {
 }
 
 function asElement(n: XNode | null, what: string): XElement {
-  if (!n || n.nodeType !== 1) throw new CodedError(ErrorCodes.X_INTERNAL_ERROR, `ClassCastException: ${what} is not an element`);
+  if (n?.nodeType !== 1)
+    throw new CodedError(ErrorCodes.X_INTERNAL_ERROR, `ClassCastException: ${what} is not an element`);
   return n as XElement;
 }
 
@@ -61,7 +63,8 @@ export async function getExtraCertificates(doc: XDocument, object: XElement): Pr
     const certId = certRef.getAttribute('URI');
     if (!certId) throw new CodedError(ErrorCodes.X_MALFORMED_SIGNATURE, 'Missing certificate id attribute');
     const certElem = elementById(doc, certId);
-    if (!certElem) throw new CodedError(ErrorCodes.X_MALFORMED_SIGNATURE, `Could not find certificate with id ${certId}`);
+    if (!certElem)
+      throw new CodedError(ErrorCodes.X_MALFORMED_SIGNATURE, `Could not find certificate with id ${certId}`);
 
     const der = decodeBase64Lenient(textContent(certElem));
     let serial: string;
@@ -77,7 +80,10 @@ export async function getExtraCertificates(doc: XDocument, object: XElement): Pr
     const value = certDigest.lastChild;
     const oid = DIGEST_URIS[method.getAttribute('Algorithm') ?? ''];
     if (!oid || !value) {
-      throw new CodedError(ErrorCodes.X_INTERNAL_ERROR, `Unsupported or missing digest method in certificate reference ${certId}`);
+      throw new CodedError(
+        ErrorCodes.X_INTERNAL_ERROR,
+        `Unsupported or missing digest method in certificate reference ${certId}`,
+      );
     }
     const expected = decodeBase64Lenient(textContent(value));
     if (!bytesEqual(expected, await digestByOid(oid, der))) {

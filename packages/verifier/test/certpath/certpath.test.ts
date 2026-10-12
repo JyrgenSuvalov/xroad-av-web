@@ -1,5 +1,4 @@
-import { beforeAll, describe, expect, it } from 'vitest';
-import { verifyCertificateChain } from '../../src/certpath';
+import { describe, expect, it } from 'vitest';
 import { PKIX_BUILD_FAILURE, verifyPkix } from '../../src/certpath/pkix';
 import { translateException } from '../../src/util/errors';
 import { criticalExtension, keyUsage, makeCert, OID, rsaKey } from './helpers';

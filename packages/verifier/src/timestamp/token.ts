@@ -13,9 +13,9 @@
 
 import * as asn1js from 'asn1js';
 import * as pkijs from 'pkijs';
-import { CodedError, ErrorCodes } from '../util/errors';
 import { generalizedTime, octetStringBytes, parseStrict, primitiveBytes } from '../trust/der';
 import { nameDer } from '../trust/x500';
+import { CodedError, ErrorCodes } from '../util/errors';
 
 export const OID_SIGNED_DATA = '1.2.840.113549.1.7.2';
 export const OID_CT_TSTINFO = '1.2.840.113549.1.9.16.1.4';
@@ -138,6 +138,8 @@ function requireSigningCertificateAttribute(si: pkijs.SignerInfo): void {
   if (!(first instanceof asn1js.Sequence)) throw internal('malformed signing certificate attribute');
   const head = first.valueBlock.value[0];
   // ESSCertID starts with certHash OCTET STRING; ESSCertIDv2 with an optional AlgorithmIdentifier.
-  const ok = v1 ? head instanceof asn1js.OctetString : head instanceof asn1js.OctetString || head instanceof asn1js.Sequence;
+  const ok = v1
+    ? head instanceof asn1js.OctetString
+    : head instanceof asn1js.OctetString || head instanceof asn1js.Sequence;
   if (!ok) throw internal('malformed ESSCertID in signing certificate attribute');
 }

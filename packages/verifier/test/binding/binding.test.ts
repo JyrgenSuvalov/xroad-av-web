@@ -1,7 +1,13 @@
-import { beforeAll, describe, expect, it } from 'vitest';
-import { memberEquals, subjectName, verifySignerName } from '../../src/binding';
-import { BASIC_PROFILE, getRdnValue, OID_BUSINESS_CATEGORY, OID_SERIAL_NUMBER, signCertProfile } from '../../src/binding/profiles';
-import { createClientId, type ClientId } from '../../src/header/ids';
+import { describe, expect, it } from 'vitest';
+import { memberEquals, subjectName } from '../../src/binding';
+import {
+  BASIC_PROFILE,
+  getRdnValue,
+  OID_BUSINESS_CATEGORY,
+  OID_SERIAL_NUMBER,
+  signCertProfile,
+} from '../../src/binding/profiles';
+import { createClientId } from '../../src/header/ids';
 import type { TrustedCert } from '../../src/types';
 import { translateException } from '../../src/util/errors';
 import { keyUsage, makeCert, nameDer, OID, rsaKey } from '../certpath/helpers';
@@ -30,7 +36,12 @@ describe('getRdnValue (BC CertUtils.getRDNValue over the JDK RFC 2253 name)', ()
   it('null when absent', () => expect(getRdnValue(nameDer([[[OID.CN, 'x']]]), SN)).toBeNull());
 
   it('a multi-valued RDN yields its first AVA, whatever its type', () => {
-    const n = nameDer([[[OID.CN, 'cn-value'], [SN, 'sn-value']]]);
+    const n = nameDer([
+      [
+        [OID.CN, 'cn-value'],
+        [SN, 'sn-value'],
+      ],
+    ]);
     expect(getRdnValue(n, SN)).toBe('cn-value');
   });
 
@@ -70,13 +81,16 @@ describe('Basic certificate profile', () => {
   });
 
   it('an unknown profile class → internal_error', () => {
-    expect(codeOf(() => signCertProfile('com.example.Nope'))).toBe('internal_error: com.example.Nope could not be found in classpath');
+    expect(codeOf(() => signCertProfile('com.example.Nope'))).toBe(
+      'internal_error: com.example.Nope could not be found in classpath',
+    );
   });
 });
 
 describe('memberEquals', () => {
   const m = createClientId('EXAMPLE', 'gov', 'member-25', null);
-  it('ignores the subsystem', () => expect(memberEquals(m, createClientId('EXAMPLE', 'gov', 'member-25', 'consumer'))).toBe(true));
+  it('ignores the subsystem', () =>
+    expect(memberEquals(m, createClientId('EXAMPLE', 'gov', 'member-25', 'consumer'))).toBe(true));
   it('is case-sensitive on each member field', () => {
     expect(memberEquals(m, createClientId('example', 'gov', 'member-25', null))).toBe(false);
     expect(memberEquals(m, createClientId('EXAMPLE', 'GOV', 'member-25', null))).toBe(false);

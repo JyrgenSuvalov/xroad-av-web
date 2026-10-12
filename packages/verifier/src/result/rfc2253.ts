@@ -69,7 +69,8 @@ function readTlv(buf: Uint8Array, off: number, limit: number): Tlv {
 }
 
 function children(t: Tlv, expectTag: number): Tlv[] {
-  if (t.tag.length !== 1 || t.tag[0] !== expectTag) throw new Error(`rfc2253: expected tag 0x${expectTag.toString(16)}`);
+  if (t.tag.length !== 1 || t.tag[0] !== expectTag)
+    throw new Error(`rfc2253: expected tag 0x${expectTag.toString(16)}`);
   const out: Tlv[] = [];
   for (let off = 0; off < t.value.length; ) {
     const c = readTlv(t.value, off, t.value.length);
@@ -107,7 +108,7 @@ function reencodedHex(t: Tlv): string {
   return toHex(t.tag) + toHex(Uint8Array.from(len)) + toHex(t.value);
 }
 
-const REPL = '�';
+const _REPL = '�';
 
 function decodeLatin1(b: Uint8Array): string {
   let s = '';
@@ -135,7 +136,8 @@ function decodeBmpJava(b: Uint8Array): string {
         i = b.length;
         break;
       }
-      if (isLow((b[i + 2]! << 8) | b[i + 3]!)) throw new Error('rfc2253: BMPString with a surrogate pair (rejected by the JDK)');
+      if (isLow((b[i + 2]! << 8) | b[i + 3]!))
+        throw new Error('rfc2253: BMPString with a surrogate pair (rejected by the JDK)');
       out.push(0xfffd);
       i += 4;
     } else {
@@ -204,7 +206,14 @@ export function decodeUtf8Java(src: Uint8Array): string {
         if (notCont(b2) || notCont(b3) || notCont(b4) || uc < 0x10000 || uc > 0x10ffff) {
           out.push(0xfffd);
           sp -= 3; // back to b2; malformed4 consumed 1, 2 or 3
-          if (!(b1 > 0xf4 || (b1 === 0xf0 && (b2 < 0x90 || b2 > 0xbf)) || (b1 === 0xf4 && (b2 & 0xf0) !== 0x80) || notCont(b2))) {
+          if (
+            !(
+              b1 > 0xf4 ||
+              (b1 === 0xf0 && (b2 < 0x90 || b2 > 0xbf)) ||
+              (b1 === 0xf4 && (b2 & 0xf0) !== 0x80) ||
+              notCont(b2)
+            )
+          ) {
             sp++;
             if (!notCont(b3)) sp++;
           }
@@ -259,7 +268,7 @@ function avaToRfc2253(ava: Tlv): string {
 
   let escaped = '';
   for (const c of str) {
-    if (ESCAPEES.includes(c)) escaped += '\\' + c;
+    if (ESCAPEES.includes(c)) escaped += `\\${c}`;
     else if (c === '\u0000') escaped += '\\00';
     else escaped += c;
   }

@@ -2,7 +2,7 @@
 
 import { decodeBase64Strict } from '../util/bytes';
 import { GlobalConfError } from './errors';
-import { childText, children, parseXml } from './xml';
+import { children, childText, parseXml } from './xml';
 
 export const XROAD_NS = 'http://x-road.eu/xsd/xroad.xsd';
 

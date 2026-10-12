@@ -117,14 +117,13 @@ const TAG_UTF8 = 12;
 const TAG_BMP = 30;
 const TAG_BIT_STRING = 3;
 
-
 const encoded = elementDer;
 
 /** ASN1String.getString() for string-typed values; null for non-strings (and UniversalString). */
 function asn1String(el: asn1js.AsnType): string | null {
   const id = el.idBlock;
   if (id.tagClass !== 1) return null;
-  if (id.tagNumber === TAG_BIT_STRING) return '#' + toHex(encoded(el));
+  if (id.tagNumber === TAG_BIT_STRING) return `#${toHex(encoded(el))}`;
   const isString = id.tagNumber === TAG_UTF8 || id.tagNumber === TAG_BMP || LATIN1_STRING_TAGS.has(id.tagNumber);
   if (!isString) return null;
   if (id.isConstructed) return null; // BER constructed string: not produced by real CAs; compare as hex
@@ -146,7 +145,7 @@ function valueToString(el: asn1js.AsnType): string {
   if (str !== null && el.idBlock.tagNumber !== 28) {
     v = (str.length > 0 && str[0] === '#' ? '\\' : '') + str;
   } else {
-    v = '#' + toHex(encoded(el));
+    v = `#${toHex(encoded(el))}`;
   }
   const chars = [...v];
   let index = chars.length >= 2 && chars[0] === '\\' && chars[1] === '#' ? 2 : 0;

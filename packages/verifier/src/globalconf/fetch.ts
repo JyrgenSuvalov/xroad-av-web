@@ -1,12 +1,12 @@
 // Download + verify the configuration through the same-origin proxy.
 
 import type { TrustContext } from '../types';
-import { type ConfigurationAnchor, parseAnchor } from './anchor';
 import { bytesEqual } from '../util/bytes';
+import { type ConfigurationAnchor, parseAnchor } from './anchor';
 import { digest } from './crypto';
-import { type DirectoryPart, type VerifiedDirectory, confVersionOf, verifyDirectory } from './directory';
+import { confVersionOf, type DirectoryPart, type VerifiedDirectory, verifyDirectory } from './directory';
 import { GlobalConfError } from './errors';
-import { type SharedParams, parseNextUpdateParams, parseSharedParams } from './sharedParams';
+import { parseNextUpdateParams, parseSharedParams, type SharedParams } from './sharedParams';
 import { buildTrustContext, instanceTrust } from './trust';
 
 /** The subset of `fetch` we use; injected so tests run offline. */
@@ -52,7 +52,9 @@ async function get(fetchFn: FetchLike, url: string, timeoutMs: number): Promise<
     try {
       res = await fetchFn(url, { signal: ctrl.signal, cache: 'no-store' });
     } catch (e) {
-      throw new GlobalConfError('FETCH_FAILED', `GET ${url}: ${e instanceof Error ? e.message : String(e)}`, { cause: e });
+      throw new GlobalConfError('FETCH_FAILED', `GET ${url}: ${e instanceof Error ? e.message : String(e)}`, {
+        cause: e,
+      });
     }
     if (res.status === 404) throw new NotFound(url);
     if (!res.ok) throw new GlobalConfError('FETCH_FAILED', `GET ${url}: HTTP ${res.status}`);
@@ -90,17 +92,15 @@ async function getDirectory(
   throw new GlobalConfError('FETCH_FAILED', 'no directory version available');
 }
 
-async function getPart(
-  fetchFn: FetchLike,
-  base: string,
-  part: DirectoryPart,
-  timeoutMs: number,
-): Promise<Uint8Array> {
+async function getPart(fetchFn: FetchLike, base: string, part: DirectoryPart, timeoutMs: number): Promise<Uint8Array> {
   // Content-location is host-absolute on the central server and was checked
   // against /^\/V\d+\/\d+\/[A-Za-z0-9._-]+$/, so prefixing keeps us same-origin.
   const bytes = await get(fetchFn, base + part.contentLocation, timeoutMs);
   if (!bytesEqual(await digest(part.hashAlgorithmId, bytes), part.hash)) {
-    throw new GlobalConfError('PART_HASH_MISMATCH', `${part.contentLocation}: hash does not match the signed directory`);
+    throw new GlobalConfError(
+      'PART_HASH_MISMATCH',
+      `${part.contentLocation}: hash does not match the signed directory`,
+    );
   }
   return bytes;
 }
@@ -169,7 +169,11 @@ export async function fetchVerifiedConf(
 }
 
 /** Load and parse the configuration anchor served next to the app (default `/anchor.xml`). */
-export async function loadAnchor(fetchFn: FetchLike, url = '/anchor.xml', timeoutMs = 30_000): Promise<ConfigurationAnchor> {
+export async function loadAnchor(
+  fetchFn: FetchLike,
+  url = '/anchor.xml',
+  timeoutMs = 30_000,
+): Promise<ConfigurationAnchor> {
   let bytes: Uint8Array;
   try {
     bytes = await get(fetchFn, url, timeoutMs);

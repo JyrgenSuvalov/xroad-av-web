@@ -12,7 +12,7 @@
  *   checkMessagePartsReferenced(sig)     - step S1 non-batch (SV:314-326); the only part is /message.xml
  *       malformed_signature "Signature does not reference '/message.xml'"
  */
-import { ENTRY_SIG_HASH_CHAIN_RESULT, type AsicContainer } from '../container/read';
+import { type AsicContainer, ENTRY_SIG_HASH_CHAIN_RESULT } from '../container/read';
 import { URI_MESSAGE, URI_SIG_HASH_CHAIN_RESULT } from '../hashchain/asic';
 import { CodedError, ErrorCodes } from '../util/errors';
 import { referenceAt, referenceCount, type SignatureModel } from './model';
@@ -32,7 +32,9 @@ export function checkRequiredReferences(sig: SignatureModel): void {
 }
 
 export function isBatchSignature(container: AsicContainer, sig: SignatureModel): boolean {
-  return container.get(ENTRY_SIG_HASH_CHAIN_RESULT) !== undefined && signatureReferences(sig, URI_SIG_HASH_CHAIN_RESULT);
+  return (
+    container.get(ENTRY_SIG_HASH_CHAIN_RESULT) !== undefined && signatureReferences(sig, URI_SIG_HASH_CHAIN_RESULT)
+  );
 }
 
 export function checkMessagePartsReferenced(sig: SignatureModel): void {

@@ -27,7 +27,6 @@ async function codeOf(p: Promise<unknown> | (() => unknown)): Promise<string | n
   }
 }
 
-
 // ---------------------------------------------------------------- X500
 type Av = [oid: string, value: string, type?: 'utf8' | 'printable'];
 function name(...rdns: Av[][]): Uint8Array {
@@ -49,7 +48,9 @@ function name(...rdns: Av[][]): Uint8Array {
   });
   return new Uint8Array(seq.toBER(false));
 }
-const C = '2.5.4.6', O = '2.5.4.10', CN = '2.5.4.3';
+const C = '2.5.4.6',
+  O = '2.5.4.10',
+  CN = '2.5.4.3';
 const baseName = name([[C, 'XX', 'printable']], [[O, 'Example Org']], [[CN, 'Example CA']]);
 
 describe('x500Equal (BC X500Name.equals)', () => {
@@ -83,7 +84,10 @@ const contentInfoIdData = new Uint8Array(
   new asn1js.Sequence({
     value: [
       new asn1js.ObjectIdentifier({ value: '1.2.840.113549.1.7.1' }),
-      new asn1js.Constructed({ idBlock: { tagClass: 3, tagNumber: 0 }, value: [new asn1js.OctetString({ valueHex: new Uint8Array([1]) })] }),
+      new asn1js.Constructed({
+        idBlock: { tagClass: 3, tagNumber: 0 },
+        value: [new asn1js.OctetString({ valueHex: new Uint8Array([1]) })],
+      }),
     ],
   }).toBER(false),
 );
@@ -103,7 +107,9 @@ describe('parseTimestampToken fault codes (probed against BC 1.84)', () => {
 
 describe('genTime (java.util.Date: ms kept, finer truncated)', () => {
   const gt = (s: string) =>
-    generalizedTime(asn1js.fromBER(new Uint8Array([0x18, s.length, ...ascii(s)])).result as asn1js.GeneralizedTime)!.toISOString();
+    generalizedTime(
+      asn1js.fromBER(new Uint8Array([0x18, s.length, ...ascii(s)])).result as asn1js.GeneralizedTime,
+    )!.toISOString();
   it.each([
     ['20260101000000.1239Z', '2026-01-01T00:00:00.123Z'],
     ['20260101000000.9999Z', '2026-01-01T00:00:00.999Z'],
@@ -118,7 +124,8 @@ describe('trustQueries', () => {
   const q = trustQueries(snapshot);
   const tsa = main.tsaCerts[0]!;
   it('tspCertificates = approved TSAs', () => expect(q.tspCertificates(now)).toEqual(main.tsaCerts));
-  it('ocspFreshnessSeconds = main instance value', () => expect(q.ocspFreshnessSeconds()).toBe(main.ocspFreshnessSeconds));
+  it('ocspFreshnessSeconds = main instance value', () =>
+    expect(q.ocspFreshnessSeconds()).toBe(main.ocspFreshnessSeconds));
   it('getCaCert finds the issuing CA of the TSA cert', () => {
     const ca = q.getCaCert(snapshot.mainInstance, tsa, now);
     expect(x500Equal(ca.cert.subjectDer, new Uint8Array(tsa.cert.issuer.valueBeforeDecode))).toBe(true);

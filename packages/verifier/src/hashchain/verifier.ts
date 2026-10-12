@@ -25,17 +25,18 @@
  *                          and DataRef with ds:Transforms (port deviation: X-Road
  *                          never produces them; Java would apply them).
  */
-import { CodedError, ErrorCodes } from '../util/errors';
+
 import { bytesEqual, decodeUtf8 } from '../util/bytes';
-import { encodeDigestList, type DigestValue } from './der';
+import { CodedError, ErrorCodes } from '../util/errors';
+import { type DigestValue, encodeDigestList } from './der';
 import { digest } from './digest';
 import {
-  parseHashChain,
-  parseHashChainResult,
   type DataRefModel,
   type HashChainModel,
   type HashStepModel,
   type HashValueOrRef,
+  parseHashChain,
+  parseHashChainResult,
 } from './parse';
 
 export const MAX_DEPTH = 64;

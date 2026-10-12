@@ -10,10 +10,11 @@
  *     none                    → malformed_signature "Could not get any OCSP elements from signature"
  *     base64/DER not an OCSPResponse → malformed_signature (Java: CodedException(X_MALFORMED_SIGNATURE, IOException))
  */
-import { CodedError, ErrorCodes } from '../util/errors';
+
 import { decodeBase64Lenient } from '../util/bytes';
+import { CodedError, ErrorCodes } from '../util/errors';
 import { childElements, textContent, type XElement } from '../xml/safe';
-import { OcspParseError, parseOcspResp, type OcspResp } from './parse';
+import { OcspParseError, type OcspResp, parseOcspResp } from './parse';
 
 export const XADES_NS = 'http://uri.etsi.org/01903/v1.3.2#';
 
@@ -21,9 +22,7 @@ export const XADES_NS = 'http://uri.etsi.org/01903/v1.3.2#';
 export function xadesChildPath(context: XElement, steps: readonly string[]): XElement[] {
   let level: XElement[] = [context];
   for (const step of steps) {
-    level = level.flatMap((el) =>
-      childElements(el).filter((c) => c.namespaceURI === XADES_NS && c.localName === step),
-    );
+    level = level.flatMap((el) => childElements(el).filter((c) => c.namespaceURI === XADES_NS && c.localName === step));
   }
   return level;
 }

@@ -14,11 +14,11 @@
  * the Java "could not be found in classpath" error until someone ports them.
  */
 import * as asn1js from 'asn1js';
-import { CodedError, ErrorCodes } from '../util/errors';
 import type { ClientId } from '../header/ids';
 import { createClientId, IdentifierError } from '../header/ids';
-import type { TrustedCert } from '../types';
 import { rdnValueToString } from '../trust/x500';
+import type { TrustedCert } from '../types';
+import { CodedError, ErrorCodes } from '../util/errors';
 
 export interface SignCertProfile {
   /** SignCertificateProfileInfo.getSubjectIdentifier(cert), with the profile parameters' instance. */
@@ -74,7 +74,10 @@ export const BASIC_PROFILE: SignCertProfile = {
     }
     const memberCode = getRdnValue(cert.subjectDer, OID_SERIAL_NUMBER);
     if (memberCode === null) {
-      throw new CodedError(ErrorCodes.X_INCORRECT_CERTIFICATE, 'Certificate subject name does not contain serial number');
+      throw new CodedError(
+        ErrorCodes.X_INCORRECT_CERTIFICATE,
+        'Certificate subject name does not contain serial number',
+      );
     }
     try {
       return createClientId(signerInstance, memberClass, memberCode, null);

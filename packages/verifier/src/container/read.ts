@@ -11,7 +11,7 @@
 import { decodeBase64Lenient, decodeUtf8, encodeBase64, encodeUtf8, isJavaBlank, sha512 } from '../util/bytes';
 import { CodedError, ErrorCodes, translateException } from '../util/errors';
 import { getSignatureTimestamp, loadSignatureDocument, type SignatureHooks } from '../xml/signature-doc';
-import { DEFAULT_LIMITS, readZipEntries, type ContainerLimits } from './zip';
+import { type ContainerLimits, DEFAULT_LIMITS, readZipEntries } from './zip';
 
 export const MIMETYPE = 'application/vnd.etsi.asic-e+zip';
 export const ENTRY_MIMETYPE = 'mimetype';

@@ -42,10 +42,7 @@ export interface CertIdValue {
   serialNumber: bigint;
 }
 
-export type CertStatus =
-  | { kind: 'good' }
-  | { kind: 'revoked'; revocationTime: Date }
-  | { kind: 'unknown' };
+export type CertStatus = { kind: 'good' } | { kind: 'revoked'; revocationTime: Date } | { kind: 'unknown' };
 
 export interface SingleResp {
   certId: CertIdValue;
@@ -90,7 +87,8 @@ function fail(msg: string): never {
 
 export function parseOcspResp(der: Uint8Array): OcspResp {
   const parsed = asn1js.fromBER(der);
-  if (parsed.offset === -1 || parsed.result.error) throw new OcspParseError(`malformed OCSP response: ${parsed.result.error}`);
+  if (parsed.offset === -1 || parsed.result.error)
+    throw new OcspParseError(`malformed OCSP response: ${parsed.result.error}`);
   const seq = parsed.result;
   if (!(seq instanceof asn1js.Sequence)) throw new OcspParseError('malformed OCSP response: not a SEQUENCE');
   const [status, bytes] = children(seq);
@@ -113,7 +111,8 @@ export function parseOcspResp(der: Uint8Array): OcspResp {
 export function basicResponse(resp: OcspResp): BasicOcspResp {
   if (resp.basic) return resp.basic;
   if (!resp.responseBytes) fail('NullPointerException: OCSP response has no responseBytes');
-  if (resp.responseType !== OID_OCSP_BASIC) fail(`ClassCastException: OCSP response type ${resp.responseType} is not basic`);
+  if (resp.responseType !== OID_OCSP_BASIC)
+    fail(`ClassCastException: OCSP response type ${resp.responseType} is not basic`);
   resp.basic = parseBasic(resp.responseBytes);
   return resp.basic;
 }
@@ -168,7 +167,8 @@ function parseSingle(el: asn1js.AsnType): SingleResp {
   const nu = rest.find((r) => ctx(r, 0));
   if (nu) {
     const t = children(nu)[0];
-    nextUpdate = (t instanceof asn1js.GeneralizedTime ? generalizedTime(t) : null) ?? fail('OCSPException: bad nextUpdate');
+    nextUpdate =
+      (t instanceof asn1js.GeneralizedTime ? generalizedTime(t) : null) ?? fail('OCSPException: bad nextUpdate');
   }
   return {
     certId: parseCertId(certIdEl),

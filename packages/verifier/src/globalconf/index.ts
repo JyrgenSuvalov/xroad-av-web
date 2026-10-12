@@ -1,16 +1,16 @@
 // Global configuration: anchor → signed directory → shared-params → TrustContext.
 // Overview: docs/architecture.md.
 
-export { type AnchorSource, type ConfigurationAnchor, anchorCerts, parseAnchor } from './anchor';
+export { type AnchorSource, anchorCerts, type ConfigurationAnchor, parseAnchor } from './anchor';
 export {
+  confVersionOf,
   type DirectoryPart,
   type VerifiedDirectory,
   type VerifyDirectoryOptions,
-  confVersionOf,
   verifyDirectory,
 } from './directory';
 export { GlobalConfError, type GlobalConfErrorCode, HARD_FAILURE_CODES, isGlobalConfError } from './errors';
-export { type FetchConfOptions, type FetchLike, type VerifiedConf, fetchVerifiedConf, loadAnchor } from './fetch';
+export { type FetchConfOptions, type FetchLike, fetchVerifiedConf, loadAnchor, type VerifiedConf } from './fetch';
 export {
   ConfPoller,
   type ConfPollerOptions,
@@ -24,10 +24,16 @@ export {
   type CaInfo,
   type Member,
   type OcspInfo,
+  parseNextUpdateParams,
+  parseSharedParams,
   type SharedParams,
   type SharedParamsCa,
   type SharedParamsTsa,
-  parseNextUpdateParams,
-  parseSharedParams,
 } from './sharedParams';
-export { type InstanceTrustInput, type TrustContextInput, buildTrustContext, instanceTrust, toTrustedCert } from './trust';
+export {
+  buildTrustContext,
+  type InstanceTrustInput,
+  instanceTrust,
+  type TrustContextInput,
+  toTrustedCert,
+} from './trust';

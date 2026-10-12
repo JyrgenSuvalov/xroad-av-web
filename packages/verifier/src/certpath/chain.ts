@@ -16,13 +16,13 @@
  *   Anything else thrown in 4–6 → invalid_cert_path.internal_error (translateWithPrefix).
  */
 import type * as pkijs from 'pkijs';
-import { CodedError, ErrorCodes, translateException } from '../util/errors';
-import type { ApprovedCa, TrustContext } from '../types';
-import { trustQueries } from '../trust/queries';
-import type { XDocument, XElement } from '../xml/safe';
 import { getOcspResponses } from '../ocsp/extract';
 import { jdkRfc2253 } from '../ocsp/names';
-import { findOcspResponseForCert, trustedCert, verifyValidityAndStatus, type OcspResult } from '../ocsp/verify';
+import { findOcspResponseForCert, type OcspResult, trustedCert, verifyValidityAndStatus } from '../ocsp/verify';
+import { trustQueries } from '../trust/queries';
+import type { ApprovedCa, TrustContext } from '../types';
+import { CodedError, ErrorCodes, translateException } from '../util/errors';
+import type { XDocument, XElement } from '../xml/safe';
 import { getExtraCertificates } from './extra';
 import { verifyPkix } from './pkix';
 
@@ -89,4 +89,3 @@ export async function verifyCertificateChain(input: CertChainInput): Promise<Cer
     throw prefixed(ErrorCodes.X_INVALID_CERT_PATH_X, e);
   }
 }
-

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { GlobalConfError, parseAnchor, verifyDirectory } from '../../src/globalconf/index';
-import { EXPIRED, FRESH, SP_LOCATION, fixtureAnchor, fixtureDirectory, testAnchor, vector } from './helpers';
+import { EXPIRED, FRESH, fixtureAnchor, fixtureDirectory, SP_LOCATION, testAnchor, vector } from './helpers';
 
 async function code(p: Promise<unknown>): Promise<string> {
   try {
@@ -32,7 +32,10 @@ describe('parseAnchor', () => {
 
   it.each([
     ['wrong namespace', '<configurationAnchor><instanceIdentifier>x</instanceIdentifier></configurationAnchor>'],
-    ['no source', '<a:configurationAnchor xmlns:a="http://x-road.eu/xsd/xroad.xsd"><instanceIdentifier>x</instanceIdentifier></a:configurationAnchor>'],
+    [
+      'no source',
+      '<a:configurationAnchor xmlns:a="http://x-road.eu/xsd/xroad.xsd"><instanceIdentifier>x</instanceIdentifier></a:configurationAnchor>',
+    ],
     ['not XML', 'garbage <<<'],
     ['DOCTYPE', '<!DOCTYPE x [<!ENTITY a "b">]><x/>'],
   ])('rejects %s with ANCHOR_INVALID', (_, xml) => {
@@ -56,7 +59,6 @@ describe('verifyDirectory', () => {
     expect(d.sharedParams.hash).toHaveLength(64);
     expect(d.nextUpdate).toBeUndefined();
   });
-
 
   it('V3: expired directory still verifies (expiry is the caller’s amber flag)', async () => {
     const d = await verifyDirectory(fixtureDirectory(), fixtureAnchor(), { now: EXPIRED });
@@ -130,7 +132,9 @@ describe('verifyDirectory', () => {
 
   it('Version header must match the requested version', async () => {
     const v = vector('version-5.internalconf');
-    expect(await code(verifyDirectory(v, testAnchor(), { now: FRESH, expectedVersion: 6 }))).toBe('DIRECTORY_MALFORMED');
+    expect(await code(verifyDirectory(v, testAnchor(), { now: FRESH, expectedVersion: 6 }))).toBe(
+      'DIRECTORY_MALFORMED',
+    );
     expect((await verifyDirectory(v, testAnchor(), { now: FRESH, expectedVersion: 5 })).version).toBe(5);
   });
 
@@ -145,7 +149,7 @@ describe('verifyDirectory', () => {
     it('missing signature part → DIRECTORY_MALFORMED', async () => {
       const s = v6();
       const i = s.lastIndexOf('\r\n--lmyAPTb9i7P4fQ7MmpnZ\r\n');
-      expect(await run(s.slice(0, i) + '\r\n--lmyAPTb9i7P4fQ7MmpnZ--\r\n')).toBe('DIRECTORY_MALFORMED');
+      expect(await run(`${s.slice(0, i)}\r\n--lmyAPTb9i7P4fQ7MmpnZ--\r\n`)).toBe('DIRECTORY_MALFORMED');
     });
     it('LF-only line endings → DIRECTORY_MALFORMED', async () => {
       expect(await run(v6().replace(/\r\n/g, '\n'))).toBe('DIRECTORY_MALFORMED');
@@ -165,5 +169,4 @@ describe('verifyDirectory', () => {
       expect(await run('')).toBe('DIRECTORY_MALFORMED');
     });
   });
-
 });

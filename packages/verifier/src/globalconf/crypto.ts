@@ -1,15 +1,15 @@
 // Algorithm URIs, certificate decoding and WebCrypto verification.
 
-import * as asn1js from 'asn1js';
+import type * as asn1js from 'asn1js';
 import * as pkijs from 'pkijs';
 import {
   EC_CURVES,
+  ecdsaDerToRaw,
   HASH_LEN,
   type Hash,
   XMLDSIG_DIGESTS,
   XMLDSIG_SIGNATURE_METHODS,
   type XmlDsigSignatureAlg,
-  ecdsaDerToRaw,
 } from '../trust/crypto';
 import { arrayBufferCopy as buf, decodeBase64Strict, latin1 } from '../util/bytes';
 import { GlobalConfError } from './errors';
@@ -92,8 +92,7 @@ export async function verifySignature(
       return await subtle().verify({ name: 'ECDSA', hash: alg.hash }, key, buf(raw), buf(data));
     }
     const key = await subtle().importKey('spki', spki, { name: alg.kind, hash: alg.hash }, false, ['verify']);
-    const params =
-      alg.kind === 'RSA-PSS' ? { name: 'RSA-PSS', saltLength: HASH_LEN[alg.hash] } : { name: alg.kind };
+    const params = alg.kind === 'RSA-PSS' ? { name: 'RSA-PSS', saltLength: HASH_LEN[alg.hash] } : { name: alg.kind };
     return await subtle().verify(params, key, buf(signature), buf(data));
   } catch (e) {
     if (e instanceof GlobalConfError) throw e;

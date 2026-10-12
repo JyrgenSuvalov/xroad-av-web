@@ -18,7 +18,8 @@ describe('Java time formats', () => {
     ['2026-01-02T03:04:05.006Z', '2026-01-02T03:04:05.006Z'],
   ])('javaOffsetDateTime(%s) = %s', (iso, s) => expect(javaOffsetDateTime(new Date(iso))).toBe(s));
 
-  it('javaDateTime is %tF %tT', () => expect(javaDateTime(new Date('2026-01-02T03:04:05.678Z'))).toBe('2026-01-02 03:04:05'));
+  it('javaDateTime is %tF %tT', () =>
+    expect(javaDateTime(new Date('2026-01-02T03:04:05.678Z'))).toBe('2026-01-02 03:04:05'));
 });
 
 describe('JDK X500Principal semantics', () => {
@@ -42,8 +43,18 @@ describe('JDK X500Principal semantics', () => {
   });
 
   it('multi-valued RDN AVAs compare as a set', () => {
-    const x = nameDer([[[OID.CN, 'a'], [OID.O, 'b']]]);
-    const y = nameDer([[[OID.O, 'b'], [OID.CN, 'a']]]);
+    const x = nameDer([
+      [
+        [OID.CN, 'a'],
+        [OID.O, 'b'],
+      ],
+    ]);
+    const y = nameDer([
+      [
+        [OID.O, 'b'],
+        [OID.CN, 'a'],
+      ],
+    ]);
     expect(jdkX500Equal(x, y)).toBe(true);
   });
 });

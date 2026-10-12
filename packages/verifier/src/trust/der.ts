@@ -73,7 +73,7 @@ export function generalizedTime(el: asn1js.GeneralizedTime): Date | null {
   const m = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})?(\d{2})?(?:[.,](\d+))?(Z|[+-]\d{4})?$/.exec(raw);
   if (!m) return null;
   const [, y, mo, d, h, mi = '0', s = '0', frac = '', tz = ''] = m;
-  const ms = Number((frac + '000').slice(0, 3));
+  const ms = Number(`${frac}000`.slice(0, 3));
   let t = Date.UTC(+y!, +mo! - 1, +d!, +h!, +mi, +s, ms);
   if (tz && tz !== 'Z') {
     const sign = tz[0] === '+' ? 1 : -1;

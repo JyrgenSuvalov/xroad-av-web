@@ -4,7 +4,6 @@
 import { ENTRY_SIGNATURE, readContainer } from '../../src/container/read';
 import { verifySignatureHashChain } from '../../src/hashchain';
 import { translateException } from '../../src/util/errors';
-import { loadSignatureDocument, type SignatureHooks } from '../../src/xml/signature-doc';
 import {
   checkMessagePartsReferenced,
   checkRequiredReferences,
@@ -14,6 +13,7 @@ import {
   readSignatureModel,
   verifySignatureValue,
 } from '../../src/xades';
+import { loadSignatureDocument, type SignatureHooks } from '../../src/xml/signature-doc';
 
 export type XadesOutcome = { ok: true } | { ok: false; faultCode: string; faultString: string };
 

@@ -8,7 +8,11 @@ function toDate(d: Date | string): Date {
 export function fmtUtc(d: Date | string): string {
   const date = toDate(d);
   if (Number.isNaN(date.getTime())) return String(d);
-  return date.toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, ' UTC').replace(/Z$/, ' UTC');
+  return date
+    .toISOString()
+    .replace('T', ' ')
+    .replace(/\.\d{3}Z$/, ' UTC')
+    .replace(/Z$/, ' UTC');
 }
 
 const timeFmt = new Intl.DateTimeFormat(undefined, {
@@ -65,6 +69,9 @@ export function commonName(dn: string): string {
 
 /** Safe download file name for an attachment entry name (untrusted). */
 export function safeFileName(name: string): string {
-  const cleaned = name.replace(/^.*[\\/]/, '').replace(/[^A-Za-z0-9._-]/g, '_').replace(/^\.+/, '');
+  const cleaned = name
+    .replace(/^.*[\\/]/, '')
+    .replace(/[^A-Za-z0-9._-]/g, '_')
+    .replace(/^\.+/, '');
   return (cleaned || 'attachment').slice(0, 100);
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { type AttachmentFile, type DigestStatus, digestStatus } from '../lib/messageView';
   import { groupHex } from '../lib/format';
+  import { type AttachmentFile, type DigestStatus, digestStatus } from '../lib/messageView';
   import Icon from './Icon.svelte';
 
   let {

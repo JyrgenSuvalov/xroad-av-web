@@ -54,13 +54,21 @@ export async function importVerificationKey(uri: string, cert: pkijs.Certificate
       return { alg, key, size: curve.size };
     }
     const key = await subtle.importKey('spki', spki, { name: alg.kind, hash: alg.hash }, false, ['verify']);
-    return { alg, key, size: Math.ceil(((key.algorithm as KeyAlgorithm & { modulusLength?: number }).modulusLength ?? 0) / 8) };
+    return {
+      alg,
+      key,
+      size: Math.ceil(((key.algorithm as KeyAlgorithm & { modulusLength?: number }).modulusLength ?? 0) / 8),
+    };
   } catch (e) {
     throw internal(`XMLSignatureException: InvalidKeyException: ${e instanceof Error ? e.message : String(e)}`);
   }
 }
 
-export async function verifyWithKey(vk: VerificationKey, data: Uint8Array, signatureValue: Uint8Array): Promise<boolean> {
+export async function verifyWithKey(
+  vk: VerificationKey,
+  data: Uint8Array,
+  signatureValue: Uint8Array,
+): Promise<boolean> {
   const subtle = globalThis.crypto.subtle;
   const { alg, key, size } = vk;
   if (alg.kind === 'ECDSA') {
@@ -73,7 +81,9 @@ export async function verifyWithKey(vk: VerificationKey, data: Uint8Array, signa
     return subtle.verify({ name: 'ECDSA', hash: alg.hash }, key, buf(raw), buf(data)).catch(() => false);
   }
   if (signatureValue.length !== size) {
-    throw internal(`XMLSignatureException: SignatureException: Bad signature length: got ${signatureValue.length} but was expecting ${size}`);
+    throw internal(
+      `XMLSignatureException: SignatureException: Bad signature length: got ${signatureValue.length} but was expecting ${size}`,
+    );
   }
   const params = alg.kind === 'RSA-PSS' ? { name: 'RSA-PSS', saltLength: HASH_LEN[alg.hash] } : { name: alg.kind };
   return subtle.verify(params, key, buf(signatureValue), buf(data)).catch(() => false);

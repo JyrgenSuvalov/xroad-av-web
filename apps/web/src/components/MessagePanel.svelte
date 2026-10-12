@@ -111,6 +111,14 @@
     }
   }
 
+  .muted {
+    color: var(--text-3);
+    font-weight: 400;
+    font-family: var(--font);
+    font-size: 0.8125rem;
+    margin-left: 0.4rem;
+  }
+
   .raw {
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
@@ -135,13 +143,6 @@
     overflow: auto;
     font-size: 0.8rem;
     line-height: 1.55;
-  }
-  .muted {
-    color: var(--text-3);
-    font-weight: 400;
-    font-family: var(--font);
-    font-size: 0.8125rem;
-    margin-left: 0.4rem;
   }
   .sub-title {
     margin: 1.1rem 0 0.25rem;

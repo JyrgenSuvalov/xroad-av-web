@@ -8,12 +8,12 @@ import {
   type ConfigurationAnchor,
   ConfPoller,
   type FetchLike,
+  fetchVerifiedConf,
+  loadAnchor,
   type PollerState,
   type PollerStatus,
   type TrustContext,
   type VerifiedConf,
-  fetchVerifiedConf,
-  loadAnchor,
 } from '@xrav/verifier';
 
 /** What the trust panel renders. Plain data, so demo mode can fake it. */

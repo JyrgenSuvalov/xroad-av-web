@@ -25,9 +25,9 @@
  * unique entries); we iterate in first-insertion (document) order.
  */
 
-import { CodedError, ErrorCodes } from '../util/errors';
 import type { ApprovedCa, InstanceTrust, TrustContext, TrustedCert } from '../types';
 import { bytesEqual } from '../util/bytes';
+import { CodedError, ErrorCodes } from '../util/errors';
 import { issuerDer, x500Equal } from './x500';
 
 export interface TrustQueries {
@@ -60,16 +60,13 @@ export function trustQueries(trust: TrustContext): TrustQueries {
     getCaCert: (instance, cert, now) => getCaCert(trust, instance, cert, now),
     ocspResponderCertificates: (now) =>
       trust.visibleInstances(now).flatMap((i) => caCertsAndOcspData(i).flatMap((e) => e.ocsp)),
-    allCaCerts: (now) =>
-      trust.visibleInstances(now).flatMap((i) => subjectsAndCaCerts(i).map((ca) => ca.cert)),
+    allCaCerts: (now) => trust.visibleInstances(now).flatMap((i) => subjectsAndCaCerts(i).map((ca) => ca.cert)),
     isOcspResponderCert: (ca, ocspCert, now) =>
-      trust
-        .visibleInstances(now)
-        .some((i) =>
-          caCertsAndOcspData(i)
-            .filter((e) => bytesEqual(e.ca.der, ca.der))
-            .some((e) => e.ocsp.some((c) => bytesEqual(c.der, ocspCert.der))),
-        ),
+      trust.visibleInstances(now).some((i) =>
+        caCertsAndOcspData(i)
+          .filter((e) => bytesEqual(e.ca.der, ca.der))
+          .some((e) => e.ocsp.some((c) => bytesEqual(c.der, ocspCert.der))),
+      ),
     subjectName: () => {
       throw new CodedError(ErrorCodes.X_INTERNAL_ERROR, 'subjectName is not implemented here (see src/binding)');
     },
