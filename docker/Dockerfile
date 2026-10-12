@@ -3,7 +3,7 @@
 # same-origin proxy to the global configuration upstream named in the anchor.
 # Build from the repo root:  docker build -f docker/Dockerfile -t xroad-asic-verifier .
 
-FROM node:24.21.0-alpine3.24@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1 AS build
+FROM node:26.10.0-alpine3.24@sha256:0b36e8c136b94cd4fcf02188228e76c31ad5872eef3fec8cbd2eee500cfd9e80 AS build
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 WORKDIR /src
 RUN corepack enable
@@ -16,7 +16,7 @@ COPY packages/verifier packages/verifier
 COPY apps/web apps/web
 RUN pnpm --filter web build
 
-FROM nginxinc/nginx-unprivileged:1.30.5-alpine3.24@sha256:15c994d10d6d78658721c3bcafff14cb281fba2a4bdf9d5ba92c416a472516e3
+FROM nginxinc/nginx-unprivileged:1.31.5-alpine3.24@sha256:19c132c9ab02d3b783f478743dafc7a7f42e27aa7d2bdcbec1bb1128ca8f2a07
 USER root
 # xmllint parses the anchor (no network, no entity expansion).
 RUN apk add --no-cache libxml2-utils \
