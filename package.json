@@ -9,6 +9,8 @@
   },
   "scripts": {
     "test": "pnpm --filter @xrav/verifier test",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
     "typecheck": "pnpm -r typecheck",
     "build": "pnpm -r build",
     "dev": "pnpm --filter web dev",
@@ -16,6 +18,7 @@
     "docker:run": "docker run --rm -p 8080:80 xroad-asic-verifier"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.5.15",
     "@types/node": "^24.19.1",
     "typescript": "^6.0.3"
   }
