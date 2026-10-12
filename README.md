@@ -1,4 +1,4 @@
-# X-Road ASiC Verifier
+# X-Road ASiC Verifier Web App
 
 Drag an X-Road messagelog container (`.asice`) into the page and the browser verifies it against the X-Road instance's **global configuration**, not the EU Trusted List. It is a TypeScript port of X-Road's `asicverifier` CLI, at parity with **version 7.8.3** (same verdict, same fault code, same extracted details). Verification runs entirely in the browser, so containers never leave the user's machine.
 
