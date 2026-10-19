@@ -16,7 +16,7 @@ COPY packages/verifier packages/verifier
 COPY apps/web apps/web
 RUN pnpm --filter web build
 
-FROM nginxinc/nginx-unprivileged:1.31.5-alpine3.24@sha256:19c132c9ab02d3b783f478743dafc7a7f42e27aa7d2bdcbec1bb1128ca8f2a07
+FROM nginxinc/nginx-unprivileged:1.31.6-alpine3.24@sha256:884e0b7f42f303641b0f4e78755aea647521dca0b89ca3be7992ad78b5c07434
 USER root
 # xmllint parses the anchor (no network, no entity expansion).
 RUN apk add --no-cache libxml2-utils \
