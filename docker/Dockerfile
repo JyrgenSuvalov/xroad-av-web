@@ -3,7 +3,7 @@
 # same-origin proxy to the global configuration upstream named in the anchor.
 # Build from the repo root:  docker build -f docker/Dockerfile -t xroad-asic-verifier .
 
-FROM node:24.22.0-alpine3.24@sha256:44fce696f38ba8c987c4db89954051000bbd05ffd8d8659ba15ed4a8602e937f AS build
+FROM node:24.22.1-alpine3.24@sha256:06d7adf3e0ef61a13f1d28682726366f97a15aa1888c934d3ecec86c33918b53 AS build
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 WORKDIR /src
 RUN corepack enable
