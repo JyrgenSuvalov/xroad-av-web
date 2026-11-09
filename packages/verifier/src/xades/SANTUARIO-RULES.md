@@ -36,7 +36,7 @@ CanonicalizationException, KeyResolverException extend XSE (not XSigE).
    AND local name differ (lax; `&&`).
 2. Element itself must be `{http://www.w3.org/2000/09/xmldsig#}Signature` (ns + localName) else **XSigE**
    "signature.Verification.InvalidElement" (543-548).
-3. First *element* child (text/comments/PIs skipped by `XMLUtils.getNextElement`, utils/XMLUtils.java:140-146)
+3. First _element_ child (text/comments/PIs skipped by `XMLUtils.getNextElement`, utils/XMLUtils.java:140-146)
    must be ds:SignedInfo (ns + localName) else **XSigE** "xml.WrongContent" (551-559).
 4. `new SignedInfo(...)` (562) — see §2.
 5. Next element sibling must be ds:SignatureValue else **XSigE** "xml.WrongContent" (567-576). Its `Id` attr is
@@ -45,7 +45,7 @@ CanonicalizationException, KeyResolverException extend XSE (not XSigE).
    keys/KeyInfo.java ctor) + `setSecureValidation(sv)` (586-594). KeyInfo optional.
 7. Every remaining element sibling must be ds:Object else **XSigE** "signature.Verification.InvalidElement"
    (597-606). So: KeyInfo after an Object, a second KeyInfo, or any foreign element → XSigE.
-8. For each ds:Object: register `Id`; for each *direct element child* with localName `Manifest` (ANY namespace)
+8. For each ds:Object: register `Id`; for each _direct element child_ with localName `Manifest` (ANY namespace)
    → `new Manifest(child, baseURI)` (secureValidation=true via 2-arg ctor, signature/Manifest.java:100-103);
    localName `SignatureProperties` (any ns) → `new SignatureProperties` (registers its Id and ds:SignatureProperty
    Ids; signature/SignatureProperties.java ctor). (608-625). Manifest rules = §3 (0 refs → DOMException!).
@@ -55,7 +55,7 @@ CanonicalizationException, KeyResolverException extend XSE (not XSigE).
 
 - `super(element, baseURI, secureValidation)` = Manifest ctor (§3) runs FIRST: References are counted
   (`selectDsNodes` over ALL element children named ds:Reference, wherever they sit), 0 → DOMException,
-  >30 → plain XSE "signature.tooManyReferences".
+  \>30 → plain XSE "signature.tooManyReferences".
 - First element child must be ds:CanonicalizationMethod else **XSigE** "xml.WrongContent" (244-250).
 - Next element must be ds:SignatureMethod else **XSigE** "xml.WrongContent" (252-258).
 - Any other/unknown elements after SignatureMethod are ignored (only ds:Reference are picked up).
@@ -141,7 +141,7 @@ digested; any exception in any reference aborts the whole call. Result = AND of 
 - Outer loop = resolver, inner loop = KeyInfo element children in document order, storage list = `[null]`
   (KeyInfo.java:92-100,962-982). First non-null wins. *KeyValue resolvers return null for certificates.
 - X509CertificateResolver (keys/keyresolver/implementations/X509CertificateResolver.java): applies to ANY
-  child in the ds namespace; takes the ds:X509Certificate *direct children* of that child (i.e. of ds:X509Data);
+  child in the ds namespace; takes the ds:X509Certificate _direct children_ of that child (i.e. of ds:X509Data);
   if none, recurses into a nested ds:X509Data child; first X509Certificate in document order wins
   (across X509Data elements, the first X509Data containing an X509Certificate wins).
 - Cert parse: `XMLUtils.decode(text)` + `CertificateFactory("X.509").generateCertificate`
@@ -165,9 +165,9 @@ null cert → XSigE. Then with `pk = cert.getPublicKey()`:
 4. `sa.verify(sigBytes)` (908) — false → **return false immediately; references are NOT dereferenced/digested**.
 5. Only if valid: `si.verify(followManifests=false)` (913) → Manifest.verifyReferences (§3). Returns false on
    digest mismatch; MissingResourceFailureException / XSigE / NPE / IAE as described.
-Catch: XSigE rethrown; other XSE wrapped as XSigE (914-918); RuntimeExceptions escape.
+   Catch: XSigE rethrown; other XSE wrapped as XSigE (914-918); RuntimeExceptions escape.
 
-Algorithms (JCA provider: default — X-Road only *appends* BouncyCastle, so SunRsaSign/SunEC win):
+Algorithms (JCA provider: default — X-Road only _appends_ BouncyCastle, so SunRsaSign/SunEC win):
 - `xmldsig-more#rsa-sha512` → `Signature.getInstance("SHA512withRSA")` (JCEMapper.java:145-147), standard
   PKCS#1 v1.5. Sun impl throws SignatureException on length ≠ modulus length → XSigE (SignatureBaseRSA.java:102-109).
 - ECDSA (`xmldsig-more#ecdsa-sha*`): `SHA256withECDSA` etc. (DER). SignatureValue must be **raw r||s**;
@@ -205,9 +205,9 @@ Algorithms (JCA provider: default — X-Road only *appends* BouncyCastle, so Sun
 
 ## 9. Other secure-validation effects that can bite
 
-- >30 References in SignedInfo or in any ds:Object/*:Manifest → plain XSE at XMLSignature construction
+- \>30 References in SignedInfo or in any ds:Object/*:Manifest → plain XSE at XMLSignature construction
   (X-Road: systemException, not X_MALFORMED_SIGNATURE). 0 References → DOMException (RuntimeException).
-- >5 Transforms per Reference → XSE (at verify time). XSLT forbidden.
+- \>5 Transforms per Reference → XSE (at verify time). XSLT forbidden.
 - rsa-md5 / hmac-md5 SignatureMethod → XSE at construction; md5 DigestMethod → XSigE at digest time
   (skipped for precomputed-digest references).
 - ResolverFragment under sv: `#id` must be unique in the doc (`protectAgainstWrappingAttack`, XMLUtils.java:862)

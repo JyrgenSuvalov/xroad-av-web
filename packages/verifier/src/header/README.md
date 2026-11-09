@@ -3,12 +3,14 @@
 Research notes (verified in X-Road 7.8.3 source).
 
 ## getSigner (ACV:265-289)
+
 - SOAP parse OK and SoapMessageImpl → request ? client : service.clientId.
 - SOAP Fault body → SoapFault → "Unexpected SOAP" internal_error → **swallowed → signer null**.
 - CodedException with code `invalid_soap` → REST fallback; any REST failure → `internal_error` "Invalid message" (thrown at V3).
 - Any other CodedException → swallowed → signer null (port: internal_error at S3).
 
 ## SOAP (SaxSoapParserImpl, streaming SAX)
+
 - invalid_soap only from: not well-formed / DOCTYPE (SAXException→SOAPException) or root ≠ {http://schemas.xmlsoap.org/soap/envelope/}Envelope.
 - Port uses DOM: not-well-formed → invalid_soap. DEVIATION: SAX would raise a handler error
   (e.g. duplicate header field) before reaching a later well-formedness error; both are edge cases.
@@ -27,6 +29,7 @@ Research notes (verified in X-Road 7.8.3 source).
 - isResponse: body first child local name endsWith "Response".
 
 ## REST (RestMessage.of)
+
 - empty → error; first byte '1'..'9' → response else request. Lines: Java readLine (\n, \r, \r\n), UTF-8 lenient.
 - Request: line1 Verb.valueOf exact (DELETE GET HEAD OPTIONS PATCH POST PUT TRACE); line2 java.net.URI, no scheme/authority;
   rawPath.split("/",8) ≥7 parts, parts[1] = "r<digit>" and digit == 1; ServiceId from parts 2..6 (percent-decoded, non-blank).
@@ -39,6 +42,7 @@ Research notes (verified in X-Road 7.8.3 source).
 - Segment decode (UriUtils): raw chars [A-Za-z0-9-._~!$&'()*+,;=:@] or %HH; else error; decoded bytes as UTF-8.
 
 ## Implementation
+
 Files: `ids.ts` (ClientId/ServiceId/SecurityServerId, Java validation, XRoadId toString),
 `soap.ts` (DOM port of SaxSoapParserImpl), `rest.ts` (RestMessage/RestRequest/RestResponse + UriUtils + java.net.URI subset),
 `index.ts` (public API, re-exported from `src/index.ts`).
