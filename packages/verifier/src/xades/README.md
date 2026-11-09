@@ -3,14 +3,14 @@
 Pure functions that port Santuario 4.0.4 (secure validation) as X-Road 7.8.3 uses it.
 The behaviour, with source citations, is in SANTUARIO-RULES.md. Each file lists its fault codes at the top.
 
-| File | What | Pipeline step (docs/architecture.md) |
-|---|---|---|
-| model.ts | `checkSignatureElement` (the `SignatureHooks` hook for `loadSignatureDocument` / `readContainer`), `readSignatureModel` (cached), and `referenceAt`, the lazy Reference ctor | V2 |
-| references.ts | `checkRequiredReferences`, `isBatchSignature`, `checkMessagePartsReferenced` (these build References lazily, as `Signature.references` does) | V5, S1 |
-| cert.ts | `getSigningCertificate`: the KeyInfo X509Certificate resolver, then the keyUsage nonRepudiation check | S2 |
-| signature-value.ts | `verifySignatureValue(sd, container, cert)`, the checkSignatureValue port (resolvers: IdResolver, then the ASiC resolver). `getSignatureValueBytes(sd)` gives the stamped data for a non-batch timestamp | S4, V6 |
-| crypto.ts | The WebCrypto SignatureMethods (RSA PKCS#1, RSA-PSS, ECDSA) | S4 |
-| base64.ts | `decodeDsBase64` (the JDK MIME decoder, with its IllegalArgumentException cases) and `dsText` (Text children only) | all |
+| File               | What                                                                                                                                                                                                     | Pipeline step (docs/architecture.md) |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| model.ts           | `checkSignatureElement` (the `SignatureHooks` hook for `loadSignatureDocument` / `readContainer`), `readSignatureModel` (cached), and `referenceAt`, the lazy Reference ctor                             | V2                                   |
+| references.ts      | `checkRequiredReferences`, `isBatchSignature`, `checkMessagePartsReferenced` (these build References lazily, as `Signature.references` does)                                                             | V5, S1                               |
+| cert.ts            | `getSigningCertificate`: the KeyInfo X509Certificate resolver, then the keyUsage nonRepudiation check                                                                                                    | S2                                   |
+| signature-value.ts | `verifySignatureValue(sd, container, cert)`, the checkSignatureValue port (resolvers: IdResolver, then the ASiC resolver). `getSignatureValueBytes(sd)` gives the stamped data for a non-batch timestamp | S4, V6                               |
+| crypto.ts          | The WebCrypto SignatureMethods (RSA PKCS#1, RSA-PSS, ECDSA)                                                                                                                                              | S4                                   |
+| base64.ts          | `decodeDsBase64` (the JDK MIME decoder, with its IllegalArgumentException cases) and `dsText` (Text children only)                                                                                       | all                                  |
 
 How to compose them: `loadSignatureDocument(xml, { checkSignatureElement })` → `readSignatureModel(sd.signature)`.
 Then run, in order:

@@ -2,15 +2,15 @@
 
 A static build of the web app, served by unprivileged nginx, with a same-origin proxy to the X-Road central server named in the configuration anchor. The proxy only passes the global configuration through; all verification happens in the browser.
 
-| File | Purpose |
-|---|---|
-| `Dockerfile` | Two stages. `node:24.21.0-alpine3.24` runs `pnpm install --frozen-lockfile` and `pnpm --filter web build`. The output goes into `nginxinc/nginx-unprivileged:1.30.5-alpine3.24`, which runs as uid 101. Both images are pinned by tag and digest. Build context is the repo root. |
-| `Dockerfile.dockerignore` | BuildKit picks this up for `docker/Dockerfile`. It leaves out `node_modules`, `dist`, `.git` and local env files. |
-| `anchor.example.xml` | Placeholder anchor baked into the image (instance `EXAMPLE`, host `cs.example.org`). Replace it with your own. |
-| `entrypoint.sh` | Reads `/etc/verifier/anchor.xml`, renders the two templates with `envsubst`, runs `nginx -t`, then `exec nginx`. |
-| `nginx/default.conf.template` | The server block: static SPA, `/anchor.xml`, and the `/globalconf/` allow-list. |
-| `nginx/proxy-common.conf.template` | Shared proxy settings: SNI, no upstream TLS verification, no cookies or auth, short timeouts, `no-store`. |
-| `nginx/security-headers.conf` | CSP and the other security headers. Included in every location that has its own `add_header`. |
+| File                               | Purpose                                                                                                                                                                                                                                                                           |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Dockerfile`                       | Two stages. `node:24.21.0-alpine3.24` runs `pnpm install --frozen-lockfile` and `pnpm --filter web build`. The output goes into `nginxinc/nginx-unprivileged:1.30.5-alpine3.24`, which runs as uid 101. Both images are pinned by tag and digest. Build context is the repo root. |
+| `Dockerfile.dockerignore`          | BuildKit picks this up for `docker/Dockerfile`. It leaves out `node_modules`, `dist`, `.git` and local env files.                                                                                                                                                                 |
+| `anchor.example.xml`               | Placeholder anchor baked into the image (instance `EXAMPLE`, host `cs.example.org`). Replace it with your own.                                                                                                                                                                    |
+| `entrypoint.sh`                    | Reads `/etc/verifier/anchor.xml`, renders the two templates with `envsubst`, runs `nginx -t`, then `exec nginx`.                                                                                                                                                                  |
+| `nginx/default.conf.template`      | The server block: static SPA, `/anchor.xml`, and the `/globalconf/` allow-list.                                                                                                                                                                                                   |
+| `nginx/proxy-common.conf.template` | Shared proxy settings: SNI, no upstream TLS verification, no cookies or auth, short timeouts, `no-store`.                                                                                                                                                                         |
+| `nginx/security-headers.conf`      | CSP and the other security headers. Included in every location that has its own `add_header`.                                                                                                                                                                                     |
 
 ## Run
 
@@ -34,15 +34,15 @@ The upstream goes through an nginx variable plus a `resolver`. So an unresolvabl
 
 ## Routes (same semantics as `apps/web/vite.config.ts`)
 
-| Request | Result |
-|---|---|
-| `/`, any unknown path | static file, otherwise falls back to `index.html` (`Cache-Control: no-cache`) |
-| `/assets/*` | hashed bundle, `immutable`; a missing file gives 404 (no SPA fallback) |
-| `GET /anchor.xml` | the mounted anchor, `application/xml`, `no-store` |
-| `GET /globalconf<DIRECTORY_PATH>` (usually `/globalconf/internalconf`) | proxied to `<origin><DIRECTORY_PATH>`; the **query string is kept** (`?version=6`) |
-| `GET /globalconf/V<n>/<digits>/{shared,nextupdate}-params.xml` | proxied to `<origin>/V<n>/<digits>/{shared,nextupdate}-params.xml` (`nextupdate-params.xml` is fetched only when the directory lists it) |
-| anything else under `/globalconf/` (private-params, `..`, other files) | **403** |
-| non-GET/HEAD on the proxy or anchor routes | 403 |
+| Request                                                                | Result                                                                                                                                   |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`, any unknown path                                                  | static file, otherwise falls back to `index.html` (`Cache-Control: no-cache`)                                                            |
+| `/assets/*`                                                            | hashed bundle, `immutable`; a missing file gives 404 (no SPA fallback)                                                                   |
+| `GET /anchor.xml`                                                      | the mounted anchor, `application/xml`, `no-store`                                                                                        |
+| `GET /globalconf<DIRECTORY_PATH>` (usually `/globalconf/internalconf`) | proxied to `<origin><DIRECTORY_PATH>`; the **query string is kept** (`?version=6`)                                                       |
+| `GET /globalconf/V<n>/<digits>/{shared,nextupdate}-params.xml`         | proxied to `<origin>/V<n>/<digits>/{shared,nextupdate}-params.xml` (`nextupdate-params.xml` is fetched only when the directory lists it) |
+| anything else under `/globalconf/` (private-params, `..`, other files) | **403**                                                                                                                                  |
+| non-GET/HEAD on the proxy or anchor routes                             | 403                                                                                                                                      |
 
 On proxied responses, upstream `Set-Cookie`, `Cache-Control` and `Expires` are dropped and `Cache-Control: no-store` is set. Timeouts are 5 s connect, 10 s send and 20 s read. The Vite dev server is more permissive: it blocks only `private-params`. nginx is the strict one; for the allowed paths the mapping is the same.
 

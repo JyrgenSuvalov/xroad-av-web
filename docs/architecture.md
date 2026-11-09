@@ -35,19 +35,19 @@ The verifier is a TypeScript port of X-Road's `asicverifier` 7.8.3. It answers t
 
 `verifyContainer(bytes, trust)` never throws; it returns either the details or `{ ok: false, faultCode, faultString }`. The steps run in X-Road's exact order, because the order decides which fault code a broken container gets. Step names follow `AsicContainerVerifier`/`SignatureVerifier`.
 
-| Step | What | Module |
-|---|---|---|
-| read | Unzip with size and entry limits, check the ASiC entries (`mimetype`, `message.xml`, `META-INF/signatures.xml`, …) | `container`, `xml` |
-| V2 | Parse `signatures.xml` (hardened XML: no DTDs or entities) into the `ds:Signature` model, with Santuario's structural checks | `xml`, `xades` |
-| V3 | Derive the expected signer from `message.xml`: SOAP `client` (request) or service owner (response); REST `X-Road-Client` / `x-road-service` | `header` |
-| V5 | The signature must reference `/message.xml` or `/sig-hashchainresult.xml` | `xades` |
-| V6 | Timestamp: parse the RFC 3161 token (`timestamp.tst` or embedded XAdES), compute the stamped data (batch: verify the timestamp hash chain), verify against an approved TSA. Its genTime becomes the validation time | `timestamp`, `hashchain` |
-| S1 | Batch signature: verify the signature hash chain and the attachment digests. Single signature: `message.xml` must be covered | `hashchain`, `xades` |
-| S2 | Signing certificate from KeyInfo (needs nonRepudiation) | `xades` |
-| S3 | Signer binding: decode the member from the certificate with the CA's certificate profile and compare it with the signer from V3 | `binding` |
-| S4 | Signature value and reference digests (inclusive C14N 1.0, Santuario byte-exact) | `c14n`, `xades` |
-| S6 | Certificate path to an approved CA and the OCSP response at genTime (freshness, status, responder) | `certpath`, `ocsp` |
-| V9 | Result: signer ID, certificate summaries in the JDK's RFC 2253 format, OCSP producedAt, timestamp genTime, attachment digests | `result` |
+| Step | What                                                                                                                                                                                                                | Module                   |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| read | Unzip with size and entry limits, check the ASiC entries (`mimetype`, `message.xml`, `META-INF/signatures.xml`, …)                                                                                                  | `container`, `xml`       |
+| V2   | Parse `signatures.xml` (hardened XML: no DTDs or entities) into the `ds:Signature` model, with Santuario's structural checks                                                                                        | `xml`, `xades`           |
+| V3   | Derive the expected signer from `message.xml`: SOAP `client` (request) or service owner (response); REST `X-Road-Client` / `x-road-service`                                                                         | `header`                 |
+| V5   | The signature must reference `/message.xml` or `/sig-hashchainresult.xml`                                                                                                                                           | `xades`                  |
+| V6   | Timestamp: parse the RFC 3161 token (`timestamp.tst` or embedded XAdES), compute the stamped data (batch: verify the timestamp hash chain), verify against an approved TSA. Its genTime becomes the validation time | `timestamp`, `hashchain` |
+| S1   | Batch signature: verify the signature hash chain and the attachment digests. Single signature: `message.xml` must be covered                                                                                        | `hashchain`, `xades`     |
+| S2   | Signing certificate from KeyInfo (needs nonRepudiation)                                                                                                                                                             | `xades`                  |
+| S3   | Signer binding: decode the member from the certificate with the CA's certificate profile and compare it with the signer from V3                                                                                     | `binding`                |
+| S4   | Signature value and reference digests (inclusive C14N 1.0, Santuario byte-exact)                                                                                                                                    | `c14n`, `xades`          |
+| S6   | Certificate path to an approved CA and the OCSP response at genTime (freshness, status, responder)                                                                                                                  | `certpath`, `ocsp`       |
+| V9   | Result: signer ID, certificate summaries in the JDK's RFC 2253 format, OCSP producedAt, timestamp genTime, attachment digests                                                                                       | `result`                 |
 
 Lower-level helpers: `trust` (X.509, BouncyCastle-style X.500 name matching, WebCrypto signature checks) and `util` (bytes, the `CodedError` / X-Road error-code model).
 
@@ -80,39 +80,39 @@ Svelte 5, built by Vite into static files. `lib/trust.svelte.ts` wraps `ConfPoll
 
 Comments in the code cite the X-Road 7.8.3 Java source as `ABBR:line`, relative to `src/` in the [X-Road repository](https://github.com/nordic-institute/X-Road/tree/7.8.3/src):
 
-| Abbr | File |
-|---|---|
-| ACV | `lib/asic-core/src/main/java/ee/ria/xroad/common/asic/AsicContainerVerifier.java` |
-| AC | `lib/asic-core/.../asic/AsicContainer.java` |
-| AH | `lib/asic-core/.../asic/AsicHelper.java` |
-| ACE | `lib/asic-core/.../asic/AsicContainerEntries.java` |
-| AU | `lib/asic-core/.../asic/AsicUtils.java` |
-| AVM | `tool/asic-verifier-cli/src/main/java/org/niis/xroad/asic/verifier/cli/AsicVerifierMain.java` |
-| SV | `lib/globalconf-impl/src/main/java/org/niis/xroad/globalconf/impl/signature/SignatureVerifier.java` |
-| TV | `lib/globalconf-impl/.../impl/signature/TimestampVerifier.java` |
-| OV | `lib/globalconf-impl/.../impl/ocsp/OcspVerifier.java` |
-| CCV | `lib/globalconf-impl/.../impl/cert/CertChainVerifier.java` |
-| CCF | `lib/globalconf-impl/.../impl/cert/CertChainFactory.java` |
-| CH | `lib/globalconf-impl/.../impl/cert/CertHelper.java` |
-| GCI | `lib/globalconf-impl/src/main/java/org/niis/xroad/globalconf/impl/GlobalConfImpl.java` |
-| VCD | `lib/globalconf-core/src/main/java/org/niis/xroad/globalconf/model/VersionedConfigurationDirectory.java` |
-| SIG | `common/common-message/src/main/java/ee/ria/xroad/common/signature/Signature.java` |
-| HLP | `common/common-message/.../signature/Helper.java` |
-| IDR | `common/common-message/.../signature/IdResolver.java` |
-| HCV | `common/common-message/src/main/java/ee/ria/xroad/common/hashchain/HashChainVerifier.java` |
-| DL | `common/common-message/.../hashchain/DigestList.java` |
-| XSD | `common/common-message/src/main/resources/hashchain.xsd` |
-| MFN | `common/common-message/src/main/java/ee/ria/xroad/common/util/MessageFileNames.java` |
-| SAX | `common/common-message/.../message/SaxSoapParserImpl.java` |
-| RM | `common/common-message/.../message/RestMessage.java` |
-| RREQ | `common/common-message/.../message/RestRequest.java` |
-| RRES | `common/common-message/.../message/RestResponse.java` |
-| ECS | `common/common-core/src/main/java/ee/ria/xroad/common/ErrorCodes.java` |
-| CE | `common/common-core/.../common/CodedException.java` |
-| XRE | `common/common-core/src/main/java/org/niis/xroad/common/core/exception/XrdRuntimeException.java` |
-| ECE | `common/common-core/.../core/exception/ErrorCode.java` |
-| XU | `common/common-core/src/main/java/ee/ria/xroad/common/util/XmlUtils.java` |
-| EU | `common/common-core/.../util/EncoderUtils.java` |
-| CU | `common/common-core/.../util/CertUtils.java` |
+| Abbr | File                                                                                                     |
+| ---- | -------------------------------------------------------------------------------------------------------- |
+| ACV  | `lib/asic-core/src/main/java/ee/ria/xroad/common/asic/AsicContainerVerifier.java`                        |
+| AC   | `lib/asic-core/.../asic/AsicContainer.java`                                                              |
+| AH   | `lib/asic-core/.../asic/AsicHelper.java`                                                                 |
+| ACE  | `lib/asic-core/.../asic/AsicContainerEntries.java`                                                       |
+| AU   | `lib/asic-core/.../asic/AsicUtils.java`                                                                  |
+| AVM  | `tool/asic-verifier-cli/src/main/java/org/niis/xroad/asic/verifier/cli/AsicVerifierMain.java`            |
+| SV   | `lib/globalconf-impl/src/main/java/org/niis/xroad/globalconf/impl/signature/SignatureVerifier.java`      |
+| TV   | `lib/globalconf-impl/.../impl/signature/TimestampVerifier.java`                                          |
+| OV   | `lib/globalconf-impl/.../impl/ocsp/OcspVerifier.java`                                                    |
+| CCV  | `lib/globalconf-impl/.../impl/cert/CertChainVerifier.java`                                               |
+| CCF  | `lib/globalconf-impl/.../impl/cert/CertChainFactory.java`                                                |
+| CH   | `lib/globalconf-impl/.../impl/cert/CertHelper.java`                                                      |
+| GCI  | `lib/globalconf-impl/src/main/java/org/niis/xroad/globalconf/impl/GlobalConfImpl.java`                   |
+| VCD  | `lib/globalconf-core/src/main/java/org/niis/xroad/globalconf/model/VersionedConfigurationDirectory.java` |
+| SIG  | `common/common-message/src/main/java/ee/ria/xroad/common/signature/Signature.java`                       |
+| HLP  | `common/common-message/.../signature/Helper.java`                                                        |
+| IDR  | `common/common-message/.../signature/IdResolver.java`                                                    |
+| HCV  | `common/common-message/src/main/java/ee/ria/xroad/common/hashchain/HashChainVerifier.java`               |
+| DL   | `common/common-message/.../hashchain/DigestList.java`                                                    |
+| XSD  | `common/common-message/src/main/resources/hashchain.xsd`                                                 |
+| MFN  | `common/common-message/src/main/java/ee/ria/xroad/common/util/MessageFileNames.java`                     |
+| SAX  | `common/common-message/.../message/SaxSoapParserImpl.java`                                               |
+| RM   | `common/common-message/.../message/RestMessage.java`                                                     |
+| RREQ | `common/common-message/.../message/RestRequest.java`                                                     |
+| RRES | `common/common-message/.../message/RestResponse.java`                                                    |
+| ECS  | `common/common-core/src/main/java/ee/ria/xroad/common/ErrorCodes.java`                                   |
+| CE   | `common/common-core/.../common/CodedException.java`                                                      |
+| XRE  | `common/common-core/src/main/java/org/niis/xroad/common/core/exception/XrdRuntimeException.java`         |
+| ECE  | `common/common-core/.../core/exception/ErrorCode.java`                                                   |
+| XU   | `common/common-core/src/main/java/ee/ria/xroad/common/util/XmlUtils.java`                                |
+| EU   | `common/common-core/.../util/EncoderUtils.java`                                                          |
+| CU   | `common/common-core/.../util/CertUtils.java`                                                             |
 
 Santuario-specific rules (XML signature parsing and checks as X-Road uses them) are written up in [packages/verifier/src/xades/SANTUARIO-RULES.md](../packages/verifier/src/xades/SANTUARIO-RULES.md).

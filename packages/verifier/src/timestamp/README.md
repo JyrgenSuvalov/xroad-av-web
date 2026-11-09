@@ -6,7 +6,7 @@ Port of `AsicContainerVerifier.getTimeStampToken` + `TimestampVerifier.verify`
 ## API
 
 ```ts
-const token = parseTimestampToken(container.timestampDer);   // may throw io_error / internal_error
+const token = parseTimestampToken(container.timestampDer); // may throw io_error / internal_error
 // ... pipeline computes stampedData (see below) ...
 const { genTime, tsaCert } = await verifyTimestampToken(token, stampedData, trust, now);
 // or both at once: verifyTimestamp(tokenDer, stampedData, trust, now)
@@ -29,15 +29,15 @@ Java builds the token **before** computing the stamped data, so:
 
 ## Fault codes
 
-| Condition | Code |
-|---|---|
-| outer BER does not decode / trailing bytes | `io_error` |
-| empty token; not ContentInfo/SignedData; eContentType ≠ TSTInfo; signers ≠ 1; TSTInfo bad; no ESS signingCertificate(V2) | `internal_error` |
-| imprint algorithm unsupported | `internal_error` |
-| imprint ≠ H(stampedData) | `malformed_signature` "Timestamp hashes do not match" |
-| no approved TSA in visible instances | `mlog.no_timestamping_provider_found` |
-| no approved TSA matches the SID (BC SignerId.match, BC X500 rules) | `mlog.tsp_certificate_not_found` |
-| BC SignerInformation.verify fails (signingTime outside cert validity, content-type, message-digest, cmsAlgorithmProtect, countersignature placement, signature) | `mlog.timestamp_signer_verification_failed` |
+| Condition                                                                                                                                                       | Code                                                  |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| outer BER does not decode / trailing bytes                                                                                                                      | `io_error`                                            |
+| empty token; not ContentInfo/SignedData; eContentType ≠ TSTInfo; signers ≠ 1; TSTInfo bad; no ESS signingCertificate(V2)                                        | `internal_error`                                      |
+| imprint algorithm unsupported                                                                                                                                   | `internal_error`                                      |
+| imprint ≠ H(stampedData)                                                                                                                                        | `malformed_signature` "Timestamp hashes do not match" |
+| no approved TSA in visible instances                                                                                                                            | `mlog.no_timestamping_provider_found`                 |
+| no approved TSA matches the SID (BC SignerId.match, BC X500 rules)                                                                                              | `mlog.tsp_certificate_not_found`                      |
+| BC SignerInformation.verify fails (signingTime outside cert validity, content-type, message-digest, cmsAlgorithmProtect, countersignature placement, signature) | `mlog.timestamp_signer_verification_failed`           |
 
 `mlog.timestamp_token_signer_info_not_found` is unreachable (the only SignerInfo always matches its own SID).
 

@@ -35,13 +35,13 @@ The anchor is the only input. The entrypoint derives the upstream central server
 
 ## Repository layout
 
-| Path | What |
-|---|---|
-| `packages/verifier/` | `@xrav/verifier`: the verification core (TS source, no build step). Public API in `src/index.ts` |
+| Path                     | What                                                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/verifier/`     | `@xrav/verifier`: the verification core (TS source, no build step). Public API in `src/index.ts`                                                                                                                                                                                                                                                                                    |
 | `packages/verifier/src/` | One directory per stage. `container` (zip + limits), `xml` / `c14n` (safe parsing, Santuario-exact C14N), `header` (SOAP/REST, signer derivation), `hashchain`, `xades`, `timestamp`, `trust` (X.509, X.500, crypto), `certpath`, `ocsp`, `binding`, `result`, `globalconf` (anchor → signed directory → shared-params → TrustContext, poller), `util`. `verify.ts` is the pipeline |
-| `apps/web/` | Svelte UI (drop zone, verdict, header, message, attachments, globalconf status) |
-| `docker/` | Dockerfile, nginx templates, entrypoint, example anchor |
-| `docs/architecture.md` | How the verifier works: trust model, global configuration, verification pipeline, known deviations |
+| `apps/web/`              | Svelte UI (drop zone, verdict, header, message, attachments, globalconf status)                                                                                                                                                                                                                                                                                                     |
+| `docker/`                | Dockerfile, nginx templates, entrypoint, example anchor                                                                                                                                                                                                                                                                                                                             |
+| `docs/architecture.md`   | How the verifier works: trust model, global configuration, verification pipeline, known deviations                                                                                                                                                                                                                                                                                  |
 
 ## Testing
 
@@ -50,7 +50,7 @@ The anchor is the only input. The entrypoint derives the upstream central server
 
 ## Known deviations
 
-- **Fault-string wording.** The fault **code** always matches. Some fault *strings* differ in wording only: a missing `[<uuid>] [SYSTEM]` prefix, NPE text, the `xades:` element prefix, and an ASN.1 parser message. See [docs/architecture.md](docs/architecture.md#known-deviations-from-the-jar).
+- **Fault-string wording.** The fault **code** always matches. Some fault _strings_ differ in wording only: a missing `[<uuid>] [SYSTEM]` prefix, NPE text, the `xades:` element prefix, and an ASN.1 parser message. See [docs/architecture.md](docs/architecture.md#known-deviations-from-the-jar).
 - **Algorithms WebCrypto lacks.** Digests other than SHA-1/256/384/512 (MD5, SHA-224, SHA-3) give `internal_error`. Signature methods other than RSA PKCS#1 v1.5, RSA-PSS and ECDSA P-256/384/521 (DSA, EdDSA…) give `malformed_signature` at load. The jar might accept some of these. RSA-PSS and ECDSA are implemented but were not exercised against the jar. Unsupported XML-DSig features (Transforms, exclusive C14N) are likewise not implemented.
 - **Tampered attachment under a batch signature.** This gives `ok: true` with that attachment marked `verified: false`, exactly as the jar does. This is parity, not a bug; the UI flags such attachments. A `verified: false` line can also mean the attachment simply isn't in the container.
 
